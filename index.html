@@ -41,7 +41,7 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=20260726sharedNav1">
+  <link rel="stylesheet" href="style.css?v=20260726admission1">
 
 
   <!-- Schema Markup -->
@@ -839,8 +839,65 @@
     </div>
   </div>
 
-  <script src="script.js?v=20260726sharedNav1" defer></script>
-  <script src="js/website-courses.js?v=20260726sharedNav1" defer></script>
+  <!-- Admission form (Enroll Now) -->
+  <div class="admission-modal" id="admissionModal" hidden aria-hidden="true" role="dialog" aria-modal="true"
+    aria-labelledby="admissionTitle">
+    <div class="admission-backdrop" id="admissionBackdrop"></div>
+    <div class="admission-dialog">
+      <button type="button" class="form-popup-x" id="admissionClose" aria-label="Close">×</button>
+      <header class="admission-head">
+        <p class="admission-kicker">Admission Form</p>
+        <h3 id="admissionTitle">Course Enrollment</h3>
+        <p class="admission-course" id="admissionCourseLabel">—</p>
+      </header>
+      <form class="admission-form" id="admissionForm" enctype="multipart/form-data" novalidate>
+        <input type="hidden" name="course" id="admissionCourse" value="">
+        <div class="form-group">
+          <label for="admFullName">Full Name *</label>
+          <input id="admFullName" name="full_name" required maxlength="120" autocomplete="name"
+            placeholder="Student's full name">
+        </div>
+        <div class="form-group">
+          <label for="admFatherName">Father's Name *</label>
+          <input id="admFatherName" name="father_name" required maxlength="120" autocomplete="off"
+            placeholder="Father's full name">
+        </div>
+        <div class="form-group">
+          <label for="admDob">Date of Birth *</label>
+          <input type="date" id="admDob" name="dob" required>
+        </div>
+        <div class="form-group">
+          <label for="admAddress">Address *</label>
+          <textarea id="admAddress" name="address" required rows="3" maxlength="400"
+            placeholder="Full residential address"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="admIdType">Identity Proof Type *</label>
+          <select id="admIdType" name="id_type" required>
+            <option value="">Select proof</option>
+            <option value="Aadhaar">Aadhaar</option>
+            <option value="Voter ID">Voter ID</option>
+            <option value="Driving Licence">Driving Licence (DL)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="admIdProof">Upload Identity Proof *</label>
+          <input type="file" id="admIdProof" name="id_proof" required
+            accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf">
+          <p class="muted admission-hint">Aadhaar, Voter ID, or DL · JPG/PNG/PDF · max 5 MB</p>
+        </div>
+        <div class="admission-actions">
+          <button type="submit" class="btn btn-primary" id="admissionSubmit">Submit Application</button>
+          <button type="button" class="btn btn-outline" id="admissionCancel">Cancel</button>
+        </div>
+        <p class="form-status" id="admissionStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js?v=20260726admission1" defer></script>
+  <script src="js/website-courses.js?v=20260726admission1" defer></script>
+  <script src="js/admission-form.js?v=20260726admission1" defer></script>
 </body>
 
 </html>

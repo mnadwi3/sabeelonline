@@ -8,7 +8,9 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/library/api/bootstrap.php';
 
 const WEB_COURSES_FILE = __DIR__ . '/../data/website-courses.json';
+const WEB_ASSETS_DIR = __DIR__ . '/../assets/courses';
 const WEB_WHATSAPP = '918979983149';
+const WEB_MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
 function web_courses_ensure(): void
 {
@@ -70,14 +72,9 @@ function web_courses_normalize(array $input, ?string $existingId = null): array
         $id = 'web-' . lib_slug($name) . '-' . substr(bin2hex(random_bytes(3)), 0, 6);
     }
 
-    $enroll = trim((string) ($input['whatsappEnrollText'] ?? ''));
-    $waitlist = trim((string) ($input['whatsappWaitlistText'] ?? ''));
-    if ($enroll === '') {
-        $enroll = 'Assalamu Alaikum, I want to enroll in ' . $name . '.';
-    }
-    if ($waitlist === '') {
-        $waitlist = 'Assalamu Alaikum, please notify me when ' . $name . ' registration opens.';
-    }
+    // CTA + WhatsApp copy follow registration status automatically.
+    $enroll = 'Assalamu Alaikum, I want to enroll in ' . $name . '.';
+    $waitlist = 'Assalamu Alaikum, please notify me when ' . $name . ' registration opens.';
 
     $image = trim((string) ($input['image'] ?? 'assets/personal.png'));
     if ($image === '') {
@@ -100,6 +97,52 @@ function web_courses_normalize(array $input, ?string $existingId = null): array
     ];
 }
 
+function web_courses_upload_image(): array
+{
+    if (empty($_FILES['image']) || !is_uploaded_file($_FILES['image']['tmp_name'])) {
+        lib_json(['ok' => false, 'error' => 'Please choose an image file.'], 400);
+    }
+
+    $file = $_FILES['image'];
+    if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+        lib_json(['ok' => false, 'error' => 'Image upload failed. File may be too large.'], 400);
+    }
+    if (($file['size'] ?? 0) > WEB_MAX_IMAGE_BYTES) {
+        lib_json(['ok' => false, 'error' => 'Image is too large. Maximum allowed size is 5 MB.'], 400);
+    }
+
+    $info = @getimagesize($file['tmp_name']);
+    if ($info === false) {
+        lib_json(['ok' => false, 'error' => 'Upload a valid image (JPG, PNG, or WebP).'], 400);
+    }
+
+    $mime = (string) ($info['mime'] ?? '');
+    $extMap = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+    ];
+    if (!isset($extMap[$mime])) {
+        lib_json(['ok' => false, 'error' => 'Image must be JPG, PNG, or WebP.'], 400);
+    }
+
+    if (!is_dir(WEB_ASSETS_DIR) && !mkdir(WEB_ASSETS_DIR, 0755, true) && !is_dir(WEB_ASSETS_DIR)) {
+        lib_json(['ok' => false, 'error' => 'Could not create assets/courses folder.'], 500);
+    }
+
+    $filename = lib_safe_filename((string) ($file['name'] ?? 'course'), 'course', $extMap[$mime]);
+    $dest = WEB_ASSETS_DIR . DIRECTORY_SEPARATOR . $filename;
+    if (!move_uploaded_file($file['tmp_name'], $dest)) {
+        lib_json(['ok' => false, 'error' => 'Could not save image to assets.'], 500);
+    }
+
+    return [
+        'ok' => true,
+        'image' => 'assets/courses/' . $filename,
+        'url' => 'assets/courses/' . $filename,
+    ];
+}
+
 $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
 if ($method === 'GET') {
@@ -114,6 +157,11 @@ if ($method !== 'POST') {
 lib_require_admin();
 
 $action = trim((string) ($_POST['action'] ?? ''));
+
+if ($action === 'upload_image') {
+    lib_json(web_courses_upload_image());
+}
+
 $payloadRaw = (string) ($_POST['course'] ?? '');
 $payload = $payloadRaw !== '' ? json_decode($payloadRaw, true) : null;
 if (!is_array($payload)) {

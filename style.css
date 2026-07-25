@@ -1959,6 +1959,96 @@ body.form-popup-open {
   min-width: 7.5rem;
 }
 
+/* Admission modal (Enroll Now) */
+body.admission-open { overflow: hidden; }
+.admission-modal[hidden] { display: none !important; }
+.admission-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3100;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+}
+.admission-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 28, 26, 0.55);
+  backdrop-filter: blur(2px);
+}
+.admission-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 520px);
+  max-height: min(92vh, 760px);
+  overflow: auto;
+  background: #fff;
+  border-radius: 18px;
+  padding: 1.5rem 1.35rem 1.35rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+  animation: popupIn 0.28s var(--ease) both;
+}
+.admission-head { margin-bottom: 1rem; padding-right: 1.5rem; }
+.admission-kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+.admission-head h3 {
+  margin: 0.25rem 0 0.2rem;
+  font-size: 1.35rem;
+  color: var(--primary-dark);
+}
+.admission-course {
+  margin: 0;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.admission-form { display: grid; gap: 0.85rem; }
+.admission-form .form-group { margin: 0; }
+.admission-form label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.35rem;
+}
+.admission-form input,
+.admission-form select,
+.admission-form textarea {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font: inherit;
+  background: #fff;
+}
+.admission-form input:focus,
+.admission-form select:focus,
+.admission-form textarea:focus {
+  outline: none;
+  border-color: rgba(11, 94, 215, 0.55);
+  box-shadow: var(--focus-ring);
+}
+.admission-form input.is-invalid,
+.admission-form select.is-invalid,
+.admission-form textarea.is-invalid {
+  border-color: #dc3545;
+}
+.admission-hint { margin: 0.35rem 0 0; font-size: 0.8rem; }
+.admission-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+}
+.admission-form .form-status { margin: 0; font-weight: 600; }
+.admission-form .form-status.success { color: var(--secondary); }
+.admission-form .form-status.error { color: #dc3545; }
+
 .contact-info {
   display: flex;
   flex-direction: column;

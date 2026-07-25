@@ -10,6 +10,7 @@
   const ADMIN_CODES = (cfg.ADMIN_CODES || [cfg.ADMIN_CODE || 'admin@sabeel']).map((c) => String(c).toUpperCase());
   const ADMIN_KEY = 'sabeel_website_courses_admin';
   const CODE_KEY = 'sabeel_lib_admin_code';
+  const DEFAULT_IMAGE = 'assets/personal.png';
 
   const gateView = document.getElementById('viewAdminGate');
   const appView = document.getElementById('viewAdminApp');
@@ -20,6 +21,12 @@
   const form = document.getElementById('courseForm');
   const btnCancel = document.getElementById('btnCancelEdit');
   const btnLogout = document.getElementById('btnAdminLogout');
+  const btnUploadImage = document.getElementById('btnUploadImage');
+  const imageFile = document.getElementById('imageFile');
+  const imagePreview = document.getElementById('imagePreview');
+  const imageHint = document.getElementById('imageHint');
+  const ctaHint = document.getElementById('ctaHint');
+  const registrationSelect = document.getElementById('registration');
 
   let courses = [];
   let editingId = null;
@@ -39,6 +46,31 @@
   function setAuthed(on) {
     if (gateView) gateView.hidden = on;
     if (appView) appView.hidden = !on;
+  }
+
+  function field(id) {
+    return document.getElementById(id);
+  }
+
+  function updateCtaHint() {
+    if (!ctaHint || !registrationSelect) return;
+    const open = registrationSelect.value === 'open';
+    ctaHint.textContent = open
+      ? 'Button on homepage: Enroll Now (opens admission form)'
+      : 'Button on homepage: Join Waitlist (WhatsApp waitlist message is automatic)';
+  }
+
+  function setImage(path) {
+    const value = path || DEFAULT_IMAGE;
+    field('image').value = value;
+    if (imagePreview) {
+      imagePreview.src = value + (value.indexOf('?') >= 0 ? '&' : '?') + 't=' + Date.now();
+    }
+    if (imageHint) {
+      imageHint.textContent = value === DEFAULT_IMAGE
+        ? 'JPG, PNG, or WebP · max 5 MB'
+        : 'Saved: ' + value;
+    }
   }
 
   async function apiLogin(code) {
@@ -81,25 +113,21 @@
     renderList();
   }
 
-  function field(id) {
-    return document.getElementById(id);
-  }
-
   function fillForm(course) {
     editingId = course ? course.id : null;
     field('courseId').value = course?.id || '';
     field('name').value = course?.name || '';
     field('description').value = course?.description || '';
-    field('image').value = course?.image || 'assets/personal.png';
+    setImage(course?.image || DEFAULT_IMAGE);
     field('registration').value = course?.registration || 'open';
     field('duration').value = course?.duration || '';
     field('classDays').value = course?.classDays || '';
     field('fee').value = course?.fee || '';
     field('sortOrder').value = course?.sortOrder ?? '';
-    field('whatsappEnrollText').value = course?.whatsappEnrollText || '';
-    field('whatsappWaitlistText').value = course?.whatsappWaitlistText || '';
     document.getElementById('formTitle').textContent = course ? 'Edit course' : 'Add course';
     btnCancel.hidden = !course;
+    if (imageFile) imageFile.value = '';
+    updateCtaHint();
   }
 
   function renderList() {
@@ -111,7 +139,7 @@
     }
     listEl.innerHTML =
       '<div class="table-wrap"><table class="data admin-courses-table"><thead><tr>' +
-      '<th>Order</th><th>Name</th><th>Status</th><th>Fee</th><th></th></tr></thead><tbody>' +
+      '<th>Order</th><th>Name</th><th>Status</th><th>CTA</th><th>Fee</th><th></th></tr></thead><tbody>' +
       sorted.map((c) => {
         const open = String(c.registration).toLowerCase() === 'open';
         return (
@@ -119,6 +147,7 @@
             '<td>' + escapeHtml(c.sortOrder ?? '') + '</td>' +
             '<td><strong>' + escapeHtml(c.name) + '</strong><br><span class="muted">' + escapeHtml(c.image || '') + '</span></td>' +
             '<td><span class="badge ' + (open ? 'badge-open' : 'badge-closed') + '">' + (open ? 'Open' : 'Closed') + '</span></td>' +
+            '<td>' + (open ? 'Enroll Now' : 'Join Waitlist') + '</td>' +
             '<td>' + escapeHtml(c.fee || '—') + '</td>' +
             '<td class="admin-row-actions">' +
               '<button type="button" class="btn btn-outline btn-sm" data-edit="' + escapeAttr(c.id) + '">Edit</button> ' +
@@ -168,6 +197,37 @@
     setAuthed(false);
   });
 
+  registrationSelect?.addEventListener('change', updateCtaHint);
+
+  btnUploadImage?.addEventListener('click', () => imageFile?.click());
+
+  imageFile?.addEventListener('change', async () => {
+    const file = imageFile.files && imageFile.files[0];
+    if (!file) return;
+    if (!adminCode) {
+      showStatus('Enter the admin panel first, then upload an image.', false);
+      return;
+    }
+    showStatus('Uploading image…', true);
+    try {
+      const body = new FormData();
+      body.append('action', 'upload_image');
+      body.append('admin_code', adminCode);
+      body.append('image', file);
+      const res = await fetch(API_URL, { method: 'POST', body, credentials: 'same-origin' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || 'Upload failed.');
+      }
+      setImage(data.image || data.url);
+      showStatus('Image uploaded to assets. Save the course to apply it.', true);
+    } catch (err) {
+      showStatus(err.message || 'Upload failed.', false);
+    } finally {
+      imageFile.value = '';
+    }
+  });
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     showStatus('Saving…', true);
@@ -175,14 +235,12 @@
       id: field('courseId').value.trim(),
       name: field('name').value.trim(),
       description: field('description').value.trim(),
-      image: field('image').value.trim(),
+      image: field('image').value.trim() || DEFAULT_IMAGE,
       registration: field('registration').value,
       duration: field('duration').value.trim(),
       classDays: field('classDays').value.trim(),
       fee: field('fee').value.trim(),
       sortOrder: field('sortOrder').value === '' ? 0 : Number(field('sortOrder').value),
-      whatsappEnrollText: field('whatsappEnrollText').value.trim(),
-      whatsappWaitlistText: field('whatsappWaitlistText').value.trim(),
     };
     try {
       const data = await postAction('save', { course: JSON.stringify(course) });
@@ -226,6 +284,8 @@
   });
 
   document.addEventListener('DOMContentLoaded', async () => {
+    updateCtaHint();
+    setImage(DEFAULT_IMAGE);
     if (localStorage.getItem(ADMIN_KEY) === '1' && adminCode && isAdminCode(adminCode)) {
       await apiLogin(adminCode);
       setAuthed(true);

@@ -56,6 +56,22 @@
     .btn-danger { background: #b42318; color: #fff; border: none; }
     .muted { color: #64748b; font-size: 0.85rem; }
     .table-wrap { overflow-x: auto; }
+    .image-upload {
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .image-preview {
+      width: 120px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #d9e0ef;
+      background: #f8fafc;
+      display: block;
+    }
+    .image-upload-actions { min-width: 160px; }
   </style>
 </head>
 <body class="courses-admin-page">
@@ -123,12 +139,13 @@
           <button type="button" class="btn btn-outline btn-sm" id="btnAdminLogout">Logout</button>
         </div>
       </header>
-      <p class="admin-lead">Add, edit, open/close registration, and set fees. Image paths use files already in <code>assets/</code> (upload images via hosting/FTP if needed).</p>
+      <p class="admin-lead">Add or edit courses, upload card images, and open/close registration. <strong>Enroll Now</strong> opens the admission form; <strong>Join Waitlist</strong> uses WhatsApp when closed.</p>
 
       <article class="admin-panel">
         <h2 id="formTitle">Add course</h2>
         <form class="admin-form" id="courseForm">
           <input type="hidden" name="courseId" id="courseId" value="">
+          <input type="hidden" name="image" id="image" value="assets/personal.png">
           <div class="field-row">
             <div>
               <label for="name">Course name *</label>
@@ -140,6 +157,7 @@
                 <option value="open">Open</option>
                 <option value="closed">Closed</option>
               </select>
+              <p class="muted" id="ctaHint" style="margin:0.35rem 0 0">Button: Enroll Now</p>
             </div>
             <div>
               <label for="sortOrder">Sort order</label>
@@ -152,8 +170,15 @@
           </div>
           <div class="field-row">
             <div>
-              <label for="image">Image path</label>
-              <input id="image" name="image" placeholder="assets/personal.png" value="assets/personal.png">
+              <label>Course image</label>
+              <div class="image-upload">
+                <img id="imagePreview" class="image-preview" src="assets/personal.png" alt="Course preview">
+                <div class="image-upload-actions">
+                  <input type="file" id="imageFile" accept="image/jpeg,image/png,image/webp" hidden>
+                  <button type="button" class="btn btn-outline" id="btnUploadImage">Upload Image</button>
+                  <p class="muted" id="imageHint" style="margin:0.35rem 0 0">JPG, PNG, or WebP · max 5 MB</p>
+                </div>
+              </div>
             </div>
             <div>
               <label for="duration">Duration</label>
@@ -166,16 +191,6 @@
             <div>
               <label for="fee">Fee</label>
               <input id="fee" name="fee" placeholder="e.g. ₹6000 / Semester">
-            </div>
-          </div>
-          <div class="field-row">
-            <div>
-              <label for="whatsappEnrollText">WhatsApp enroll message</label>
-              <input id="whatsappEnrollText" name="whatsappEnrollText" placeholder="Auto if left blank">
-            </div>
-            <div>
-              <label for="whatsappWaitlistText">WhatsApp waitlist message</label>
-              <input id="whatsappWaitlistText" name="whatsappWaitlistText" placeholder="Auto if left blank">
             </div>
           </div>
           <div class="admin-form-actions">
@@ -194,6 +209,6 @@
 
   <script src="script.js?v=20260726sharedNav1" defer></script>
   <script src="library/js/config.js"></script>
-  <script src="js/courses-admin.js?v=20260726sharedNav1"></script>
+  <script src="js/courses-admin.js?v=20260726courseUpload1"></script>
 </body>
 </html>

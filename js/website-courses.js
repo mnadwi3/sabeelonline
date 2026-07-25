@@ -33,11 +33,13 @@
     const badgeText = open ? 'Registration Open' : 'Registration Closed';
     const btnClass = open ? 'btn btn-primary' : 'btn btn-secondary';
     const ctaLabel = open ? 'Enroll Now' : 'Join Waitlist';
-    const waText = open
-      ? (course.whatsappEnrollText || ('Assalamu Alaikum, I want to enroll in ' + course.name + '.'))
-      : (course.whatsappWaitlistText || ('Assalamu Alaikum, please notify me when ' + course.name + ' registration opens.'));
+    const waText = course.whatsappWaitlistText
+      || ('Assalamu Alaikum, please notify me when ' + course.name + ' registration opens.');
     const name = String(course.name || '').trim();
     const image = String(course.image || 'assets/personal.png').trim() || 'assets/personal.png';
+    const cta = open
+      ? '<button type="button" class="' + btnClass + '" data-enroll-course="' + escapeHtml(name) + '">' + ctaLabel + '</button>'
+      : '<a href="' + escapeHtml(waLink(waText)) + '" class="' + btnClass + '" target="_blank" rel="noopener noreferrer">' + ctaLabel + '</a>';
 
     return (
       '<article class="course-card' + closedClass + ' reveal' + delay + '" data-name="' + escapeHtml(name) + '" data-registration="' + (open ? 'open' : 'closed') + '">' +
@@ -53,7 +55,7 @@
             '<li><span>Class Days</span><strong>' + escapeHtml(course.classDays || '—') + '</strong></li>' +
             '<li><span>Fee</span><strong>' + escapeHtml(course.fee || '—') + '</strong></li>' +
           '</ul>' +
-          '<a href="' + escapeHtml(waLink(waText)) + '" class="' + btnClass + '" target="_blank" rel="noopener noreferrer">' + ctaLabel + '</a>' +
+          cta +
         '</div>' +
       '</article>'
     );

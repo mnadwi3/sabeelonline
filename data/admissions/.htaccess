@@ -1,0 +1,4 @@
+# Keep admission data private (API writes; no public browse)
+<FilesMatch "\.(json)$">
+  Require all denied
+</FilesMatch>

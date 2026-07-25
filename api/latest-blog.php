@@ -48,6 +48,9 @@ function latest_blog_excerpt(array $row): string
 }
 
 try {
+    if (!defined('DB_THROW_ON_FAIL')) {
+        define('DB_THROW_ON_FAIL', true);
+    }
     require_once dirname(__DIR__) . '/blog/includes/db.php';
 } catch (Throwable $e) {
     latest_blog_json(['ok' => false, 'error' => 'Blog database unavailable.', 'posts' => []], 503);

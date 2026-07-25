@@ -166,7 +166,11 @@ $course = trim((string) ($_POST['course'] ?? ''));
 
 $allowedIdTypes = ['Aadhaar', 'Voter ID', 'Driving Licence'];
 
-if ($fullName === '' || mb_strlen($fullName) < 2) {
+$strLen = static function (string $value): int {
+    return function_exists('mb_strlen') ? mb_strlen($value) : strlen($value);
+};
+
+if ($fullName === '' || $strLen($fullName) < 2) {
     lib_json(['ok' => false, 'error' => 'Full name is required.'], 400);
 }
 if ($fatherName === '') {
@@ -175,7 +179,7 @@ if ($fatherName === '') {
 if ($dob === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
     lib_json(['ok' => false, 'error' => 'Valid date of birth is required.'], 400);
 }
-if ($address === '' || mb_strlen($address) < 8) {
+if ($address === '' || $strLen($address) < 8) {
     lib_json(['ok' => false, 'error' => 'Address is required.'], 400);
 }
 if (!in_array($idType, $allowedIdTypes, true)) {

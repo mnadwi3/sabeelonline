@@ -101,7 +101,7 @@ require_once __DIR__ . '/includes/header.php';
             <?php if (!empty($item['featured_image'])): ?>
               <img src="<?php echo e($item['featured_image']); ?>" alt="<?php echo e($item['title']); ?>">
             <?php else: ?>
-              <img src="assets/images/blog-placeholder.svg" alt="">
+              <img src="uploads/blog-images/woman.jpg" alt="">
             <?php endif; ?>
             <div class="post-card-body">
               <h2>

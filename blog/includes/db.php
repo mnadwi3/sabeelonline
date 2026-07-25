@@ -31,6 +31,9 @@ try {
 } catch (PDOException $e) {
     // Generic message for visitors (details go to server error log)
     error_log('DB connection failed: ' . $e->getMessage());
+    if (defined('DB_THROW_ON_FAIL') && DB_THROW_ON_FAIL) {
+        throw $e;
+    }
     exit('Database connection failed. Please check includes/db.php settings.');
 }
 

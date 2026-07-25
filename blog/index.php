@@ -37,7 +37,7 @@ require_once __DIR__ . '/includes/header.php';
           <?php if (!empty($post['featured_image'])): ?>
             <img src="<?php echo e($post['featured_image']); ?>" alt="<?php echo e($post['title']); ?>">
           <?php else: ?>
-            <img src="/assets/images/woman.jpg" alt="">
+            <img src="uploads/blog-images/woman.jpg" alt="">
           <?php endif; ?>
           <div class="post-card-body">
             <div class="post-meta">

@@ -26,7 +26,8 @@
     linear-gradient(180deg, var(--bg-soft) 0%, var(--bg-light) 40%, var(--bg) 100%);
 }
 
-.library-page main {
+.library-page main,
+.library-page main:not(:has(.hero)) {
   padding-top: calc(var(--header-h) + 1.5rem);
   padding-bottom: 4rem;
   min-height: calc(100vh - var(--header-h));

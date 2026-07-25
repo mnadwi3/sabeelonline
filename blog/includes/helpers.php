@@ -170,7 +170,44 @@ function format_post_content(string $content): string
         return '';
     }
 
-    // Split into blocks by one or more blank lines
+    // Rich-text HTML from the editor (whitelist safe tags)
+    if (preg_match('/<(p|br|strong|b|em|i|u|s|h[1-3]|ul|ol|li|a|span|blockquote|div)\b/i', $content)) {
+        $allowed = '<p><br><strong><b><em><i><u><s><h1><h2><h3><ul><ol><li><a><span><blockquote><div>';
+        $safe = strip_tags($content, $allowed);
+
+        // Allow only safe href / style="color:..." attributes
+        $safe = preg_replace_callback(
+            '/<(a|span)\b([^>]*)>/i',
+            static function (array $m): string {
+                $tag = strtolower($m[1]);
+                $attrs = $m[2];
+                $out = '<' . $tag;
+
+                if ($tag === 'a' && preg_match('/\bhref\s*=\s*([\'"])(.*?)\1/i', $attrs, $href)) {
+                    $url = trim($href[2]);
+                    if (preg_match('#^(https?:|mailto:|/|#)#i', $url)) {
+                        $out .= ' href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" rel="noopener noreferrer"';
+                    }
+                }
+
+                if (preg_match('/\bstyle\s*=\s*([\'"])(.*?)\1/i', $attrs, $style)) {
+                    if (preg_match('/color\s*:\s*([^;]+)/i', $style[2], $color)) {
+                        $c = trim($color[1]);
+                        if (preg_match('/^(#[0-9a-f]{3,8}|rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|[a-z]+)$/i', $c)) {
+                            $out .= ' style="color:' . htmlspecialchars($c, ENT_QUOTES, 'UTF-8') . '"';
+                        }
+                    }
+                }
+
+                return $out . '>';
+            },
+            $safe
+        ) ?? $safe;
+
+        return $safe;
+    }
+
+    // Legacy plain text posts
     $blocks = preg_split("/\n\s*\n/", $content) ?: [];
     $html = '';
 
@@ -179,10 +216,8 @@ function format_post_content(string $content): string
         if ($block === '') {
             continue;
         }
-        // Escape HTML, then keep single line breaks inside a paragraph
-        $safe = htmlspecialchars($block, ENT_QUOTES, 'UTF-8');
-        $safe = nl2br($safe);
-        $html .= '<p>' . $safe . '</p>';
+        $escaped = htmlspecialchars($block, ENT_QUOTES, 'UTF-8');
+        $html .= '<p>' . nl2br($escaped) . '</p>';
     }
 
     return $html;

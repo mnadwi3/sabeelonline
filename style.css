@@ -347,22 +347,22 @@ main:not(:has(.hero)) {
   border-radius: 0;
 }
 
-/* Desktop: sit in the header bar (nav lives outside <header> in HTML) */
+/* Desktop: centered in the header bar (clear of logo on the left) */
 .main-nav {
   position: fixed;
   top: 0;
+  left: 0;
   right: 0;
-  left: auto;
   z-index: 1110;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   height: var(--header-h);
-  width: auto;
-  max-width: calc(100vw - 110px);
+  width: 100%;
+  max-width: none;
   margin: 0;
-  margin-right: max(2.75rem, calc((100vw - min(100vw - 2.5rem, var(--max))) / 2));
-  padding: 0;
+  padding: 0 max(1rem, calc((100vw - min(100vw - 2.5rem, var(--max))) / 2));
+  padding-left: max(6.5rem, calc((100vw - min(100vw - 2.5rem, var(--max))) / 2 + 4.75rem));
   background: transparent;
   border: 0;
   box-shadow: none;
@@ -377,8 +377,6 @@ main:not(:has(.hero)) {
   position: relative;
   transform: none;
   margin: 0;
-  margin-left: auto;
-  margin-right: 0.5rem;
   z-index: 5;
   pointer-events: auto;
 }

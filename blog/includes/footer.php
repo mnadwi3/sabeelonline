@@ -90,7 +90,7 @@ if (!isset($page_mode)) {
   <button type="button" class="back-top" id="backTop" aria-label="Back to top">↑</button>
 
   <!-- Main site JS (menu) + blog JS -->
-  <script src="../script.js?v=20260724menu10" defer></script>
+  <script src="../script.js?v=20260726sharedNav1" defer></script>
   <script src="assets/js/blog.js" defer></script>
 <?php endif; ?>
 </body>

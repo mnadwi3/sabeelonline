@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260725coursesAdmin1">
+  <link rel="stylesheet" href="style.css?v=20260726sharedNav1">
   <style>
     .courses-admin-page { background: #f4f8fc; min-height: 100vh; }
     .courses-admin-page main { padding: 2rem 1rem 3rem; }
@@ -59,6 +59,41 @@
   </style>
 </head>
 <body class="courses-admin-page">
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="/#home" class="logo" aria-label="Sabeel Us-Salam Online Home">
+        <img src="assets/logo-white.png" alt="Sabeel Us-Salam" class="logo-img" width="64" height="64">
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <nav class="main-nav" id="mainNav" aria-label="Primary">
+    <ul class="nav-list">
+      <li><a href="/#home" class="nav-link">Home</a></li>
+      <li><a href="/#courses" class="nav-link">Courses</a></li>
+      <li class="has-sub">
+        <a href="/#student-services" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">Student Services</a>
+        <ul class="nav-sub" aria-label="Student Services submenu">
+          <li><a href="/student-portal/" class="nav-link">Student Portal</a></li>
+          <li><a href="/student-portal/public/" class="nav-link">Results</a></li>
+          <li><a href="/library/" class="nav-link">Digital Library</a></li>
+        </ul>
+      </li>
+      <li><a href="/blog/" class="nav-link">Blog</a></li>
+      <li class="has-sub">
+        <a href="/#about" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">About</a>
+        <ul class="nav-sub" aria-label="About submenu">
+          <li><a href="/#about" class="nav-link">About Us</a></li>
+          <li><a href="/#teachers" class="nav-link">Our Team</a></li>
+          <li><a href="/#testimonials" class="nav-link">Testimonials</a></li>
+        </ul>
+      </li>
+      <li><a href="/#contact" class="nav-link">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="nav-backdrop" id="navBackdrop" hidden></div>
   <main>
     <section id="viewAdminGate" class="lib-gate">
       <div class="lib-card">
@@ -157,7 +192,8 @@
     </section>
   </main>
 
+  <script src="script.js?v=20260726sharedNav1" defer></script>
   <script src="library/js/config.js"></script>
-  <script src="js/courses-admin.js?v=20260725coursesAdmin1"></script>
+  <script src="js/courses-admin.js?v=20260726sharedNav1"></script>
 </body>
 </html>

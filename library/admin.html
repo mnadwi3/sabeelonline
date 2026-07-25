@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../style.css?v=20260725mobileNav4">
+  <link rel="stylesheet" href="../style.css?v=20260726sharedNav1">
   <link rel="stylesheet" href="css/library.css?v=20260724lib4">
 </head>
 <body class="library-page library-admin-page">
@@ -25,9 +25,26 @@
   </header>
   <nav class="main-nav" id="mainNav" aria-label="Primary">
     <ul class="nav-list">
-      <li><a href="/library/" class="nav-link">Library</a></li>
-      <li><a href="admin.html" class="nav-link is-active-lib" aria-current="page">Admin</a></li>
       <li><a href="/#home" class="nav-link">Home</a></li>
+      <li><a href="/#courses" class="nav-link">Courses</a></li>
+      <li class="has-sub">
+        <a href="/#student-services" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">Student Services</a>
+        <ul class="nav-sub" aria-label="Student Services submenu">
+          <li><a href="/student-portal/" class="nav-link">Student Portal</a></li>
+          <li><a href="/student-portal/public/" class="nav-link">Results</a></li>
+          <li><a href="/library/" class="nav-link is-active-lib">Digital Library</a></li>
+        </ul>
+      </li>
+      <li><a href="/blog/" class="nav-link">Blog</a></li>
+      <li class="has-sub">
+        <a href="/#about" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">About</a>
+        <ul class="nav-sub" aria-label="About submenu">
+          <li><a href="/#about" class="nav-link">About Us</a></li>
+          <li><a href="/#teachers" class="nav-link">Our Team</a></li>
+          <li><a href="/#testimonials" class="nav-link">Testimonials</a></li>
+        </ul>
+      </li>
+      <li><a href="/#contact" class="nav-link">Contact</a></li>
     </ul>
   </nav>
   <div class="nav-backdrop" id="navBackdrop" hidden></div>
@@ -247,7 +264,7 @@
     </div>
   </footer>
 
-  <script src="../script.js?v=20260724menu10"></script>
+  <script src="../script.js?v=20260726sharedNav1"></script>
   <script src="js/config.js?v=20260720b"></script>
   <script src="js/data.js?v=20260724struct1"></script>
   <script src="js/auth.js?v=20260720b"></script>

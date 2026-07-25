@@ -34,7 +34,7 @@ if (!function_exists('is_logged_in')) {
   <?php if ($page_mode === 'public'): ?>
     <!-- Same fonts + styles as main website -->
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css?v=20260725noOverlay1">
+    <link rel="stylesheet" href="../style.css?v=20260726sharedNav1">
     <link rel="stylesheet" href="assets/css/blog.css?v=8">
   <?php else: ?>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -97,36 +97,15 @@ if (!function_exists('is_logged_in')) {
       <a href="/#home" class="logo" aria-label="Sabeel Us-Salam Online Home">
         <img src="../assets/logo-white.png" alt="Sabeel Us-Salam" class="logo-img" width="64" height="64">
       </a>
-
-      <nav class="main-nav" id="mainNav" aria-label="Primary">
-        <ul class="nav-list">
-          <li><a href="/#home" class="nav-link">Home</a></li>
-          <li><a href="/#courses" class="nav-link">Courses</a></li>
-          <li><a href="/#teachers" class="nav-link">Our Team</a></li>
-          <li class="has-sub">
-            <a href="/#about" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">About Us</a>
-            <ul class="nav-sub" aria-label="About submenu">
-              <li><a href="/#why-us" class="nav-link">Why Choose Us</a></li>
-            </ul>
-          </li>
-          <li><a href="/#testimonials" class="nav-link">Testimonials</a></li>
-          <li><a href="index.php" class="nav-link active">Blog</a></li>
-          <li class="has-sub">
-            <a href="../student-portal/" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">Student Portal</a>
-            <ul class="nav-sub" aria-label="Student Portal submenu">
-              <li><a href="../student-portal/" class="nav-link">Results</a></li>
-              <li><a href="../library/" class="nav-link">Library</a></li>
-            </ul>
-          </li>
-          <li><a href="/#contact" class="nav-link">Contact Us</a></li>
-        </ul>
-      </nav>
-
       <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
         <span></span><span></span><span></span>
       </button>
     </div>
   </header>
+  <?php
+    $navActive = 'blog';
+    require dirname(__DIR__, 2) . '/includes/site-nav.php';
+  ?>
   <div class="nav-backdrop" id="navBackdrop" hidden></div>
 
   <main class="blog-main">

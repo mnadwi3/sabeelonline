@@ -42,9 +42,25 @@ if ($viewId > 0) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Portal — <?= e(app_config('app_name')) ?></title>
-  <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>?v=20260725mshead1">
+  <link rel="stylesheet" href="/style.css?v=20260726sharedNav1">
+  <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>?v=20260726sharedNav1">
 </head>
-<body class="portal-page">
+<body class="portal-page has-site-nav">
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="/#home" class="logo" aria-label="Sabeel Us-Salam Online Home">
+        <img src="/assets/logo-white.png" alt="Sabeel Us-Salam" class="logo-img" width="64" height="64">
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <?php
+    $navActive = 'results';
+    require dirname(__DIR__, 2) . '/includes/site-nav.php';
+  ?>
+  <div class="nav-backdrop" id="navBackdrop" hidden></div>
 <?php if (!$searched || !$results): ?>
   <div class="portal-hero">
     <div class="portal-card">
@@ -121,6 +137,7 @@ if ($viewId > 0) {
     <p class="download-hint marksheet-download-hint no-print muted">Use <strong>Download PDF</strong> or <strong>Download Image</strong> for a clean copy (no blank page space). Browser Print always uses full A4.</p>
   </div>
 <?php endif; ?>
-<script src="<?= e(asset('js/app.js')) ?>?v=20260725pad1"></script>
+<script src="/script.js?v=20260726sharedNav1" defer></script>
+<script src="<?= e(asset('js/app.js')) ?>?v=20260726sharedNav1"></script>
 </body>
 </html>

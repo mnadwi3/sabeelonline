@@ -591,14 +591,6 @@ main:not(:has(.hero)) {
   background: #0a1628;
 }
 
-.hero-slider {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
 .hero-img {
   position: absolute;
   inset: 0;
@@ -607,23 +599,8 @@ main:not(:has(.hero)) {
   max-width: none;
   object-fit: cover;
   object-position: center center;
-  opacity: 0;
-  transform: none;
-  transition: opacity 1s ease;
-  will-change: opacity;
   image-rendering: auto;
 }
-
-.hero-img.is-active {
-  opacity: 1;
-  z-index: 1;
-}
-
-/* Keep important subjects in frame per slide */
-.hero-slider .hero-img:nth-child(1) { object-position: center 42%; }
-.hero-slider .hero-img:nth-child(2) { object-position: center 50%; }
-.hero-slider .hero-img:nth-child(3) { object-position: center center; }
-.hero-slider .hero-img:nth-child(4) { object-position: center 48%; }
 
 .hero-overlay {
   display: block;
@@ -631,52 +608,8 @@ main:not(:has(.hero)) {
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background:
-    linear-gradient(
-      105deg,
-      rgba(0, 0, 0, 0.48) 0%,
-      rgba(0, 0, 0, 0.28) 48%,
-      rgba(0, 0, 0, 0.22) 100%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(7, 46, 112, 0.28) 0%,
-      transparent 32%,
-      transparent 70%,
-      rgba(0, 0, 0, 0.28) 100%
-    );
-}
-
-.hero-dots {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  bottom: 1.35rem;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 0.45rem;
-  align-items: center;
-}
-
-.hero-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.4);
-  transition: background 0.2s var(--ease), transform 0.2s var(--ease), width 0.2s var(--ease);
-}
-
-.hero-dot.is-active {
-  background: #fff;
-  width: 22px;
-}
-
-.hero-dot:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
+  /* Medium black veil keeps text legible without hiding the image. */
+  background: rgba(0, 0, 0, 0.52);
 }
 
 .hero-content {

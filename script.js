@@ -255,72 +255,6 @@
     nums.forEach((n) => observer.observe(n));
   }
 
-  /* ---------- Hero Slider ---------- */
-  function initHeroSlider() {
-    const slider = $('#heroSlider');
-    const dotsWrap = $('#heroDots');
-    if (!slider) return;
-
-    const slides = Array.from(slider.querySelectorAll('.hero-img'));
-    if (slides.length < 2) return;
-
-    let index = Math.max(0, slides.findIndex((s) => s.classList.contains('is-active')));
-    let timer = null;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const INTERVAL = 5500;
-
-    if (dotsWrap) {
-      dotsWrap.innerHTML = '';
-      slides.forEach((_, i) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'hero-dot' + (i === index ? ' is-active' : '');
-        btn.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-        btn.addEventListener('click', () => goTo(i, true));
-        dotsWrap.appendChild(btn);
-      });
-    }
-
-    function syncDots() {
-      if (!dotsWrap) return;
-      Array.from(dotsWrap.children).forEach((dot, i) => {
-        dot.classList.toggle('is-active', i === index);
-      });
-    }
-
-    function goTo(next, user) {
-      if (next === index) return;
-      slides[index].classList.remove('is-active');
-      index = (next + slides.length) % slides.length;
-      slides[index].classList.add('is-active');
-      syncDots();
-      if (user) restart();
-    }
-
-    function next() {
-      goTo(index + 1, false);
-    }
-
-    function restart() {
-      if (reduceMotion) return;
-      clearInterval(timer);
-      timer = setInterval(next, INTERVAL);
-    }
-
-    if (!reduceMotion) restart();
-
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) clearInterval(timer);
-      else restart();
-    });
-  }
-
-  /* ---------- Hero Parallax (subtle, active slide) ---------- */
-  function initParallax() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    /* Slider uses its own gentle scale animation; skip scroll parallax conflict */
-  }
-
   /* ---------- Contact Form → Google Sheets (Apps Script Web App) ---------- */
   /**
    * CONFIG — paste values here after you deploy:
@@ -717,8 +651,6 @@
     initActiveNav();
     initReveal();
     initCounters();
-    initHeroSlider();
-    initParallax();
     initFormPopup();
     initForm();
     initBackTop();

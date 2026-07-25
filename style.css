@@ -1420,17 +1420,6 @@ main:not(:has(.hero)) {
   position: relative;
 }
 
-.marquee-item::before {
-  content: '“';
-  font-family: var(--font-heading);
-  font-size: 3.5rem;
-  line-height: 1;
-  color: var(--accent);
-  opacity: 0.45;
-  display: block;
-  margin-bottom: 0.35rem;
-}
-
 .marquee-item cite {
   font-style: normal;
   font-family: var(--font-body);
@@ -2640,6 +2629,13 @@ body.form-popup-open {
 
   .course-body p {
     font-size: 0.82rem;
+    display: block;
+    max-height: none;
+    overflow: visible;
+    white-space: normal;
+    text-overflow: clip;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: initial;
   }
 
   .course-details li {

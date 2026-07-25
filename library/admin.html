@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Library Admin | Sabeel Us Salaam Online</title>
+  <link rel="icon" type="image/png" href="../assets/logo-white.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css?v=20260725mobileNav4">
+  <link rel="stylesheet" href="css/library.css?v=20260724lib4">
+</head>
+<body class="library-page library-admin-page">
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="/#home" class="logo" aria-label="Sabeel Us-Salam Online Home">
+        <img src="../assets/logo-white.png" alt="Sabeel Us-Salam" class="logo-img" width="64" height="64">
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <nav class="main-nav" id="mainNav" aria-label="Primary">
+    <ul class="nav-list">
+      <li><a href="/library/" class="nav-link">Library</a></li>
+      <li><a href="admin.html" class="nav-link is-active-lib" aria-current="page">Admin</a></li>
+      <li><a href="/#home" class="nav-link">Home</a></li>
+    </ul>
+  </nav>
+  <div class="nav-backdrop" id="navBackdrop" hidden></div>
+
+  <main>
+    <section id="viewAdminGate" class="lib-gate">
+      <div class="lib-card">
+        <div class="lib-lock" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M12 3l8 4v5c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V7l8-4z"/>
+          </svg>
+        </div>
+        <h1>Library Admin</h1>
+        <p class="lib-subtitle">Enter the admin code to manage folders and books.</p>
+        <form class="lib-form" id="adminGateForm" autocomplete="off">
+          <label for="adminCode">Admin Access Code</label>
+          <input type="password" id="adminCode" required placeholder="Enter admin code">
+          <p class="lib-inline-error" id="adminGateError" hidden>Invalid admin code.</p>
+          <div class="lib-actions">
+            <button type="submit" class="btn btn-primary">Enter Admin Panel</button>
+            <a class="btn btn-outline" href="/library/">Back to Library</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="viewAdminApp" class="admin-shell" hidden>
+      <header class="admin-topbar">
+        <div>
+          <p class="admin-kicker">Library Admin</p>
+          <h1>Manage library</h1>
+        </div>
+        <div class="admin-topbar-actions">
+          <a class="btn btn-outline btn-sm" href="/library/">Student view</a>
+          <button type="button" class="btn btn-ghost btn-sm" id="btnAdminLogout">Logout</button>
+        </div>
+      </header>
+
+      <p class="admin-lead" id="storageNote">Create courses and subjects yourself, then add book folders and upload PDFs (up to 40 MB).</p>
+
+      <!-- 1 Courses -->
+      <article class="admin-panel">
+        <div class="admin-panel-head">
+          <span class="admin-step">1</span>
+          <div>
+            <h2>Courses</h2>
+            <p>Create or delete course folders</p>
+          </div>
+        </div>
+        <form class="admin-form" id="courseForm">
+          <div class="field-row">
+            <div>
+              <label for="courseName">Course name</label>
+              <input type="text" id="courseName" required placeholder="e.g. Short Term Alimiyyat">
+            </div>
+            <div>
+              <label for="courseColor">Color</label>
+              <input type="color" id="courseColor" value="#0B5ED7">
+            </div>
+          </div>
+          <div class="admin-form-actions">
+            <button type="submit" class="btn btn-primary" id="btnCreateCourse">Create course</button>
+          </div>
+          <p class="form-status" id="courseStatus" hidden></p>
+        </form>
+        <div class="admin-divider"></div>
+        <h3 class="admin-subhead">Your courses</h3>
+        <div id="coursesTableWrap"></div>
+      </article>
+
+      <div class="admin-layout">
+        <!-- 2 Subjects -->
+        <article class="admin-panel">
+          <div class="admin-panel-head">
+            <span class="admin-step">2</span>
+            <div>
+              <h2>Subjects</h2>
+              <p>Create or delete subject folders</p>
+            </div>
+          </div>
+          <form class="admin-form" id="subjectForm">
+            <div>
+              <label for="subjectCourse">Course</label>
+              <select id="subjectCourse" required></select>
+            </div>
+            <div>
+              <label for="subjectName">Subject name</label>
+              <input type="text" id="subjectName" required placeholder="e.g. Nahw">
+            </div>
+            <div class="admin-form-actions">
+              <button type="submit" class="btn btn-primary" id="btnCreateSubject">Create subject</button>
+            </div>
+            <p class="form-status" id="subjectStatus" hidden></p>
+          </form>
+          <div class="admin-divider"></div>
+          <h3 class="admin-subhead">Subjects in course</h3>
+          <div id="subjectsTableWrap"></div>
+        </article>
+
+        <!-- 3 Book folders -->
+        <article class="admin-panel">
+          <div class="admin-panel-head">
+            <span class="admin-step">3</span>
+            <div>
+              <h2>Book folders</h2>
+              <p>Group multi-volume books</p>
+            </div>
+          </div>
+          <form class="admin-form" id="folderForm">
+            <div>
+              <label for="folderName">Folder name</label>
+              <input type="text" id="folderName" required placeholder="e.g. Sahih Bukhari">
+            </div>
+            <div class="field-row">
+              <div>
+                <label for="folderCourse">Course</label>
+                <select id="folderCourse" required></select>
+              </div>
+              <div>
+                <label for="folderSubject">Subject</label>
+                <select id="folderSubject" required></select>
+              </div>
+            </div>
+            <div class="admin-form-actions">
+              <button type="submit" class="btn btn-primary" id="btnCreateFolder">Create folder</button>
+            </div>
+            <p class="form-status" id="folderStatus" hidden></p>
+          </form>
+          <div class="admin-divider"></div>
+          <h3 class="admin-subhead">Existing folders</h3>
+          <div id="foldersTableWrap"></div>
+        </article>
+      </div>
+
+      <!-- 4 Publish -->
+      <article class="admin-panel">
+        <div class="admin-panel-head">
+          <span class="admin-step">4</span>
+          <div>
+            <h2>Publish PDFs</h2>
+            <p>Upload one book or several volumes together</p>
+          </div>
+        </div>
+        <form class="admin-form" id="uploadForm">
+          <div class="field-row">
+            <div>
+              <label for="fieldCourse">Course</label>
+              <select id="fieldCourse" required></select>
+            </div>
+            <div>
+              <label for="fieldSubject">Subject</label>
+              <select id="fieldSubject" required></select>
+            </div>
+          </div>
+          <div>
+            <label for="fieldFolder">Book folder <span class="admin-optional">(optional)</span></label>
+            <select id="fieldFolder">
+              <option value="">None — single PDF</option>
+            </select>
+          </div>
+          <div id="titleFieldWrap">
+            <label for="fieldTitle">Title</label>
+            <input type="text" id="fieldTitle" placeholder="e.g. Nahw Essentials — Volume 1">
+          </div>
+          <div>
+            <label for="fieldDescription">Description <span class="admin-optional">(optional)</span></label>
+            <textarea id="fieldDescription" rows="2" placeholder="Short note for students"></textarea>
+          </div>
+          <div class="field-row">
+            <div>
+              <label for="fieldPdf">PDF file(s)</label>
+              <input type="file" id="fieldPdf" accept="application/pdf,.pdf" multiple required>
+            </div>
+            <div>
+              <label for="fieldCover">Cover image <span class="admin-optional">(optional)</span></label>
+              <input type="file" id="fieldCover" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp">
+              <div class="cover-preview" id="coverPreview" hidden>
+                <img id="coverPreviewImg" alt="Cover preview">
+              </div>
+            </div>
+          </div>
+          <div class="admin-form-actions">
+            <button type="submit" class="btn btn-primary" id="btnPublish">Publish</button>
+          </div>
+          <p class="form-status" id="formStatus" hidden></p>
+        </form>
+      </article>
+
+      <!-- 5 Published -->
+      <article class="admin-panel">
+        <div class="admin-panel-head admin-panel-head--row">
+          <div class="admin-panel-head-text">
+            <span class="admin-step">5</span>
+            <div>
+              <h2>Published books</h2>
+              <p>Delete or export resources</p>
+            </div>
+          </div>
+          <div class="admin-toolbar">
+            <button type="button" class="btn btn-outline btn-sm" id="btnExport">Export</button>
+            <label class="btn btn-ghost btn-sm admin-import-btn">
+              Import
+              <input type="file" id="importFile" accept="application/json,.json" hidden>
+            </label>
+          </div>
+        </div>
+        <div id="adminTableWrap"></div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; <span id="year"></span> Sabeel Us Salaam Online. Library Admin.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../script.js?v=20260724menu10"></script>
+  <script src="js/config.js?v=20260720b"></script>
+  <script src="js/data.js?v=20260724struct1"></script>
+  <script src="js/auth.js?v=20260720b"></script>
+  <script src="js/admin.js?v=20260724sync2"></script>
+</body>
+</html>

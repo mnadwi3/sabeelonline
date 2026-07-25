@@ -1,0 +1,30 @@
+# Security + routing for Sabeel Student Portal (Apache / Hostinger)
+
+Options -Indexes
+DirectoryIndex index.php public/index.php
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /student-portal/
+
+  # /student-portal/  →  public portal
+  RewriteRule ^$ public/index.php [L,QSA]
+
+  # /student-portal/index.php already redirects; keep rewrite as backup
+  RewriteRule ^index\.php$ public/index.php [L,QSA]
+</IfModule>
+
+# Block sensitive paths
+<IfModule mod_authz_core.c>
+  <FilesMatch "(^\.env|composer\.(json|lock)|package(-lock)?\.json)$">
+    Require all denied
+  </FilesMatch>
+  <FilesMatch "\.(sql|accdb|mdb|md|bak|log)$">
+    Require all denied
+  </FilesMatch>
+</IfModule>
+
+# Prevent script execution in uploads
+<IfModule mod_rewrite.c>
+  RewriteRule ^assets/uploads/.*\.(php|phtml|php3|php4|php5|phar)$ - [F,L]
+</IfModule>

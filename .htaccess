@@ -1,0 +1,20 @@
+# Sabeel Us Salaam Online — clean professional URLs
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Prefer HTTPS (Hostinger)
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # /index.html → /  (keeps #section in the browser)
+  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+  RewriteRule ^index\.html$ / [R=301,L]
+
+  # /folder/index.html → /folder/
+  RewriteCond %{THE_REQUEST} \s/+(.+?)/index\.html[\s?] [NC]
+  RewriteRule ^(.+?)/index\.html$ /$1/ [R=301,L]
+</IfModule>
+
+DirectoryIndex index.html index.php

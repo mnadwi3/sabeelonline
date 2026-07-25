@@ -1,0 +1,116 @@
+<?php
+/**
+ * Shared HTML header + optional admin sidebar
+ *
+ * Before including this file, you can set:
+ *   $page_title = 'Dashboard';
+ *   $page_mode  = 'admin'; // 'admin' or 'public'
+ */
+
+if (!isset($page_title)) {
+    $page_title = 'Sabeel Blog';
+}
+
+if (!isset($page_mode)) {
+    $page_mode = 'public';
+}
+
+// auth.php may already be included by the page
+if (!function_exists('is_logged_in')) {
+    require_once __DIR__ . '/auth.php';
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><?php echo e($page_title); ?> | Sabeel Us Salaam Online</title>
+  <?php if (!empty($meta_description)): ?>
+    <meta name="description" content="<?php echo e($meta_description); ?>">
+  <?php endif; ?>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <?php if ($page_mode === 'public'): ?>
+    <!-- Same fonts + styles as main website -->
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css?v=20260725noOverlay1">
+    <link rel="stylesheet" href="assets/css/blog.css?v=7">
+  <?php else: ?>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/blog.css?v=7">
+  <?php endif; ?>
+</head>
+<body class="page-<?php echo e($page_mode); ?>">
+
+<?php if ($page_mode === 'admin'): ?>
+  <!-- ================= ADMIN LAYOUT ================= -->
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span>Sabeel Blog</span>
+        <small><?php echo e(ucfirst(current_user_role())); ?></small>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.php">Dashboard</a>
+        <a href="new-post.php">New Blog</a>
+        <a href="posts.php"><?php echo is_admin() ? 'All Blogs' : 'My Blogs'; ?></a>
+        <?php if (is_admin()): ?>
+          <a href="teachers.php">Teachers</a>
+          <a href="categories.php">Categories</a>
+        <?php endif; ?>
+        <a href="profile.php">Profile</a>
+        <a href="index.php">View Blog</a>
+        <a href="/">Main Website</a>
+        <a href="logout.php" class="logout-link">Logout</a>
+      </nav>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <h1><?php echo e($page_title); ?></h1>
+        <div class="topbar-user">Hello, <?php echo e(current_user_name()); ?></div>
+      </header>
+      <main class="admin-content">
+<?php else: ?>
+  <!-- ================= PUBLIC LAYOUT (same as main website) ================= -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="/#home" class="logo" aria-label="Sabeel Us-Salam Online Home">
+        <img src="../assets/logo-white.png" alt="Sabeel Us-Salam" class="logo-img" width="64" height="64">
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="Primary">
+        <ul class="nav-list">
+          <li><a href="/#home" class="nav-link">Home</a></li>
+          <li><a href="/#courses" class="nav-link">Courses</a></li>
+          <li><a href="/#teachers" class="nav-link">Our Team</a></li>
+          <li class="has-sub">
+            <a href="/#about" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">About Us</a>
+            <ul class="nav-sub" aria-label="About submenu">
+              <li><a href="/#why-us" class="nav-link">Why Choose Us</a></li>
+            </ul>
+          </li>
+          <li><a href="/#testimonials" class="nav-link">Testimonials</a></li>
+          <li><a href="index.php" class="nav-link active">Blog</a></li>
+          <li class="has-sub">
+            <a href="../student-portal/" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">Student Portal</a>
+            <ul class="nav-sub" aria-label="Student Portal submenu">
+              <li><a href="../student-portal/" class="nav-link">Results</a></li>
+              <li><a href="../library/" class="nav-link">Library</a></li>
+            </ul>
+          </li>
+          <li><a href="/#contact" class="nav-link">Contact Us</a></li>
+        </ul>
+      </nav>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div class="nav-backdrop" id="navBackdrop" hidden></div>
+
+  <main class="blog-main">
+<?php endif; ?>

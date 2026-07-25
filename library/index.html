@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Student Digital Library | Sabeel Us Salaam Online</title>
+  <meta name="description" content="Secure student digital library portal for enrolled students of Sabeel Us Salaam Online.">
+  <link rel="icon" type="image/png" href="../assets/logo-white.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css?v=20260725mobileNav4">
+  <link rel="stylesheet" href="css/library.css?v=20260724lib4">
+</head>
+<body class="library-page">
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="/#home" class="logo" aria-label="Sabeel Us-Salam Online Home">
+        <img src="../assets/logo-white.png" alt="Sabeel Us-Salam" class="logo-img" width="64" height="64">
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <nav class="main-nav" id="mainNav" aria-label="Primary">
+    <ul class="nav-list">
+      <li><a href="/#home" class="nav-link">Home</a></li>
+      <li><a href="/#courses" class="nav-link">Courses</a></li>
+      <li><a href="/#teachers" class="nav-link">Our Team</a></li>
+      <li class="has-sub">
+        <a href="/#about" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">About Us</a>
+        <ul class="nav-sub" aria-label="About submenu">
+          <li><a href="/#why-us" class="nav-link">Why Choose Us</a></li>
+        </ul>
+      </li>
+      <li><a href="/#testimonials" class="nav-link">Testimonials</a></li>
+      <li><a href="../blog/" class="nav-link">Blog</a></li>
+      <li class="has-sub">
+        <a href="../student-portal/" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">Student Portal</a>
+        <ul class="nav-sub" aria-label="Student Portal submenu">
+          <li><a href="../student-portal/" class="nav-link">Results</a></li>
+          <li><a href="/library/" class="nav-link is-active-lib" aria-current="page">Library</a></li>
+        </ul>
+      </li>
+      <li><a href="/#contact" class="nav-link">Contact Us</a></li>
+    </ul>
+  </nav>
+  <div class="nav-backdrop" id="navBackdrop" hidden></div>
+
+  <main>
+    <!-- Access gate -->
+    <section id="viewAccess" class="lib-gate" aria-label="Student library access">
+      <div class="lib-card">
+        <div class="lib-lock" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.7">
+            <rect x="5" y="11" width="14" height="10" rx="2"/>
+            <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+            <circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <h1>Student Library Access</h1>
+        <p class="lib-subtitle">This library is exclusively for enrolled students. Please enter your access code provided by the administration to continue.</p>
+
+        <form class="lib-form" id="accessForm" autocomplete="off">
+          <label for="accessCode">Student Access Code</label>
+          <input type="password" id="accessCode" name="accessCode" placeholder="Enter your access code" required autocomplete="off" inputmode="text">
+          <p class="lib-inline-error" id="accessError" hidden>Invalid access code. Please try again.</p>
+          <div class="lib-actions">
+            <button type="submit" class="btn btn-primary">Access Library</button>
+            <a class="btn btn-outline" id="btnContactAdmin" href="#" target="_blank" rel="noopener noreferrer">Contact Administration</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Unauthorized -->
+    <section id="viewDenied" class="lib-gate" hidden aria-label="Students only">
+      <div class="lib-card lib-card-denied">
+        <div class="lib-lock lib-lock-denied" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.7">
+            <rect x="5" y="11" width="14" height="10" rx="2"/>
+            <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+            <path d="M9 16h6" stroke-width="2"/>
+          </svg>
+        </div>
+        <h1>Students Only</h1>
+        <p class="lib-subtitle">This digital library is reserved exclusively for registered students of Sabeel Us Salaam Online. If you are currently enrolled and do not have an access code, please contact the administration.</p>
+        <div class="lib-gate-actions">
+          <a class="btn btn-primary" id="btnDeniedWhatsApp" href="#" target="_blank" rel="noopener noreferrer">Contact on WhatsApp</a>
+          <a class="btn btn-outline" href="/">Back to Home</a>
+          <button type="button" class="btn btn-ghost" data-back-access>Try another code</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard: folder-based explorer -->
+    <section id="viewDashboard" class="lib-dash" hidden aria-label="Library dashboard">
+      <div class="lib-hero-bar">
+        <div>
+          <h1>Student Digital Library</h1>
+          <p>Course folders → Subject folders → Book folders (with volumes).</p>
+        </div>
+        <div class="lib-hero-actions">
+          <span class="lib-stat"><span id="resourceCount">0</span> files</span>
+          <button type="button" class="btn btn-sm" id="btnLogout">Logout</button>
+        </div>
+      </div>
+
+      <nav class="lib-breadcrumb" id="libBreadcrumb" aria-label="Breadcrumb"></nav>
+
+      <div class="lib-explorer-bar">
+        <button type="button" class="btn btn-outline btn-sm" id="btnFolderBack" hidden>← Back</button>
+        <div class="lib-search-wrap lib-search-wrap-inline">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" id="librarySearch" placeholder="Search across the library…" aria-label="Search library">
+        </div>
+      </div>
+
+      <div class="lib-folder-head">
+        <h2 id="folderTitle">Library</h2>
+        <p id="folderSubtitle">Open a course folder to browse subjects and books.</p>
+      </div>
+
+      <div id="folderPane">
+        <div class="folder-grid" id="folderGrid"></div>
+      </div>
+
+      <div id="filesPane" hidden>
+        <div class="resources-grid" id="resourcesGrid"></div>
+        <div class="empty-state" id="emptyState" hidden>
+          <p>This folder is empty. Check back later or contact administration.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="library-toast" id="libraryToast" role="status" aria-live="polite"></div>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="/#home" class="logo logo-footer">
+          <img src="../assets/logo-white.png" alt="Sabeel Us-Salam" class="logo-img" width="96" height="96">
+        </a>
+        <p>Secure digital library for enrolled students.</p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="/#home">Home</a></li>
+          <li><a href="/#courses">Courses</a></li>
+          <li><a href="/#about">About Us</a></li>
+          <li><a href="../student-portal/">Student Portal</a></li>
+          <li><a href="/library/">Library</a></li>
+          <li><a href="/#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Support</h3>
+        <ul class="footer-links">
+          <li><a href="https://wa.me/918979983149" target="_blank" rel="noopener noreferrer">WhatsApp +91-8979983149</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Admin</h3>
+        <ul class="footer-links">
+          <li><a href="admin.html">Library Admin</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; <span id="year"></span> Sabeel Us Salaam Online. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../script.js?v=20260724menu10"></script>
+  <script src="js/config.js?v=20260720c"></script>
+  <script src="js/data.js?v=20260724struct2"></script>
+  <script src="js/auth.js?v=20260720c"></script>
+  <script src="js/library.js?v=20260724sync2"></script>
+</body>
+</html>

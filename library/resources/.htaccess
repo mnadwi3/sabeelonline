@@ -1,0 +1,5 @@
+# Allow PDF and image downloads; block script execution
+Options -Indexes
+<FilesMatch "\.(?i:php|phtml|php3|php4|php5|phar|cgi|pl|py|jsp|asp|aspx)$">
+  Require all denied
+</FilesMatch>

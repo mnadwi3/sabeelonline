@@ -1,0 +1,9 @@
+# resources.json / folders.json — API only
+<FilesMatch "^(resources|folders)\.json$">
+  Require all denied
+</FilesMatch>
+
+# structure.json — readable so student library can sync course folders
+<Files "structure.json">
+  Require all granted
+</Files>

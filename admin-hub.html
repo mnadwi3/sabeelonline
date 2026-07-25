@@ -9,11 +9,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260726adminHub1">
+  <link rel="stylesheet" href="style.css?v=20260726adminHeader1">
   <style>
     .admin-hub-page { background: #f4f8fc; min-height: 100vh; }
-    .admin-hub-page main { padding: 2rem 1rem 3.5rem; }
-    .hub-gate, .hub-shell { width: min(920px, 100%); margin: 0 auto; }
+    .admin-hub-page main {
+      padding: calc(var(--header-h) + 1.25rem) 1rem 3.5rem;
+    }
+    .hub-gate, .hub-app { width: min(920px, 100%); margin: 0 auto; }
+    .hub-page-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin: 0 0 1.15rem;
+      padding: 1.15rem 1.35rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+    }
+    .hub-shell { width: 100%; }
     .hub-card, .hub-panel {
       background: #fff;
       border: 1px solid #e2e8f0;
@@ -36,14 +52,6 @@
     }
     .hub-actions, .hub-topbar-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
     .hub-inline-error { color: #b42318; font-size: 0.9rem; }
-    .hub-topbar {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      align-items: flex-start;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
     .hub-kicker {
       margin: 0;
       color: #0B5ED7;
@@ -52,7 +60,7 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
-    .hub-topbar h1 { margin: 0.2rem 0 0; font-size: 1.7rem; }
+    .hub-page-header h1 { margin: 0.2rem 0 0; font-size: 1.55rem; color: #0f274f; }
     .hub-lead { color: #64748b; margin: 0 0 1.25rem; }
     .hub-group { margin-bottom: 1.5rem; }
     .hub-group:last-child { margin-bottom: 0; }
@@ -167,8 +175,8 @@
       </div>
     </section>
 
-    <section id="viewHubApp" class="hub-shell" hidden>
-      <header class="hub-topbar">
+    <div id="viewHubApp" class="hub-app" hidden>
+      <header class="hub-page-header">
         <div>
           <p class="hub-kicker">Sabeel Us Salaam Online</p>
           <h1>Admin Hub</h1>
@@ -178,6 +186,7 @@
           <button type="button" class="btn btn-outline btn-sm" id="btnHubLogout">Logout</button>
         </div>
       </header>
+      <section class="hub-shell">
       <p class="hub-lead">Open the panel you need. Save these logins in a password manager so you do not mix them up.</p>
 
       <article class="hub-panel">
@@ -253,12 +262,13 @@
 
         <p class="muted" style="margin:1.25rem 0 0">Tip: save each login in a password manager as “Sabeel – Courses”, “Sabeel – Results”, “Sabeel – Blog”.</p>
       </article>
-    </section>
+      </section>
+    </div>
   </main>
 
-  <script src="script.js?v=20260726adminHub1" defer></script>
-  <script src="js/site-nav.js?v=20260726adminHub1"></script>
+  <script src="script.js?v=20260726adminHeader1" defer></script>
+  <script src="js/site-nav.js?v=20260726adminHeader1"></script>
   <script src="library/js/config.js"></script>
-  <script src="js/admin-hub.js?v=20260726adminHub1"></script>
+  <script src="js/admin-hub.js?v=20260726adminHeader1"></script>
 </body>
 </html>

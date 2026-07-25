@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Hub | Sabeel Us Salaam Online</title>
+  <link rel="icon" type="image/png" href="assets/logo-white.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260726adminHub1">
+  <style>
+    .admin-hub-page { background: #f4f8fc; min-height: 100vh; }
+    .admin-hub-page main { padding: 2rem 1rem 3.5rem; }
+    .hub-gate, .hub-shell { width: min(920px, 100%); margin: 0 auto; }
+    .hub-card, .hub-panel {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+      padding: 1.5rem;
+    }
+    .hub-gate { max-width: 440px; text-align: center; margin-top: 4rem; }
+    .hub-gate h1 { margin: 0.75rem 0 0.35rem; font-size: 1.6rem; }
+    .hub-subtitle { color: #64748b; margin-bottom: 1.25rem; }
+    .hub-form { text-align: left; display: grid; gap: 0.65rem; }
+    .hub-form label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .hub-form input {
+      width: 100%;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid #d9e0ef;
+      border-radius: 10px;
+      font: inherit;
+      background: #fff;
+    }
+    .hub-actions, .hub-topbar-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+    .hub-inline-error { color: #b42318; font-size: 0.9rem; }
+    .hub-topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .hub-kicker {
+      margin: 0;
+      color: #0B5ED7;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .hub-topbar h1 { margin: 0.2rem 0 0; font-size: 1.7rem; }
+    .hub-lead { color: #64748b; margin: 0 0 1.25rem; }
+    .hub-group { margin-bottom: 1.5rem; }
+    .hub-group:last-child { margin-bottom: 0; }
+    .hub-group h2 {
+      margin: 0 0 0.35rem;
+      font-size: 1.05rem;
+      color: #0f274f;
+    }
+    .hub-group-note {
+      margin: 0 0 0.85rem;
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+    .hub-cred {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+      margin: 0 0 0.85rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 10px;
+      background: #eef5ff;
+      border: 1px solid rgba(11, 94, 215, 0.14);
+      color: #0A3D91;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .hub-cred code {
+      font-family: ui-monospace, Consolas, monospace;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 0.1rem 0.35rem;
+      border-radius: 6px;
+    }
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.85rem;
+    }
+    .hub-link {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      padding: 1.1rem 1.15rem;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      background: #fbfcfe;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .hub-link:hover {
+      border-color: rgba(11, 94, 215, 0.35);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+      transform: translateY(-2px);
+    }
+    .hub-link strong {
+      color: #0B5ED7;
+      font-size: 1rem;
+    }
+    .hub-link span {
+      color: #64748b;
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+    .hub-divider {
+      height: 1px;
+      background: #e2e8f0;
+      margin: 1.35rem 0;
+    }
+    .muted { color: #64748b; font-size: 0.85rem; }
+    .admin-hub-page .btn-outline {
+      border-color: #0B5ED7;
+      color: #0B5ED7;
+      background: #fff;
+    }
+    .admin-hub-page .btn-outline:hover {
+      background: #0B5ED7;
+      border-color: #0B5ED7;
+      color: #fff;
+    }
+  </style>
+</head>
+<body class="admin-hub-page">
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="/#home" class="logo" aria-label="Sabeel Us-Salam Online Home">
+        <img src="assets/logo-white.png" alt="Sabeel Us-Salam" class="logo-img" width="64" height="64">
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <nav class="main-nav" id="mainNav" data-site-nav="" aria-label="Primary"></nav>
+  <div class="nav-backdrop" id="navBackdrop" hidden></div>
+
+  <main>
+    <section id="viewHubGate" class="hub-gate">
+      <div class="hub-card">
+        <h1>Admin Hub</h1>
+        <p class="hub-subtitle">One place for every admin panel. Enter the website admin code to continue.</p>
+        <form class="hub-form" id="hubGateForm" autocomplete="off">
+          <label for="adminCode">Admin Access Code</label>
+          <input type="password" id="adminCode" required placeholder="Enter admin code">
+          <p class="hub-inline-error" id="hubGateError" hidden>Invalid admin code.</p>
+          <div class="hub-actions">
+            <button type="submit" class="btn btn-primary">Open Admin Hub</button>
+            <a class="btn btn-outline" href="/#home">Back to website</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="viewHubApp" class="hub-shell" hidden>
+      <header class="hub-topbar">
+        <div>
+          <p class="hub-kicker">Sabeel Us Salaam Online</p>
+          <h1>Admin Hub</h1>
+        </div>
+        <div class="hub-topbar-actions">
+          <a class="btn btn-outline btn-sm" href="/#home">Website</a>
+          <button type="button" class="btn btn-outline btn-sm" id="btnHubLogout">Logout</button>
+        </div>
+      </header>
+      <p class="hub-lead">Open the panel you need. Save these logins in a password manager so you do not mix them up.</p>
+
+      <article class="hub-panel">
+        <div class="hub-group">
+          <h2>Website tools (shared code)</h2>
+          <p class="hub-group-note">Library, Courses, and Admissions use the same admin code.</p>
+          <p class="hub-cred">Code: <code>admin@sabeel</code> or <code>ADMIN-SABEEL</code></p>
+          <div class="hub-grid">
+            <a class="hub-link" href="courses-admin.html">
+              <strong>Courses Admin</strong>
+              <span>Add or edit homepage courses, images, open/closed registration.</span>
+            </a>
+            <a class="hub-link" href="admissions-admin.html">
+              <strong>Admissions Admin</strong>
+              <span>Review Enroll Now applications and identity proofs.</span>
+            </a>
+            <a class="hub-link" href="library/admin.html">
+              <strong>Library Admin</strong>
+              <span>Manage coursebook folders and PDF uploads.</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hub-divider"></div>
+
+        <div class="hub-group">
+          <h2>Results Admin (Student Portal)</h2>
+          <p class="hub-group-note">Separate username and password. Change the default after first login.</p>
+          <p class="hub-cred">Username: <code>admin</code> · Default password: <code>Admin@123</code></p>
+          <div class="hub-grid">
+            <a class="hub-link" href="student-portal/admin/login.php">
+              <strong>Results Admin Login</strong>
+              <span>Enter marks, publish marksheets, manage students.</span>
+            </a>
+            <a class="hub-link" href="student-portal/public/">
+              <strong>Public Results Page</strong>
+              <span>What students use with their Student ID (no password).</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hub-divider"></div>
+
+        <div class="hub-group">
+          <h2>Blog Admin</h2>
+          <p class="hub-group-note">Separate email login for blog posts and teachers. Change the default password.</p>
+          <p class="hub-cred">Email: <code>admin@sabeel.com</code> · Default password: <code>password</code></p>
+          <div class="hub-grid">
+            <a class="hub-link" href="blog/login.php">
+              <strong>Blog Login</strong>
+              <span>Publish posts, manage categories and teachers.</span>
+            </a>
+            <a class="hub-link" href="blog/">
+              <strong>Public Blog</strong>
+              <span>View the live blog as visitors see it.</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hub-divider"></div>
+
+        <div class="hub-group">
+          <h2>Student access (not admin)</h2>
+          <p class="hub-group-note">Codes for enrolled students to open the digital library.</p>
+          <p class="hub-cred">Library codes: <code>student@sabeel</code> · <code>SABEEL2026</code> · <code>STUDENT001</code></p>
+          <div class="hub-grid">
+            <a class="hub-link" href="library/">
+              <strong>Student Library</strong>
+              <span>Download Coursebooks portal for students.</span>
+            </a>
+          </div>
+        </div>
+
+        <p class="muted" style="margin:1.25rem 0 0">Tip: save each login in a password manager as “Sabeel – Courses”, “Sabeel – Results”, “Sabeel – Blog”.</p>
+      </article>
+    </section>
+  </main>
+
+  <script src="script.js?v=20260726adminHub1" defer></script>
+  <script src="js/site-nav.js?v=20260726adminHub1"></script>
+  <script src="library/js/config.js"></script>
+  <script src="js/admin-hub.js?v=20260726adminHub1"></script>
+</body>
+</html>

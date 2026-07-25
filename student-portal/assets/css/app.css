@@ -1,7 +1,7 @@
 /* Sabeel Us Salaam — Result Management System
    Palette: White, Royal Blue, Emerald, Gold */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   --royal: #1a3a8f;
@@ -20,8 +20,8 @@
   --success: #0d7a5f;
   --shadow: 0 10px 30px rgba(15, 36, 96, 0.08);
   --radius: 16px;
-  --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+  --font-display: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -219,6 +219,43 @@ table.data th {
   letter-spacing: 0.04em;
 }
 table.data tr:hover td { background: #fafbff; }
+
+/* Marks entry: compact columns keep score inputs easy to scan. */
+.marks-entry-card {
+  max-width: 900px;
+}
+.marks-entry-card h2 {
+  font-size: 1.2rem;
+}
+.marks-entry-card > .muted {
+  font-size: 0.9rem;
+  margin: 0;
+}
+.marks-entry-table-wrap {
+  max-width: 680px;
+  overflow: visible;
+}
+table.data.marks-entry-table {
+  min-width: 0;
+  table-layout: fixed;
+}
+.marks-entry-table th,
+.marks-entry-table td {
+  padding: 0.6rem 0.75rem;
+}
+.marks-entry-table th:nth-child(1),
+.marks-entry-table td:nth-child(1) { width: 40%; }
+.marks-entry-table th:nth-child(2),
+.marks-entry-table td:nth-child(2) { width: 27%; }
+.marks-entry-table th:nth-child(3),
+.marks-entry-table td:nth-child(3) { width: 33%; }
+.marks-entry-table input {
+  max-width: 9rem;
+  padding: 0.55rem 0.65rem;
+}
+.marks-entry-table .obt-marks {
+  max-width: 10rem;
+}
 .badge {
   display: inline-block;
   padding: 0.2rem 0.55rem;

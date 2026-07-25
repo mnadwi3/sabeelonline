@@ -193,7 +193,7 @@ require __DIR__ . '/../includes/admin_header.php';
   Har semester ka marksheet alag save / download hota hai.
 </div>
 
-<div class="card mb-2">
+<div class="card marks-select-card mb-2">
   <h2>1. Select Student</h2>
   <form method="get" class="form-grid mt-2">
     <div>
@@ -230,7 +230,7 @@ require __DIR__ . '/../includes/admin_header.php';
 </div>
 
 <?php if ($student): ?>
-<div class="card mb-2">
+<div class="card marks-student-card mb-2">
   <h2>2. Student</h2>
   <div class="ms-info mt-2" style="grid-template-columns:1fr 1fr 1fr">
     <div><strong>Name:</strong> <?= e($student['s_name_e']) ?></div>
@@ -272,20 +272,20 @@ require __DIR__ . '/../includes/admin_header.php';
 <?php endif; ?>
 
 <?php if ($subjects && $selectedSem !== '' && $selectedYear !== ''): ?>
-<div class="card">
+<div class="card marks-entry-card">
   <h2>3. Enter Marks — <?= e($selectedSem) ?> (<?= e($selectedYear) ?>)</h2>
   <p class="muted">
     <?= $existing ? 'Editing existing result for this semester only.' : 'Creating a NEW semester result. Previous semesters stay saved.' ?>
   </p>
-  <form method="post" id="marks-entry-form" class="mt-2">
+  <form method="post" id="marks-entry-form" class="marks-entry-form mt-2">
     <?= csrf_field() ?>
     <input type="hidden" name="action" value="save_marks">
     <input type="hidden" name="roll_no" value="<?= e($student['roll_no']) ?>">
     <input type="hidden" name="semester" value="<?= e($selectedSem) ?>">
     <input type="hidden" name="semester_year" value="<?= e($selectedYear) ?>">
 
-    <div class="table-wrap">
-      <table class="data">
+    <div class="table-wrap marks-entry-table-wrap">
+      <table class="data marks-entry-table">
         <thead>
           <tr><th>Subject</th><th>Max Marks</th><th>Obtained Marks</th></tr>
         </thead>

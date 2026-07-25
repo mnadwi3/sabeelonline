@@ -102,6 +102,19 @@ body.page-public .site-header {
 .btn-sm { padding: 0.4rem 0.75rem; font-size: 0.875rem; }
 .btn-group { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 
+/* Override the generic admin-link color for filled action buttons. */
+body.page-admin a.btn-primary,
+body.page-admin a.btn-primary:hover,
+body.page-admin a.btn-primary:focus-visible,
+body.page-admin a.btn-danger,
+body.page-admin a.btn-danger:hover,
+body.page-admin a.btn-danger:focus-visible,
+body.page-admin a.btn-success,
+body.page-admin a.btn-success:hover,
+body.page-admin a.btn-success:focus-visible {
+  color: #fff;
+}
+
 /* ---------- Forms ---------- */
 .form-card,
 .card {
@@ -184,17 +197,21 @@ body.page-public .site-header {
   gap: 0.35rem;
 }
 
-.sidebar-nav a {
+.sidebar-nav a,
+body.page-admin .sidebar-nav a {
   color: #fff;
   padding: 0.7rem 0.85rem;
   border-radius: 10px;
-  font-weight: 500;
+  font-weight: 600;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .sidebar-nav a:hover,
 .sidebar-nav a:focus-visible,
-.sidebar-nav a.is-active {
+.sidebar-nav a.is-active,
+body.page-admin .sidebar-nav a:hover,
+body.page-admin .sidebar-nav a:focus-visible,
+body.page-admin .sidebar-nav a.is-active {
   background: rgba(255, 255, 255, 0.18);
   color: #fff;
 }

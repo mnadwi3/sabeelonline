@@ -35,10 +35,10 @@ if (!function_exists('is_logged_in')) {
     <!-- Same fonts + styles as main website -->
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style.css?v=20260725noOverlay1">
-    <link rel="stylesheet" href="assets/css/blog.css?v=7">
+    <link rel="stylesheet" href="assets/css/blog.css?v=8">
   <?php else: ?>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/blog.css?v=7">
+    <link rel="stylesheet" href="assets/css/blog.css?v=8">
   <?php endif; ?>
 </head>
 <body class="page-<?php echo e($page_mode); ?>">

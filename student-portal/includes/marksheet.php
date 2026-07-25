@@ -179,7 +179,6 @@ function render_marksheet(array $r, bool $showPrintBar = true): void
         <div class="ms-meta">
           <div class="ms-meta-heading">Student Information</div>
           <div class="ms-info ms-info-bold">
-            <div class="ms-row"><span class="ms-label">Admission No</span><span class="ms-value"><?= e((string) ($r['student_id'] ?? $r['admin_no'] ?? '—')) ?></span></div>
             <div class="ms-row"><span class="ms-label">Roll No</span><span class="ms-value"><?= e($r['student_roll_no'] ?? $r['roll_no']) ?></span></div>
             <div class="ms-row"><span class="ms-label">Student ID</span><span class="ms-value"><?= e($studentId ?: '—') ?></span></div>
             <div class="ms-row"><span class="ms-label">Student Name</span><span class="ms-value"><?= e($r['s_name_e'] ?? '—') ?></span></div>

@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $results = $pdo->query(
-    "SELECT r.*, s.s_name_e, c.course_name, c.month_year
+    "SELECT r.*, s.student_roll_no, s.s_name_e, c.course_name, c.month_year
      FROM tbl_results r
      LEFT JOIN tbl_students s ON s.admin_no = r.admin_no
      LEFT JOIN tbl_courses c ON c.course_id = r.course_id
@@ -42,13 +42,14 @@ require __DIR__ . '/../includes/admin_header.php';
     <table class="data">
       <thead>
         <tr>
-          <th>Roll</th><th>Name</th><th>Course</th><th>Semester</th><th>Year</th>
+          <th>Roll No</th><th>Student ID</th><th>Name</th><th>Course</th><th>Semester</th><th>Year</th>
           <th>Total</th><th>%</th><th>Grade</th><th>Result</th><th>Portal</th><th></th>
         </tr>
       </thead>
       <tbody>
         <?php foreach ($results as $r): ?>
           <tr>
+            <td><?= e($r['student_roll_no'] ?? '—') ?></td>
             <td><?= e($r['roll_no']) ?></td>
             <td><?= e($r['s_name_e'] ?? '—') ?></td>
             <td><?= e($r['course_name'] ?? '—') ?></td>

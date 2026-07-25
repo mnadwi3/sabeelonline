@@ -86,6 +86,20 @@ function ensure_schema(PDO $pdo): void
                  AFTER course_name'
             );
         }
+
+        $studentRollColumn = $pdo->query('SHOW COLUMNS FROM tbl_students LIKE "student_roll_no"')->fetch();
+        if (!$studentRollColumn) {
+            $pdo->exec(
+                'ALTER TABLE tbl_students
+                 ADD COLUMN student_roll_no VARCHAR(40) NULL DEFAULT NULL
+                 AFTER admin_no'
+            );
+            $pdo->exec(
+                'UPDATE tbl_students
+                 SET student_roll_no = roll_no
+                 WHERE student_roll_no IS NULL OR student_roll_no = ""'
+            );
+        }
     } catch (Throwable $e) {
         // Table may not exist yet, or DB user lacks ALTER privilege
     }

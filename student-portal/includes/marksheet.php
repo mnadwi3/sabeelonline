@@ -7,7 +7,7 @@ function load_result_bundle(PDO $pdo, int $id, bool $publicOnly = false): ?array
     $titleSelect = has_marksheet_title_column($pdo)
         ? 'c.marksheet_title'
         : 'NULL AS marksheet_title';
-    $sql = "SELECT r.*, s.s_name_e, s.f_name_e, s.dob, s.photo, s.address_e, s.admin_no AS student_id,
+    $sql = "SELECT r.*, s.student_roll_no, s.s_name_e, s.f_name_e, s.dob, s.photo, s.address_e, s.admin_no AS student_id,
                    c.course_name, {$titleSelect}, c.month_year
             FROM tbl_results r
             LEFT JOIN tbl_students s ON s.admin_no = r.admin_no
@@ -194,7 +194,7 @@ function render_marksheet(array $r, bool $showPrintBar = true): void
               <div class="ms-row"><span class="ms-label">Semester Year</span><span class="ms-value"><?= e($r['semester_year'] ?? '—') ?></span></div>
             </div>
             <div class="ms-col">
-              <div class="ms-row"><span class="ms-label">Roll No</span><span class="ms-value"><?= e($r['roll_no']) ?></span></div>
+              <div class="ms-row"><span class="ms-label">Roll No</span><span class="ms-value"><?= e($r['student_roll_no'] ?? $r['roll_no']) ?></span></div>
               <div class="ms-row"><span class="ms-label">Father's Name</span><span class="ms-value"><?= e($r['f_name_e'] ?? '—') ?></span></div>
               <div class="ms-row"><span class="ms-label">Semester</span><span class="ms-value"><?= e($r['semester'] ?? '—') ?></span></div>
               <div class="ms-row"><span class="ms-label">Address</span><span class="ms-value"><?= e($r['address_e'] ?? '—') ?></span></div>

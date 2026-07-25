@@ -198,9 +198,9 @@ require __DIR__ . '/../includes/admin_header.php';
     <h2>1. Select Student</h2>
     <form method="get" class="form-grid mt-2">
       <div>
-        <label>Roll No *</label>
+        <label>Student ID *</label>
         <select name="roll_no" required onchange="this.form.submit()">
-          <option value="">— Select Roll No —</option>
+          <option value="">— Select Student ID —</option>
           <?php foreach ($allRolls as $r): ?>
             <option value="<?= e($r['roll_no']) ?>" <?= $roll === $r['roll_no'] ? 'selected' : '' ?>>
               <?= e($r['roll_no'] . ' — ' . $r['s_name_e']) ?>
@@ -235,7 +235,8 @@ require __DIR__ . '/../includes/admin_header.php';
     <h2>2. Student</h2>
     <div class="ms-info mt-2" style="grid-template-columns:1fr 1fr 1fr">
       <div><strong>Name:</strong> <?= e($student['s_name_e']) ?></div>
-      <div><strong>Roll No:</strong> <?= e($student['roll_no']) ?></div>
+      <div><strong>Roll No:</strong> <?= e($student['student_roll_no'] ?? '—') ?></div>
+      <div><strong>Student ID:</strong> <?= e($student['roll_no']) ?></div>
       <div><strong>Course:</strong> <?= e($student['course_name'] ?? '—') ?></div>
       <div><strong>Current semester (profile):</strong> <?= e($student['semester'] ?? '—') ?> / <?= e($student['semester_year'] ?? '—') ?></div>
       <div><strong>Entering marks for:</strong> <?= e($selectedSem ?: '—') ?> / <?= e($selectedYear ?: '—') ?></div>

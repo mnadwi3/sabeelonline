@@ -45,6 +45,7 @@ CREATE TABLE tbl_subjects (
 
 CREATE TABLE tbl_students (
   admin_no       INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT 'Student ID',
+  student_roll_no VARCHAR(40) DEFAULT NULL,
   roll_no        VARCHAR(40)  NOT NULL,
   s_name_e       VARCHAR(160) NOT NULL,
   f_name_e       VARCHAR(160) DEFAULT NULL,

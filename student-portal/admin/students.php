@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'save') {
         $id = (int) ($_POST['admin_no'] ?? 0);
+        $studentRoll = trim($_POST['student_roll_no'] ?? '');
         $roll = normalize_student_id($_POST['roll_no'] ?? '');
         $name = trim($_POST['s_name_e'] ?? '');
         $fname = trim($_POST['f_name_e'] ?? '');
@@ -24,6 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($name === '') {
             flash('error', 'Name is required.');
             redirect('admin/students.php');
+        }
+
+        if ($studentRoll === '') {
+            flash('error', 'Roll No is required.');
+            redirect('admin/students.php' . ($id > 0 ? '?edit=' . $id : ''));
         }
 
         if (!is_valid_student_id($roll)) {
@@ -41,8 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $prevRoll = (string) ($old->fetchColumn() ?: '');
 
                 $pdo->prepare(
-                    'UPDATE tbl_students SET roll_no=?, s_name_e=?, f_name_e=?, dob=?, address_e=?, course_id=?, semester=?, semester_year=? WHERE admin_no=?'
-                )->execute([$roll, $name, $fname, $dob, $address, $courseId, $semester, $semYear, $id]);
+                    'UPDATE tbl_students SET student_roll_no=?, roll_no=?, s_name_e=?, f_name_e=?, dob=?, address_e=?, course_id=?, semester=?, semester_year=? WHERE admin_no=?'
+                )->execute([$studentRoll, $roll, $name, $fname, $dob, $address, $courseId, $semester, $semYear, $id]);
 
                 // Keep results linked if Student ID changed
                 if ($prevRoll !== '' && strcasecmp($prevRoll, $roll) !== 0) {
@@ -51,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 flash('success', 'Student updated. Portal ID: ' . $roll);
             } else {
                 $pdo->prepare(
-                    'INSERT INTO tbl_students (roll_no, s_name_e, f_name_e, dob, address_e, course_id, semester, semester_year)
-                     VALUES (?,?,?,?,?,?,?,?)'
-                )->execute([$roll, $name, $fname, $dob, $address, $courseId, $semester, $semYear]);
+                    'INSERT INTO tbl_students (student_roll_no, roll_no, s_name_e, f_name_e, dob, address_e, course_id, semester, semester_year)
+                     VALUES (?,?,?,?,?,?,?,?,?)'
+                )->execute([$studentRoll, $roll, $name, $fname, $dob, $address, $courseId, $semester, $semYear]);
                 flash('success', 'Student added. Portal Student ID: ' . $roll);
             }
         } catch (Throwable $e) {
@@ -103,6 +109,12 @@ require __DIR__ . '/../includes/admin_header.php';
     <input type="hidden" name="action" value="save">
     <input type="hidden" name="admin_no" value="<?= (int) ($edit['admin_no'] ?? 0) ?>">
     <div class="form-grid">
+      <div>
+        <label>Roll No *</label>
+        <input name="student_roll_no" required maxlength="40"
+               placeholder="e.g. SUS-001"
+               value="<?= e($edit['student_roll_no'] ?? '') ?>">
+      </div>
       <div>
         <label>Student ID (portal login) *</label>
         <input name="roll_no" required minlength="8" maxlength="40"
@@ -170,7 +182,7 @@ require __DIR__ . '/../includes/admin_header.php';
     <table class="data">
       <thead>
         <tr>
-          <th>Student ID</th><th>Portal format</th><th>Name</th><th>Father</th>
+          <th>Roll No</th><th>Student ID</th><th>Portal format</th><th>Name</th><th>Father</th>
           <th>Course</th><th>Semester</th><th>Year</th><th></th>
         </tr>
       </thead>
@@ -182,6 +194,7 @@ require __DIR__ . '/../includes/admin_header.php';
             $portal = format_sabeel_student_id($st);
           ?>
           <tr>
+            <td><?= e($st['student_roll_no'] ?? '—') ?></td>
             <td>
               <strong><?= e($sid) ?></strong>
               <?php if (!$ok): ?>

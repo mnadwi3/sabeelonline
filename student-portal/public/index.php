@@ -42,7 +42,7 @@ if ($viewId > 0) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Portal — <?= e(app_config('app_name')) ?></title>
-  <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>?v=20260725marksaligned1">
+  <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>?v=20260725selects1">
 </head>
 <body class="portal-page">
 <?php if (!$searched || !$results): ?>

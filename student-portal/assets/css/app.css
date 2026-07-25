@@ -164,6 +164,26 @@ input, select, textarea {
   background: #fff;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
+select {
+  appearance: none;
+  padding-right: 2.75rem;
+  color: var(--ink);
+  cursor: pointer;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m4 6 4 4 4-4' stroke='%231a3a8f' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-size: 1rem;
+}
+select:hover {
+  border-color: #aab9d8;
+  background-color: #fbfcff;
+}
+select:disabled {
+  cursor: not-allowed;
+  color: var(--muted);
+  background-color: #f5f7fb;
+}
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--royal);

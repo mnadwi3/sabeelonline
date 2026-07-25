@@ -164,15 +164,6 @@ function render_marksheet(array $r, bool $showPrintBar = true): void
     $studentId = trim((string) ($r['roll_no'] ?? ''));
     $courseTitle = marksheet_course_title($r);
     ?>
-    <?php if ($showPrintBar): ?>
-    <div class="actions-bar no-print">
-      <button class="btn btn-primary" type="button" id="btnDownloadPdf">Download PDF</button>
-      <button class="btn btn-emerald" type="button" id="btnDownloadImage">Download Image</button>
-      <a class="btn btn-outline" href="javascript:history.back()">Back</a>
-    </div>
-    <p class="download-hint no-print muted">Use Download PDF or Download Image for the full marksheet (signatures + grading). Browser Print may clip or add blank A4 space.</p>
-    <?php endif; ?>
-
     <div class="marksheet marksheet-clean" id="marksheet">
       <div class="marksheet-inner">
         <div class="marksheet-header">
@@ -264,5 +255,13 @@ function render_marksheet(array $r, bool $showPrintBar = true): void
         </div>
       </div>
     </div>
+    <?php if ($showPrintBar): ?>
+    <div class="actions-bar no-print">
+      <button class="btn btn-primary" type="button" id="btnDownloadPdf">Download PDF</button>
+      <button class="btn btn-emerald" type="button" id="btnDownloadImage">Download Image</button>
+      <a class="btn btn-outline" href="javascript:history.back()">Back</a>
+    </div>
+    <p class="download-hint no-print muted">Use Download PDF or Download Image for the full marksheet (signatures + grading). Browser Print may clip or add blank A4 space.</p>
+    <?php endif; ?>
     <?php
 }

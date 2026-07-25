@@ -165,6 +165,7 @@ body.page-public .site-header {
 .sidebar-brand {
   margin-bottom: 1.5rem;
   padding: 0.5rem;
+  color: #fff;
 }
 
 .sidebar-brand span {
@@ -174,7 +175,7 @@ body.page-public .site-header {
 }
 
 .sidebar-brand small {
-  opacity: 0.8;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .sidebar-nav {
@@ -187,16 +188,35 @@ body.page-public .site-header {
   color: #fff;
   padding: 0.7rem 0.85rem;
   border-radius: 10px;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.sidebar-nav a:hover {
-  background: rgba(255, 255, 255, 0.12);
+.sidebar-nav a:hover,
+.sidebar-nav a:focus-visible,
+.sidebar-nav a.is-active {
+  background: rgba(255, 255, 255, 0.18);
   color: #fff;
+}
+
+.sidebar-nav a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.sidebar-nav a.is-active {
+  box-shadow: inset 3px 0 0 #fff;
+  font-weight: 600;
 }
 
 .sidebar-nav .logout-link {
   margin-top: 1rem;
   background: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-nav .logout-link:hover,
+.sidebar-nav .logout-link:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .admin-main { min-width: 0; }

@@ -45,6 +45,26 @@ if (!function_exists('is_logged_in')) {
 
 <?php if ($page_mode === 'admin'): ?>
   <!-- ================= ADMIN LAYOUT ================= -->
+  <?php
+  $currentAdminPage = basename($_SERVER['PHP_SELF'] ?? '');
+  $adminNavItems = [
+      ['dashboard.php', 'Dashboard'],
+      ['new-post.php', 'New Blog'],
+      ['posts.php', is_admin() ? 'All Blogs' : 'My Blogs'],
+  ];
+
+  if (is_admin()) {
+      $adminNavItems[] = ['teachers.php', 'Teachers'];
+      $adminNavItems[] = ['categories.php', 'Categories'];
+  }
+
+  $adminNavItems = array_merge($adminNavItems, [
+      ['profile.php', 'Profile'],
+      ['index.php', 'View Blog'],
+      ['/', 'Main Website'],
+      ['logout.php', 'Logout'],
+  ]);
+  ?>
   <div class="admin-layout">
     <aside class="sidebar">
       <div class="sidebar-brand">
@@ -53,17 +73,14 @@ if (!function_exists('is_logged_in')) {
       </div>
 
       <nav class="sidebar-nav">
-        <a href="dashboard.php">Dashboard</a>
-        <a href="new-post.php">New Blog</a>
-        <a href="posts.php"><?php echo is_admin() ? 'All Blogs' : 'My Blogs'; ?></a>
-        <?php if (is_admin()): ?>
-          <a href="teachers.php">Teachers</a>
-          <a href="categories.php">Categories</a>
-        <?php endif; ?>
-        <a href="profile.php">Profile</a>
-        <a href="index.php">View Blog</a>
-        <a href="/">Main Website</a>
-        <a href="logout.php" class="logout-link">Logout</a>
+        <?php foreach ($adminNavItems as [$href, $label]): ?>
+          <?php $isCurrentPage = $href === $currentAdminPage; ?>
+          <a
+            href="<?php echo e($href); ?>"
+            class="<?php echo $isCurrentPage ? 'is-active' : ''; ?><?php echo $href === 'logout.php' ? ' logout-link' : ''; ?>"
+            <?php echo $isCurrentPage ? 'aria-current="page"' : ''; ?>
+          ><?php echo e($label); ?></a>
+        <?php endforeach; ?>
       </nav>
     </aside>
 

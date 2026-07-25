@@ -172,12 +172,32 @@ function format_post_content(string $content): string
 
     // Rich-text HTML from the editor (whitelist safe tags)
     if (preg_match('/<(p|br|strong|b|em|i|u|s|h[1-3]|ul|ol|li|a|span|blockquote|div)\b/i', $content)) {
+        // Convert styled spans from browsers into semantic tags before sanitizing
+        $content = preg_replace(
+            '/<span[^>]*style="[^"]*font-weight\s*:\s*(?:bold|700|600)[^"]*"[^>]*>(.*?)<\/span>/is',
+            '<strong>$1</strong>',
+            $content
+        ) ?? $content;
+        $content = preg_replace(
+            '/<span[^>]*style="[^"]*font-style\s*:\s*italic[^"]*"[^>]*>(.*?)<\/span>/is',
+            '<em>$1</em>',
+            $content
+        ) ?? $content;
+        $content = preg_replace(
+            '/<span[^>]*style="[^"]*text-decoration[^"]*underline[^"]*"[^>]*>(.*?)<\/span>/is',
+            '<u>$1</u>',
+            $content
+        ) ?? $content;
+
+        // Markdown leftovers people sometimes type in the editor
+        $content = preg_replace('/\*\*(.+?)\*\*/s', '<strong>$1</strong>', $content) ?? $content;
+
         $allowed = '<p><br><strong><b><em><i><u><s><h1><h2><h3><ul><ol><li><a><span><blockquote><div>';
         $safe = strip_tags($content, $allowed);
 
-        // Allow only safe href / style="color:..." attributes
+        // Allow safe href + limited style attributes
         $safe = preg_replace_callback(
-            '/<(a|span)\b([^>]*)>/i',
+            '/<(a|span|p|div|h1|h2|h3|blockquote)\b([^>]*)>/i',
             static function (array $m): string {
                 $tag = strtolower($m[1]);
                 $attrs = $m[2];
@@ -191,11 +211,24 @@ function format_post_content(string $content): string
                 }
 
                 if (preg_match('/\bstyle\s*=\s*([\'"])(.*?)\1/i', $attrs, $style)) {
+                    $parts = [];
                     if (preg_match('/color\s*:\s*([^;]+)/i', $style[2], $color)) {
                         $c = trim($color[1]);
                         if (preg_match('/^(#[0-9a-f]{3,8}|rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)|[a-z]+)$/i', $c)) {
-                            $out .= ' style="color:' . htmlspecialchars($c, ENT_QUOTES, 'UTF-8') . '"';
+                            $parts[] = 'color:' . $c;
                         }
+                    }
+                    if (preg_match('/text-align\s*:\s*(left|right|center|justify)/i', $style[2], $align)) {
+                        $parts[] = 'text-align:' . strtolower($align[1]);
+                    }
+                    if (preg_match('/font-weight\s*:\s*(bold|700|600)/i', $style[2])) {
+                        $parts[] = 'font-weight:700';
+                    }
+                    if (preg_match('/font-style\s*:\s*italic/i', $style[2])) {
+                        $parts[] = 'font-style:italic';
+                    }
+                    if ($parts) {
+                        $out .= ' style="' . htmlspecialchars(implode(';', $parts), ENT_QUOTES, 'UTF-8') . '"';
                     }
                 }
 
@@ -203,6 +236,9 @@ function format_post_content(string $content): string
             },
             $safe
         ) ?? $safe;
+
+        // Drop empty attribute-less spans that leftover from stripped styles
+        $safe = preg_replace('/<span>(.*?)<\/span>/is', '$1', $safe) ?? $safe;
 
         return $safe;
     }
@@ -217,6 +253,7 @@ function format_post_content(string $content): string
             continue;
         }
         $escaped = htmlspecialchars($block, ENT_QUOTES, 'UTF-8');
+        $escaped = preg_replace('/\*\*(.+?)\*\*/', '<strong>$1</strong>', $escaped) ?? $escaped;
         $html .= '<p>' . nl2br($escaped) . '</p>';
     }
 

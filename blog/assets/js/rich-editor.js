@@ -1,5 +1,6 @@
 /**
  * Lightweight rich-text editor for blog post content (#content).
+ * Uses semantic tags (strong/em/h2) so formatting survives server sanitization.
  */
 (function () {
   'use strict';
@@ -29,10 +30,66 @@
     return raw
       .split(/\n\s*\n/)
       .map((block) => {
-        const lines = escapeHtml(block.trim()).replace(/\n/g, '<br>');
+        const lines = escapeHtml(block.trim())
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\n/g, '<br>');
         return '<p>' + lines + '</p>';
       })
       .join('');
+  }
+
+  function normalizeEditorHtml(html) {
+    const box = document.createElement('div');
+    box.innerHTML = html;
+
+    box.querySelectorAll('span').forEach((span) => {
+      const style = (span.getAttribute('style') || '').toLowerCase();
+      const colorMatch = style.match(/color\s*:\s*([^;]+)/);
+      const bold = /font-weight\s*:\s*(bold|700|600)/.test(style);
+      const italic = /font-style\s*:\s*italic/.test(style);
+      const underline = /text-decoration[^;]*underline/.test(style);
+
+      let node = span;
+      const wrap = (tag) => {
+        const el = document.createElement(tag);
+        while (node.firstChild) el.appendChild(node.firstChild);
+        node.replaceWith(el);
+        node = el;
+      };
+
+      if (bold) wrap('strong');
+      if (italic) wrap('em');
+      if (underline) wrap('u');
+
+      if (colorMatch) {
+        const color = colorMatch[1].trim();
+        if (node.tagName === 'SPAN') {
+          node.setAttribute('style', 'color:' + color);
+        } else {
+          const colored = document.createElement('span');
+          colored.setAttribute('style', 'color:' + color);
+          while (node.firstChild) colored.appendChild(node.firstChild);
+          node.appendChild(colored);
+        }
+      } else if (node.tagName === 'SPAN' && !node.getAttribute('style')) {
+        const parent = node.parentNode;
+        while (node.firstChild) parent.insertBefore(node.firstChild, node);
+        parent.removeChild(node);
+      }
+    });
+
+    box.querySelectorAll('b').forEach((el) => {
+      const strong = document.createElement('strong');
+      while (el.firstChild) strong.appendChild(el.firstChild);
+      el.replaceWith(strong);
+    });
+    box.querySelectorAll('i').forEach((el) => {
+      const em = document.createElement('em');
+      while (el.firstChild) em.appendChild(el.firstChild);
+      el.replaceWith(em);
+    });
+
+    return box.innerHTML;
   }
 
   function buildToolbar() {
@@ -49,14 +106,14 @@
         { cmd: 'strikeThrough', title: 'Strikethrough', html: '<s>S</s>' },
       ],
       [
-        { cmd: 'formatBlock', value: 'H2', title: 'Heading', html: 'H2' },
-        { cmd: 'formatBlock', value: 'H3', title: 'Subheading', html: 'H3' },
-        { cmd: 'formatBlock', value: 'P', title: 'Paragraph', html: 'P' },
+        { cmd: 'formatBlock', value: 'h2', title: 'Heading', html: 'H2' },
+        { cmd: 'formatBlock', value: 'h3', title: 'Subheading', html: 'H3' },
+        { cmd: 'formatBlock', value: 'p', title: 'Paragraph', html: 'P' },
       ],
       [
         { cmd: 'insertUnorderedList', title: 'Bullet list', html: '• List' },
         { cmd: 'insertOrderedList', title: 'Numbered list', html: '1. List' },
-        { cmd: 'formatBlock', value: 'BLOCKQUOTE', title: 'Quote', html: 'Quote' },
+        { cmd: 'formatBlock', value: 'blockquote', title: 'Quote', html: 'Quote' },
       ],
       [
         { cmd: 'justifyLeft', title: 'Align left', html: 'Left' },
@@ -114,6 +171,17 @@
     return { bar, colorSelect };
   }
 
+  function applyFormatBlock(tag) {
+    const name = String(tag || 'p').replace(/[<>]/g, '').toLowerCase();
+    const variants = ['<' + name + '>', name, name.toUpperCase(), '<' + name.toUpperCase() + '>'];
+    for (let i = 0; i < variants.length; i++) {
+      try {
+        if (document.execCommand('formatBlock', false, variants[i])) return true;
+      } catch (_) { /* try next */ }
+    }
+    return false;
+  }
+
   function initEditor(textarea) {
     if (!textarea || textarea.dataset.rteReady === '1') return;
     textarea.dataset.rteReady = '1';
@@ -139,26 +207,37 @@
     wrap.appendChild(editor);
     wrap.appendChild(textarea);
 
-    const sync = () => {
-      const html = editor.innerHTML.trim();
-      textarea.value = html === '' || html === '<br>' || html === '<p><br></p>' ? '' : editor.innerHTML;
+    const sync = (normalize) => {
+      const raw = normalize ? normalizeEditorHtml(editor.innerHTML) : editor.innerHTML;
+      if (normalize && raw !== editor.innerHTML) {
+        editor.innerHTML = raw;
+      }
+      const html = raw.trim();
+      textarea.value = html === '' || html === '<br>' || html === '<p><br></p>' ? '' : raw;
     };
 
     const run = (cmd, value) => {
       editor.focus();
-      try {
-        document.execCommand('styleWithCSS', false, true);
-      } catch (_) { /* ignore */ }
-      if (cmd === 'createLink') {
+      if (cmd === 'foreColor') {
+        try { document.execCommand('styleWithCSS', false, true); } catch (_) { /* ignore */ }
+        document.execCommand('foreColor', false, value);
+      } else if (cmd === 'createLink') {
+        try { document.execCommand('styleWithCSS', false, false); } catch (_) { /* ignore */ }
         const url = window.prompt('Enter link URL (https://…)', 'https://');
         if (!url) return;
         document.execCommand('createLink', false, url);
       } else if (cmd === 'formatBlock') {
-        document.execCommand('formatBlock', false, value);
+        try { document.execCommand('styleWithCSS', false, false); } catch (_) { /* ignore */ }
+        applyFormatBlock(value);
+      } else if (cmd === 'justifyLeft' || cmd === 'justifyCenter' || cmd === 'justifyRight') {
+        try { document.execCommand('styleWithCSS', false, true); } catch (_) { /* ignore */ }
+        document.execCommand(cmd, false, null);
       } else {
+        // Prefer <strong>/<em>/<u> over styled spans
+        try { document.execCommand('styleWithCSS', false, false); } catch (_) { /* ignore */ }
         document.execCommand(cmd, false, value || null);
       }
-      sync();
+      sync(true);
     };
 
     bar.addEventListener('mousedown', (e) => {
@@ -172,23 +251,27 @@
       run('foreColor', colorSelect.value);
     });
 
-    editor.addEventListener('input', sync);
-    editor.addEventListener('blur', sync);
+    editor.addEventListener('input', () => {
+      editor.classList.remove('is-invalid');
+      sync(false);
+    });
+    editor.addEventListener('blur', () => sync(true));
 
     const form = textarea.closest('form');
     form?.addEventListener('submit', () => {
-      sync();
+      sync(true);
       if (!textarea.value.trim()) {
         editor.focus();
       }
     });
 
-    // Keep browser required validation working via textarea value
     textarea.addEventListener('invalid', () => {
       editor.classList.add('is-invalid');
       editor.focus();
     });
-    editor.addEventListener('input', () => editor.classList.remove('is-invalid'));
+
+    // Initial sync without rewriting caret position mid-edit
+    sync(false);
   }
 
   document.addEventListener('DOMContentLoaded', () => {

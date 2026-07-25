@@ -13,7 +13,7 @@ if (!isset($page_mode)) {
     </div><!-- .admin-main -->
   </div><!-- .admin-layout -->
   <script src="assets/js/blog.js"></script>
-  <script src="assets/js/rich-editor.js?v=20260726rte1"></script>
+  <script src="assets/js/rich-editor.js?v=20260726rte2"></script>
 <?php else: ?>
   </main><!-- .blog-main -->
 

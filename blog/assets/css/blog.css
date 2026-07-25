@@ -551,17 +551,30 @@ body.page-public .article-image {
 }
 
 .article-content h2 {
-  margin: 1.35rem 0 0.65rem;
-  font-size: 1.4rem;
+  margin: 1.5rem 0 0.7rem;
+  font-size: 1.45rem;
+  font-weight: 700;
   color: #0A3D91;
   line-height: 1.3;
 }
 
 .article-content h3 {
-  margin: 1.15rem 0 0.55rem;
-  font-size: 1.15rem;
-  color: #0A3D91;
+  margin: 1.25rem 0 0.55rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #084298;
   line-height: 1.35;
+}
+
+.article-content strong,
+.article-content b {
+  font-weight: 700;
+  color: inherit;
+}
+
+.article-content em,
+.article-content i {
+  font-style: italic;
 }
 
 .article-content ul,

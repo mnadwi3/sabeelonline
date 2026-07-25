@@ -20,7 +20,7 @@
         '<li>' + link('/#home', 'Home', a('home')) + '</li>' +
         '<li>' + link('/#courses', 'Courses', a('courses')) + '</li>' +
         '<li class="has-sub">' +
-          '<a href="/#student-services" class="nav-link nav-parent' + a('student-services') + '" aria-haspopup="true" aria-expanded="false">Student Services</a>' +
+          '<a href="/student-portal/public/" class="nav-link nav-parent' + a('student-services') + '" aria-haspopup="true" aria-expanded="false">Student Services</a>' +
           '<ul class="nav-sub" aria-label="Student Services submenu">' +
             '<li>' + link('/student-portal/public/', 'Download Results', lib('results')) + '</li>' +
             '<li>' + link('/library/', 'Download Coursebooks', lib('library')) + '</li>' +

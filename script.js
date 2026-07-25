@@ -50,9 +50,14 @@
   function initHeader() {
     const header = $('#siteHeader');
     if (!header) return;
+    const nav = $('#mainNav');
 
     const onScroll = () => {
-      header.classList.toggle('is-scrolled', window.scrollY > 20);
+      const scrolled = window.scrollY > 20;
+      header.classList.toggle('is-scrolled', scrolled);
+      /* Nav is a sibling of the header — keep dropdown colors in sync */
+      document.body.classList.toggle('nav-scrolled', scrolled);
+      if (nav) nav.classList.toggle('is-scrolled', scrolled);
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });

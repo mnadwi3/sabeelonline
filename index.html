@@ -41,7 +41,7 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=20260726sepClean1">
+  <link rel="stylesheet" href="style.css?v=20260726footerCols1">
 
 
   <!-- Schema Markup -->
@@ -600,8 +600,10 @@
           <h2>Insights from Our Teachers</h2>
           <p>Articles and learning notes to support your Quran and Islamic studies journey.</p>
         </header>
-        <div class="latest-blog-cta reveal">
-          <p>Browse published posts from Sabeel Us Salaam Online educators.</p>
+        <div class="latest-blog-grid" id="latestBlogGrid" aria-live="polite">
+          <p class="home-blog-empty">Loading latest articles…</p>
+        </div>
+        <div class="latest-blog-actions reveal">
           <a class="btn btn-primary" href="blog/">Visit Blog</a>
         </div>
       </div>
@@ -692,10 +694,6 @@
           </form>
 
           <aside class="contact-info reveal delay-1">
-            <a href="https://wa.me/918979983149?text=Assalamu%20Alaikum%2C%20I%20would%20like%20to%20chat%20on%20WhatsApp."
-              class="info-block info-block-whatsapp" target="_blank" rel="noopener noreferrer">
-              Chat with Us on WhatsApp
-            </a>
             <div class="info-block">
               <h3>Address</h3>
               <address>
@@ -753,9 +751,9 @@
           </a>
         </div>
       </div>
-      <div>
+      <div class="footer-quick-links">
         <h3>Quick Links</h3>
-        <ul class="footer-links">
+        <ul class="footer-links footer-links-cols">
           <li><a href="#home">Home</a></li>
           <li><a href="#courses">Courses</a></li>
           <li><a href="#student-services">Student Services</a></li>
@@ -886,9 +884,10 @@
     </div>
   </div>
 
-  <script src="script.js?v=20260726contactHash1" defer></script>
+  <script src="script.js?v=20260726navDrop1" defer></script>
   <script src="js/website-courses.js?v=20260726openFirst1" defer></script>
   <script src="js/admission-form.js?v=20260726admission1" defer></script>
+  <script src="js/latest-blog.js?v=20260726latestBlog1" defer></script>
 </body>
 
 </html>

@@ -49,8 +49,8 @@ if (!isset($page_mode)) {
           <li><a href="/#why-us">Why Choose Us</a></li>
           <li><a href="/#testimonials">Testimonials</a></li>
           <li><a href="index.php">Blog</a></li>
-          <li><a href="../student-portal/">Student Portal</a></li>
-          <li><a href="../library/">Library</a></li>
+          <li><a href="../student-portal/public/">Download Results</a></li>
+          <li><a href="../library/">Download Coursebooks</a></li>
           <li><a href="/#contact">Contact Us</a></li>
         </ul>
       </div>
@@ -90,7 +90,7 @@ if (!isset($page_mode)) {
   <button type="button" class="back-top" id="backTop" aria-label="Back to top">↑</button>
 
   <!-- Main site JS (menu) + blog JS -->
-  <script src="../script.js?v=20260726sharedNav1" defer></script>
+  <script src="../script.js?v=20260726contactHash1" defer></script>
   <script src="assets/js/blog.js" defer></script>
 <?php endif; ?>
 </body>

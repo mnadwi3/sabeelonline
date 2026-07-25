@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admissions Admin | Sabeel Us Salaam Online</title>
+  <link rel="icon" type="image/png" href="assets/logo-white.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260726admissionsAdmin1">
+  <style>
+    .admissions-admin-page { background: #f4f8fc; min-height: 100vh; }
+    .admissions-admin-page main { padding: 2rem 1rem 3rem; }
+    .lib-gate, .admin-shell { width: min(1100px, 100%); margin: 0 auto; }
+    .lib-card, .admin-panel {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+      padding: 1.5rem;
+    }
+    .lib-gate { max-width: 440px; text-align: center; margin-top: 4rem; }
+    .lib-gate h1 { margin: 0.75rem 0 0.35rem; font-size: 1.6rem; }
+    .lib-subtitle { color: #64748b; margin-bottom: 1.25rem; }
+    .lib-form { text-align: left; display: grid; gap: 0.65rem; }
+    .lib-form label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .lib-form input, .admin-panel select {
+      width: 100%;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid #d9e0ef;
+      border-radius: 10px;
+      font: inherit;
+      background: #fff;
+    }
+    .lib-actions, .admin-topbar-actions, .admin-row-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
+    .lib-inline-error { color: #b42318; font-size: 0.9rem; }
+    .admin-topbar { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; margin-bottom: 1rem; flex-wrap: wrap; }
+    .admin-kicker { margin: 0; color: #0B5ED7; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+    .admin-topbar h1 { margin: 0.2rem 0 0; font-size: 1.7rem; }
+    .admin-lead { color: #64748b; margin: 0 0 1rem; }
+    .form-status { margin: 0.5rem 0 0; font-weight: 600; }
+    .form-status.is-ok { color: #0d7a5f; }
+    .form-status.is-error { color: #b42318; }
+    .table-wrap { overflow-x: auto; }
+    .admin-apps-table { width: 100%; border-collapse: collapse; }
+    .admin-apps-table th, .admin-apps-table td {
+      padding: 0.75rem 0.6rem;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.92rem;
+    }
+    .admin-apps-table th {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #475569;
+    }
+    .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+    .badge-new { background: #e8eefc; color: #1a3a8f; }
+    .badge-reviewed { background: #f7f1de; color: #8a6d10; }
+    .badge-accepted { background: #e6f5f0; color: #0d7a5f; }
+    .badge-rejected { background: #fdecea; color: #b42318; }
+    .btn-danger { background: #b42318; color: #fff; border: none; }
+    .muted { color: #64748b; font-size: 0.85rem; }
+    .status-select { min-width: 120px; padding: 0.4rem 0.55rem !important; }
+    .detail-address { max-width: 220px; }
+    .admissions-admin-page .btn-outline {
+      border-color: #0B5ED7;
+      color: #0B5ED7;
+      background: #fff;
+    }
+    .admissions-admin-page .btn-outline:hover {
+      background: #0B5ED7;
+      border-color: #0B5ED7;
+      color: #fff;
+    }
+  </style>
+</head>
+<body class="admissions-admin-page">
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="/#home" class="logo" aria-label="Sabeel Us-Salam Online Home">
+        <img src="assets/logo-white.png" alt="Sabeel Us-Salam" class="logo-img" width="64" height="64">
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <nav class="main-nav" id="mainNav" data-site-nav="" aria-label="Primary"></nav>
+  <div class="nav-backdrop" id="navBackdrop" hidden></div>
+
+  <main>
+    <section id="viewAdminGate" class="lib-gate">
+      <div class="lib-card">
+        <h1>Admissions Admin</h1>
+        <p class="lib-subtitle">View student admission forms submitted from Enroll Now. Same admin code as Library / Courses.</p>
+        <form class="lib-form" id="adminGateForm" autocomplete="off">
+          <label for="adminCode">Admin Access Code</label>
+          <input type="password" id="adminCode" required placeholder="Enter admin code">
+          <p class="lib-inline-error" id="adminGateError" hidden>Invalid admin code.</p>
+          <div class="lib-actions">
+            <button type="submit" class="btn btn-primary">Enter Admin Panel</button>
+            <a class="btn btn-outline" href="/#courses">Back to website</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="viewAdminApp" class="admin-shell" hidden>
+      <header class="admin-topbar">
+        <div>
+          <p class="admin-kicker">Student Admissions</p>
+          <h1>Applications</h1>
+        </div>
+        <div class="admin-topbar-actions">
+          <button type="button" class="btn btn-outline btn-sm" id="btnRefresh">Refresh</button>
+          <a class="btn btn-outline btn-sm" href="courses-admin.html">Courses Admin</a>
+          <button type="button" class="btn btn-outline btn-sm" id="btnAdminLogout">Logout</button>
+        </div>
+      </header>
+      <p class="admin-lead">These are enrollment applications from the homepage <strong>Enroll Now</strong> form, including uploaded identity proofs.</p>
+      <article class="admin-panel">
+        <p class="form-status" id="appStatus" hidden></p>
+        <div id="appsTableWrap"><p class="muted">Loading…</p></div>
+      </article>
+    </section>
+  </main>
+
+  <script src="script.js?v=20260726admissionsAdmin1" defer></script>
+  <script src="js/site-nav.js?v=20260726admissionsAdmin1"></script>
+  <script src="library/js/config.js"></script>
+  <script src="js/admissions-admin.js?v=20260726admissionsAdmin1"></script>
+</body>
+</html>

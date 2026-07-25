@@ -18,9 +18,8 @@ $isLib = static function (string $key) use ($navActive): string {
     <li class="has-sub">
       <a href="/#student-services" class="nav-link nav-parent<?= $is('student-services') ?>" aria-haspopup="true" aria-expanded="false">Student Services</a>
       <ul class="nav-sub" aria-label="Student Services submenu">
-        <li><a href="/student-portal/" class="nav-link<?= $isLib('portal') ?>">Student Portal</a></li>
-        <li><a href="/student-portal/public/" class="nav-link<?= $isLib('results') ?>">Results</a></li>
-        <li><a href="/library/" class="nav-link<?= $isLib('library') ?>">Digital Library</a></li>
+        <li><a href="/student-portal/public/" class="nav-link<?= $isLib('results') ?>">Download Results</a></li>
+        <li><a href="/library/" class="nav-link<?= $isLib('library') ?>">Download Coursebooks</a></li>
       </ul>
     </li>
     <li><a href="/blog/" class="nav-link<?= $is('blog') ?>">Blog</a></li>

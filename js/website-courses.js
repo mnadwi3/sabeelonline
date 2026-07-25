@@ -21,12 +21,21 @@
     return 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(text || '');
   }
 
+  function isRegistrationOpen(course) {
+    return String(course.registration || '').toLowerCase() === 'open';
+  }
+
   function sortCourses(list) {
-    return list.slice().sort((a, b) => (Number(a.sortOrder) || 0) - (Number(b.sortOrder) || 0));
+    return list.slice().sort((a, b) => {
+      const openA = isRegistrationOpen(a) ? 0 : 1;
+      const openB = isRegistrationOpen(b) ? 0 : 1;
+      if (openA !== openB) return openA - openB;
+      return (Number(a.sortOrder) || 0) - (Number(b.sortOrder) || 0);
+    });
   }
 
   function cardHtml(course, index) {
-    const open = String(course.registration || '').toLowerCase() === 'open';
+    const open = isRegistrationOpen(course);
     const delay = index % 3 === 1 ? ' delay-1' : index % 3 === 2 ? ' delay-2' : '';
     const closedClass = open ? '' : ' is-closed';
     const badgeClass = open ? 'is-open' : 'is-closed';

@@ -22,9 +22,8 @@
         '<li class="has-sub">' +
           '<a href="/#student-services" class="nav-link nav-parent' + a('student-services') + '" aria-haspopup="true" aria-expanded="false">Student Services</a>' +
           '<ul class="nav-sub" aria-label="Student Services submenu">' +
-            '<li>' + link('/student-portal/', 'Student Portal', lib('portal')) + '</li>' +
-            '<li>' + link('/student-portal/public/', 'Results', lib('results')) + '</li>' +
-            '<li>' + link('/library/', 'Digital Library', lib('library')) + '</li>' +
+            '<li>' + link('/student-portal/public/', 'Download Results', lib('results')) + '</li>' +
+            '<li>' + link('/library/', 'Download Coursebooks', lib('library')) + '</li>' +
           '</ul>' +
         '</li>' +
         '<li>' + link('/blog/', 'Blog', a('blog')) + '</li>' +

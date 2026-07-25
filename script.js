@@ -645,19 +645,95 @@
     history.replaceState(null, '', next);
   }
 
-  /* ---------- Smooth Anchor Offset (fallback) ---------- */
-  function initSmoothAnchors() {
-    $$('a[href^="#"]').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        const id = link.getAttribute('href');
-        if (!id || id === '#') return;
-        const target = $(id);
-        if (!target) return;
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        /* Home → / ; other sections → /#section (never /index.html#…) */
-        history.pushState(null, '', id === '#home' ? '/' : id);
+  /* ---------- Section hash scrolling ---------- */
+  function isHomePath(pathname) {
+    return pathname === '/' || pathname === '' || /\/index\.html$/i.test(pathname);
+  }
+
+  function hashFromHref(href) {
+    if (!href || href === '#') return '';
+    if (href.startsWith('#')) return href;
+    try {
+      const url = new URL(href, location.href);
+      return url.hash || '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  function scrollToHash(hash, behavior) {
+    if (!hash || hash === '#') return false;
+    const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (!target) return false;
+    target.scrollIntoView({ behavior: behavior || 'smooth', block: 'start' });
+    return true;
+  }
+
+  /**
+   * Re-apply hash scroll after late layout shifts (course cards, images).
+   * Without this, /#contact often lands on Latest Blog ("Insights from Our Teachers").
+   */
+  function applyHashScroll(behavior) {
+    if (!location.hash) return;
+    scrollToHash(location.hash, behavior || 'auto');
+  }
+
+  function initHashScroll() {
+    applyHashScroll('auto');
+
+    const retry = () => applyHashScroll('auto');
+    window.addEventListener('load', () => {
+      retry();
+      setTimeout(retry, 200);
+      setTimeout(retry, 700);
+      setTimeout(retry, 1400);
+    });
+
+    const grid = document.getElementById('coursesGrid');
+    if (grid && 'MutationObserver' in window) {
+      const mo = new MutationObserver(() => {
+        if (location.hash) retry();
       });
+      mo.observe(grid, { childList: true, subtree: true });
+      setTimeout(() => mo.disconnect(), 8000);
+    }
+
+    window.addEventListener('hashchange', () => applyHashScroll('smooth'));
+  }
+
+  function initSmoothAnchors() {
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href]');
+      if (!link || link.target === '_blank' || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+        return;
+      }
+
+      const href = link.getAttribute('href');
+      const hash = hashFromHref(href);
+      if (!hash) return;
+
+      let url;
+      try {
+        url = new URL(href, location.href);
+      } catch (_) {
+        return;
+      }
+
+      /* Another page (e.g. Blog → /#contact): let the browser navigate; initHashScroll fixes landing. */
+      if (!isHomePath(url.pathname) || !isHomePath(location.pathname)) {
+        return;
+      }
+
+      const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+      if (!target) return;
+
+      e.preventDefault();
+      scrollToHash(hash, 'smooth');
+      history.pushState(null, '', hash === '#home' ? '/' : hash);
+
+      /* Courses/images may still expand — nudge again shortly after */
+      setTimeout(() => scrollToHash(hash, 'auto'), 350);
+      setTimeout(() => scrollToHash(hash, 'auto'), 900);
     });
   }
 
@@ -676,5 +752,6 @@
     initBackTop();
     initYear();
     initSmoothAnchors();
+    initHashScroll();
   });
 })();

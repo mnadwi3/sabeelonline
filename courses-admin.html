@@ -72,6 +72,17 @@
       display: block;
     }
     .image-upload-actions { min-width: 160px; }
+    /* Outline buttons are white-on-transparent in style.css (for dark nav/hero) */
+    .courses-admin-page .btn-outline {
+      border-color: #0B5ED7;
+      color: #0B5ED7;
+      background: #fff;
+    }
+    .courses-admin-page .btn-outline:hover {
+      background: #0B5ED7;
+      border-color: #0B5ED7;
+      color: #fff;
+    }
   </style>
 </head>
 <body class="courses-admin-page">
@@ -92,9 +103,8 @@
       <li class="has-sub">
         <a href="/#student-services" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">Student Services</a>
         <ul class="nav-sub" aria-label="Student Services submenu">
-          <li><a href="/student-portal/" class="nav-link">Student Portal</a></li>
-          <li><a href="/student-portal/public/" class="nav-link">Results</a></li>
-          <li><a href="/library/" class="nav-link">Digital Library</a></li>
+          <li><a href="/student-portal/public/" class="nav-link">Download Results</a></li>
+          <li><a href="/library/" class="nav-link">Download Coursebooks</a></li>
         </ul>
       </li>
       <li><a href="/blog/" class="nav-link">Blog</a></li>
@@ -135,6 +145,7 @@
         </div>
         <div class="admin-topbar-actions">
           <a class="btn btn-outline btn-sm" href="/#courses" target="_blank" rel="noopener">View homepage</a>
+          <a class="btn btn-outline btn-sm" href="admissions-admin.html">Admissions</a>
           <a class="btn btn-outline btn-sm" href="library/admin.html">Library admin</a>
           <button type="button" class="btn btn-outline btn-sm" id="btnAdminLogout">Logout</button>
         </div>
@@ -209,6 +220,6 @@
 
   <script src="script.js?v=20260726sharedNav1" defer></script>
   <script src="library/js/config.js"></script>
-  <script src="js/courses-admin.js?v=20260726courseUpload1"></script>
+  <script src="js/courses-admin.js?v=20260726editBtn1"></script>
 </body>
 </html>

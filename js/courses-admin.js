@@ -150,7 +150,7 @@
             '<td>' + (open ? 'Enroll Now' : 'Join Waitlist') + '</td>' +
             '<td>' + escapeHtml(c.fee || '—') + '</td>' +
             '<td class="admin-row-actions">' +
-              '<button type="button" class="btn btn-outline btn-sm" data-edit="' + escapeAttr(c.id) + '">Edit</button> ' +
+              '<button type="button" class="btn btn-primary btn-sm" data-edit="' + escapeAttr(c.id) + '">Edit</button>' +
               '<button type="button" class="btn btn-danger btn-sm" data-del="' + escapeAttr(c.id) + '">Delete</button>' +
             '</td>' +
           '</tr>'

@@ -161,7 +161,7 @@ function find_all_published_by_roll_or_id(PDO $pdo, string $query): array
 function render_marksheet(array $r, bool $showPrintBar = true): void
 {
     $photo = !empty($r['photo']) ? asset($r['photo']) : null;
-    $studentId = format_sabeel_student_id($r);
+    $studentId = trim((string) ($r['roll_no'] ?? ''));
     $courseTitle = marksheet_course_title($r);
     ?>
     <?php if ($showPrintBar): ?>
@@ -188,7 +188,7 @@ function render_marksheet(array $r, bool $showPrintBar = true): void
         <div class="ms-meta">
           <div class="ms-info ms-info-bold">
             <div class="ms-col">
-              <div class="ms-row"><span class="ms-label">Student ID</span><span class="ms-value"><?= e($studentId) ?></span></div>
+              <div class="ms-row"><span class="ms-label">Student ID</span><span class="ms-value"><?= e($studentId ?: '—') ?></span></div>
               <div class="ms-row"><span class="ms-label">Name</span><span class="ms-value"><?= e($r['s_name_e'] ?? '—') ?></span></div>
               <div class="ms-row"><span class="ms-label">Date of Birth</span><span class="ms-value"><?= e(format_date($r['dob'] ?? null)) ?></span></div>
               <div class="ms-row"><span class="ms-label">Semester Year</span><span class="ms-value"><?= e($r['semester_year'] ?? '—') ?></span></div>

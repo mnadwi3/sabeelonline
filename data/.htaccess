@@ -1,0 +1,4 @@
+# Allow public read of homepage course catalogue (API preferred; JSON is fallback)
+<Files "website-courses.json">
+  Require all granted
+</Files>

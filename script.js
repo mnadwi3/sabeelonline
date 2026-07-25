@@ -104,7 +104,7 @@
 
     backdrop?.addEventListener('click', close);
 
-    // Submenu toggles (About Us / Student Portal)
+    // Submenu toggles (About / Student Services)
     $$('.has-sub > .nav-parent', nav).forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const item = btn.closest('.has-sub');
@@ -196,8 +196,13 @@
   }
 
   /* ---------- Reveal on Scroll ---------- */
-  function initReveal() {
-    const els = $$('.reveal');
+  let revealObserver = null;
+
+  function observeReveal(root = document) {
+    const scope = root && root.querySelectorAll ? root : document;
+    const els = scope === document
+      ? $$('.reveal:not(.is-visible)')
+      : Array.from(scope.querySelectorAll('.reveal:not(.is-visible)'));
     if (!els.length) return;
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -205,19 +210,27 @@
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries, obs) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add('is-visible');
-          obs.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-    );
+    if (!revealObserver) {
+      revealObserver = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            obs.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      );
+    }
 
-    els.forEach((el) => observer.observe(el));
+    els.forEach((el) => revealObserver.observe(el));
   }
+
+  function initReveal() {
+    observeReveal(document);
+  }
+
+  window.SabeelUI = Object.assign(window.SabeelUI || {}, { observeReveal });
 
   /* ---------- Counter Animation ---------- */
   function initCounters() {
@@ -271,7 +284,7 @@
     GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyfMzUUQRTYSotZ38Wcopwl6NXS2X0LJ9TOGg3tSRidvFnb6PInNGPFi9xCyxrfa9Vf/exec',
   };
 
-  const ALLOWED_COURSES = [
+  let ALLOWED_COURSES = [
     'Personal Tutoring',
     'Basic Urdu Course',
     'Short Term Alimiyyat',
@@ -279,6 +292,13 @@
     'Translation of The Quran',
     'Elementary Course In Islamic Education',
   ];
+
+  window.SabeelForm = Object.assign(window.SabeelForm || {}, {
+    setAllowedCourses(names) {
+      if (!Array.isArray(names)) return;
+      ALLOWED_COURSES = names.map((n) => String(n || '').trim()).filter(Boolean);
+    },
+  });
 
   const FORM_RULES = {
     name: {

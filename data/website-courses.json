@@ -1,0 +1,82 @@
+{
+  "courses": [
+    {
+      "id": "web-personal-tutoring",
+      "name": "Personal Tutoring",
+      "description": "Personalized live online tutoring designed to strengthen Islamic knowledge, Arabic language, and academic understanding through flexible lessons with dedicated teacher support.",
+      "image": "assets/personal.png",
+      "registration": "open",
+      "duration": "6–12 Months",
+      "classDays": "3 Days / Week",
+      "fee": "₹1000 / month",
+      "sortOrder": 1,
+      "whatsappEnrollText": "Assalamu Alaikum, I want to enroll in Personal Tutoring.",
+      "whatsappWaitlistText": "Assalamu Alaikum, please notify me when Personal Tutoring registration opens."
+    },
+    {
+      "id": "web-basic-urdu",
+      "name": "Basic Urdu Course",
+      "description": "A one-year online Basic Urdu Course designed for beginners seeking reading, writing, and speaking skills through structured lessons with expert guidance and flexibility.",
+      "image": "assets/urdu.png",
+      "registration": "open",
+      "duration": "Ongoing",
+      "classDays": "Flexible",
+      "fee": "₹1,500 / month",
+      "sortOrder": 2,
+      "whatsappEnrollText": "Assalamu Alaikum, I want to enroll in Basic Urdu Course.",
+      "whatsappWaitlistText": "Assalamu Alaikum, please notify me when Basic Urdu Course registration opens."
+    },
+    {
+      "id": "web-short-term-alimiyyat",
+      "name": "Short Term Alimiyyat",
+      "description": "A three-year online Diploma in Alimiyyat designed for students and professionals seeking authentic Islamic education through a structured curriculum with flexible weekend classes.",
+      "image": "assets/short.png",
+      "registration": "closed",
+      "duration": "3–Years",
+      "classDays": "Fri–Sat–Sun",
+      "fee": "₹6000 / Semester",
+      "sortOrder": 3,
+      "whatsappEnrollText": "Assalamu Alaikum, I want to enroll in Short Term Alimiyyat.",
+      "whatsappWaitlistText": "Assalamu Alaikum, please notify me when Short Term Alimiyyat registration opens."
+    },
+    {
+      "id": "web-advanced-arabic",
+      "name": "Advanced Arabic Diploma",
+      "description": "A one-year online Advanced Arabic diploma designed for students seeking comprehensive Arabic language skills through structured lessons with expert guidance and flexible learning.",
+      "image": "assets/arabic.png",
+      "registration": "closed",
+      "duration": "12Months",
+      "classDays": "Mon– Tue – Wed",
+      "fee": "₹6,000 / Semester",
+      "sortOrder": 4,
+      "whatsappEnrollText": "Assalamu Alaikum, I want to enroll in Advanced Arabic Diploma.",
+      "whatsappWaitlistText": "Assalamu Alaikum, please notify me when Advanced Arabic Diploma registration opens."
+    },
+    {
+      "id": "web-quran-translation",
+      "name": "Translation of The Quran",
+      "description": "A one-year online Translation of The Quran course designed for students seeking deeper understanding of Quranic meanings through structured lessons and guidance.",
+      "image": "assets/quran.png",
+      "registration": "closed",
+      "duration": "12 Months",
+      "classDays": "Not Available",
+      "fee": "₹1000 / month",
+      "sortOrder": 5,
+      "whatsappEnrollText": "Assalamu Alaikum, I want to enroll in Translation of The Quran.",
+      "whatsappWaitlistText": "Assalamu Alaikum, please notify me when Translation of The Quran registration opens."
+    },
+    {
+      "id": "web-elementary-islamic",
+      "name": "Elementary Course In Islamic Education",
+      "description": "A one-year online Elementary Course in Islamic Education designed for students seeking essential Islamic knowledge through structured lessons with expert guidance and flexibility.",
+      "image": "assets/element.png",
+      "registration": "closed",
+      "duration": "12 Months",
+      "classDays": "3 Days / Week",
+      "fee": "₹6000 / Semester",
+      "sortOrder": 6,
+      "whatsappEnrollText": "Assalamu Alaikum, I want to enroll in Elementary Course In Islamic Education.",
+      "whatsappWaitlistText": "Assalamu Alaikum, please notify me when Elementary Course In Islamic Education registration opens."
+    }
+  ]
+}

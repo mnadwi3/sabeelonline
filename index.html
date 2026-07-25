@@ -41,7 +41,7 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=20260725teachersSeparator1">
+  <link rel="stylesheet" href="style.css?v=20260726sitemapNav1">
 
 
   <!-- Schema Markup -->
@@ -99,24 +99,24 @@
     <ul class="nav-list">
       <li><a href="#home" class="nav-link active">Home</a></li>
       <li><a href="#courses" class="nav-link">Courses</a></li>
-      <li><a href="#teachers" class="nav-link">Our Team</a></li>
       <li class="has-sub">
-        <a href="#about" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">About Us</a>
-        <ul class="nav-sub" aria-label="About submenu">
-          <li><a href="#why-us" class="nav-link">Why Choose Us</a></li>
+        <a href="#student-services" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">Student Services</a>
+        <ul class="nav-sub" aria-label="Student Services submenu">
+          <li><a href="student-portal/" class="nav-link">Student Portal</a></li>
+          <li><a href="student-portal/public/" class="nav-link">Results</a></li>
+          <li><a href="library/" class="nav-link">Digital Library</a></li>
         </ul>
       </li>
-      <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
       <li><a href="blog/" class="nav-link">Blog</a></li>
       <li class="has-sub">
-        <a href="student-portal/" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">Student
-          Portal</a>
-        <ul class="nav-sub" aria-label="Student Portal submenu">
-          <li><a href="student-portal/" class="nav-link">Results</a></li>
-          <li><a href="library/" class="nav-link">Library</a></li>
+        <a href="#about" class="nav-link nav-parent" aria-haspopup="true" aria-expanded="false">About</a>
+        <ul class="nav-sub" aria-label="About submenu">
+          <li><a href="#about" class="nav-link">About Us</a></li>
+          <li><a href="#teachers" class="nav-link">Our Team</a></li>
+          <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
         </ul>
       </li>
-      <li><a href="#contact" class="nav-link">Contact Us</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
     </ul>
   </nav>
   <div class="nav-backdrop" id="navBackdrop" hidden></div>
@@ -177,131 +177,231 @@
           <h2>Courses Offered</h2>
           <!--- <p>From Noorani Qaida to advanced Tafseer — structured paths for every age and level.</p>-->
         </header>
-        <div class="courses-grid" id="coursesGrid">
-          <article class="course-card reveal delay-1" data-name="Personal Tutoring" data-registration="open">
-            <div class="course-media">
-              <img src="assets/personal.png" alt="Personal Tutoring" loading="lazy" decoding="async" width="600"
-                height="360">
-              <span class="reg-badge is-open">Registration Open</span>
-            </div>
-            <div class="course-body">
-              <h3>Personal Tutoring</h3>
-              <p>Personalized live online tutoring designed to strengthen Islamic knowledge, Arabic language, and
-                academic understanding through flexible lessons with dedicated teacher support.</p>
-              <ul class="course-details">
-                <li><span>Duration</span><strong>6–12 Months</strong></li>
-                <li><span>Class Days</span><strong>3 Days / Week</strong></li>
-                <li><span>Fee</span><strong>₹1000 / month</strong></li>
-              </ul>
-              <a href="https://wa.me/918979983149?text=Assalamu%20Alaikum%2C%20I%20want%20to%20enroll%20in%20Personal%20Tutoring."
-                class="btn btn-primary" target="_blank" rel="noopener noreferrer">Enroll Now</a>
-            </div>
-          </article>
-
-          <article class="course-card reveal delay-2" data-name="Basic Urdu Course" data-registration="open">
-            <div class="course-media">
-              <img src="assets/urdu.png" alt="Basic Urdu Course" loading="lazy" decoding="async" width="600"
-                height="360">
-              <span class="reg-badge is-open">Registration Open</span>
-            </div>
-            <div class="course-body">
-              <h3>Basic Urdu Course</h3>
-              <p>A one-year online Basic Urdu Course designed for beginners seeking reading, writing, and speaking
-                skills through structured lessons with expert guidance and flexibility.</p>
-              <ul class="course-details">
-                <li><span>Duration</span><strong>Ongoing</strong></li>
-                <li><span>Class Days</span><strong>Flexible</strong></li>
-                <li><span>Fee</span><strong>₹1,500 / month</strong></li>
-              </ul>
-              <a href="https://wa.me/918979983149?text=Assalamu%20Alaikum%2C%20I%20want%20to%20enroll%20in%20Basic%20Urdu%20Course."
-                class="btn btn-primary" target="_blank" rel="noopener noreferrer">Enroll Now</a>
-            </div>
-          </article>
-          <article class="course-card is-closed reveal" data-name="Short Term Alimiyyat" data-registration="closed">
-            <div class="course-media">
-              <img src="assets/short.png" alt="Short Term Alimiyyat" loading="lazy" decoding="async" width="600"
-                height="360">
-              <span class="reg-badge is-closed">Registration Closed</span>
-            </div>
-            <div class="course-body">
-              <h3>Short Term Alimiyyat</h3>
-              <p>A three-year online Diploma in Alimiyyat designed for students and professionals seeking authentic
-                Islamic education through a structured curriculum with flexible weekend classes. </p>
-              <ul class="course-details">
-                <li><span>Duration</span><strong>3–Years</strong></li>
-                <li><span>Class Days</span><strong>Fri–Sat–Sun</strong></li>
-                <li><span>Fee</span><strong>₹6000 / Semester</strong></li>
-              </ul>
-              <a href="https://wa.me/918979983149?text=Assalamu%20Alaikum%2C%20please%20notify%20me%20when%20Short%20Term%20Alimiyyat%20registration%20opens."
-                class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Join Waitlist</a>
-            </div>
-          </article>
-
-          <article class="course-card is-closed reveal delay-1" data-name="Advanced Arabic Diploma"
-            data-registration="closed">
-            <div class="course-media">
-              <img src="assets/arabic.png" alt="Advanced Arabic Diploma" loading="lazy" decoding="async" width="600"
-                height="360">
-              <span class="reg-badge is-closed">Registration Closed</span>
-            </div>
-            <div class="course-body">
-              <h3>Advanced Arabic Diploma</h3>
-              <p>A one-year online Advanced Arabic diploma designed for students seeking comprehensive Arabic language
-                skills through structured lessons with expert guidance and flexible learning.</p>
-              <ul class="course-details">
-                <li><span>Duration</span><strong>12Months</strong></li>
-                <li><span>Class Days</span><strong>Mon– Tue – Wed</strong></li>
-                <li><span>Fee</span><strong>₹6,000 / Semester</strong></li>
-              </ul>
-              <a href="https://wa.me/918979983149?text=Assalamu%20Alaikum%2C%20please%20notify%20me%20when%20Advanced%20Arabic%20Diploma%20registration%20opens."
-                class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Join Waitlist</a>
-            </div>
-          </article>
-
-          <article class="course-card is-closed reveal delay-2" data-name="Translation of The Quran"
-            data-registration="closed">
-            <div class="course-media">
-              <img src="assets/quran.png" alt="Translation of The Quran" loading="lazy" decoding="async" width="600"
-                height="360">
-              <span class="reg-badge is-closed">Registration Closed</span>
-            </div>
-            <div class="course-body">
-              <h3>Translation of The Quran</h3>
-              <p>A one-year online Translation of The Quran course designed for students seeking deeper understanding of
-                Quranic meanings through structured lessons and guidance.</p>
-              <ul class="course-details">
-                <li><span>Duration</span><strong>12 Months</strong></li>
-                <li><span>Class Days</span><strong>Not Available</strong></li>
-                <li><span>Fee</span><strong>₹1000 / month</strong></li>
-              </ul>
-              <a href="https://wa.me/918979983149?text=Assalamu%20Alaikum%2C%20please%20notify%20me%20when%20Translation%20of%20The%20Quran%20registration%20opens."
-                class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Join Waitlist</a>
-            </div>
-          </article>
-
-          <article class="course-card is-closed reveal" data-name="Elementary Course In Islamic Education "
-            data-registration="closed">
-            <div class="course-media">
-              <img src="assets/element.png" alt="Elementary Course In Islamic Education " loading="lazy"
-                decoding="async" width="600" height="360">
-              <span class="reg-badge is-closed">Registration Closed</span>
-            </div>
-            <div class="course-body">
-              <h3>Elementary Course In Islamic Education </h3>
-              <p>A one-year online Elementary Course in Islamic Education designed for students seeking essential
-                Islamic knowledge through structured lessons with expert guidance and flexibility.</p>
-              <ul class="course-details">
-                <li><span>Duration</span><strong>12 Months</strong></li>
-                <li><span>Class Days</span><strong>3 Days / Week</strong></li>
-                <li><span>Fee</span><strong>₹6000 / Semester</strong></li>
-              </ul>
-              <a href="https://wa.me/918979983149?text=Assalamu%20Alaikum%2C%20please%20notify%20me%20when%20Elementary%20Course%20In%20Islamic%20Education%20registration%20opens."
-                class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Join Waitlist</a>
-            </div>
-          </article>
-
-
+        <!-- Course cards load from data/website-courses.json via Courses Admin -->
+        <div class="courses-grid" id="coursesGrid" aria-live="polite">
+          <p class="muted">Loading courses…</p>
         </div>
+      </div>
+    </section>
+
+
+    <!-- Student Services -->
+    <section class="section student-services" id="student-services">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">Student Services</span>
+          <h2>Academic Resources for Every Learner</h2>
+          <p>Access your results, digital library, and student portal — everything you need for a smooth learning journey.</p>
+        </header>
+        <div class="services-grid">
+          <article class="service-card reveal">
+            <div class="service-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>
+            </div>
+            <h3>Student Portal</h3>
+            <p>Sign in to manage your academic profile and stay connected with your learning progress.</p>
+            <a class="btn btn-primary" href="student-portal/">Open Portal</a>
+          </article>
+          <article class="service-card reveal delay-1">
+            <div class="service-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>
+            </div>
+            <h3>Results</h3>
+            <p>View and download your published marksheets securely with your Student ID.</p>
+            <a class="btn btn-primary" href="student-portal/public/">View Results</a>
+          </article>
+          <article class="service-card reveal delay-2">
+            <div class="service-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            </div>
+            <h3>Digital Library</h3>
+            <p>Explore curated course materials and PDF resources prepared for enrolled students.</p>
+            <a class="btn btn-primary" href="library/">Open Library</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <div class="section-soft-separator" aria-hidden="true"><span></span></div>
+
+    <!-- About -->
+    <section class="section about" id="about">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">About Us</span>
+          <h2>Sabeel Us Salaam Online</h2>
+          <p>Learn Quran. Learn Islam. Transform Your Life.</p>
+        </header>
+
+        <div class="about-intro reveal">
+          <p>Madarsa Sabeel-us-Salam Online provides various online courses. These courses are taught only through
+            <strong>live classes</strong> (not recorded ones). The Madarsa has a dedicated team of certified and
+            experienced teachers available for learners at all times through WhatsApp, where they may post queries about
+            anything they have doubts about.
+          </p>
+          <p>Madarsa Sabeel Us Salam Online, initiated under Ameen Educational Foundation with an eye to the present-day
+            needs and engagements of people, is a significant and religious missionary institution. As time is gliding
+            by, the Ulama are becoming cognizant and aware of the needs of the time. As people are getting more and more
+            preoccupied with the day, they are also complaining of the dearth of time. The engagements of life have
+            shackled people so extremely that it has become difficult for them to travel for the basic religious
+            education rewarding this life and the life hereafter. Consequently, they are bereft of basic Islamic
+            education, too. For this very purpose, the need of such an institution was being felt very strongly, where
+            every person (male and female) could attain Islamic education sparing themselves enough time and from long
+            and exhaustive journeys, so that their beliefs, prayers, other matters and every moment of life could follow
+            the prophetic precepts and be blessed thereupon.</p>
+
+          <h3>Aims and Objectives</h3>
+          <ul class="about-aims">
+            <li>To provide the best platform for Islamic Education, equipped with the latest technology.</li>
+            <li>Online publication and promotion of Islamic education.</li>
+            <li>Inviting and preaching the words of Tawheed to every human being.</li>
+            <li>Create a platform to conduct online education and training in a systematic manner.</li>
+            <li>Management of religious education for men and women (at any stage of life).</li>
+            <li>An online community section for questions related to the religion of Islam where they can be answered at
+              any time by an expert team.</li>
+            <li>Create a permanent online platform for women where every subject can be taught by lady teachers only.
+            </li>
+          </ul>
+
+          <h3>How It Started</h3>
+          <p>A number of Muslim brothers and sisters are busy with their businesses and college studies and desire to
+            learn Deen/Islam with a deep understanding, along with their current engagements. This was the real cause
+            and impetus that led to the establishment of Madarsa Sabeel-us-Salam Online. With this aim in mind, Madarsa
+            Sabeel-us-Salam commits itself to provide a trusted and authentic platform competent enough to teach and
+            lace the learners with the best Islamic Education in the comfort of their homes.</p>
+          <p>Therefore, the classes have been designed keeping learners of all age groups (above 15 years of age) in
+            mind. All learners need is a computer, laptop, or mobile and a fast internet connection — they are all set
+            to learn Deen.</p>
+        </div>
+
+        <div class="about-grid about-grid-3">
+          <article class="about-card reveal">
+            <h3>Our Mission</h3>
+            <p>To make authentic Quranic and Islamic education accessible to every household worldwide through caring,
+              qualified teachers and flexible online learning.</p>
+          </article>
+          <article class="about-card reveal delay-1">
+            <h3>Our Vision</h3>
+            <p>A generation connected to the Quran — reading with Tajweed, understanding with clarity, and living with
+              Iman — no matter where they live.</p>
+          </article>
+          <article class="about-card reveal delay-2">
+            <h3>Overview</h3>
+            <p>Sabeel Us-Salam Online is a trusted madarsa offering live Quran and Islamic studies classes for kids,
+              adults, sisters, brothers, and reverts across the world.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="section why-us" id="why-us">
+      <div class="container">
+        <header class="section-header reveal">
+          <h2>Why Choose Us</h2>
+          <p>Premium online Islamic education built around your schedule, your goals, and your family's values.</p>
+        </header>
+        <div class="features-grid">
+          <article class="feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z" />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+            </div>
+            <h3>Experienced &amp; Certified Teachers</h3>
+            <p>Highly qualified instructors with authentic ijazah and years of teaching experience.</p>
+          </article>
+          <article class="feature-card reveal delay-1">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="4" width="18" height="14" rx="2" />
+                <path d="M8 20h8M12 18v2" />
+                <circle cx="9" cy="10" r="1.5" />
+                <circle cx="15" cy="10" r="1.5" />
+              </svg>
+            </div>
+            <h3>Live Online Classes</h3>
+            <p>Interactive live classes with qualified teachers in structured learning batches.</p>
+          </article>
+          <article class="feature-card reveal delay-2">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="9" cy="8" r="3" />
+                <circle cx="15" cy="8" r="3" />
+                <path d="M3 20c0-3 3-5 6-5s6 2 6 5M12 15c3 0 6 2 6 5" />
+              </svg>
+            </div>
+            <h3>Availability of recordings</h3>
+            <p>Flexible learning options for students of all ages, with male and female tutors available to support your
+              Islamic education journey.</p>
+          </article>
+          <article class="feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+              </svg>
+            </div>
+            <h3>Affordable Fees</h3>
+            <p>Quality Islamic education at transparent, family-friendly pricing.</p>
+          </article>
+          <article class="feature-card reveal delay-2">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M4 19V5a2 2 0 012-2h12" />
+                <path d="M8 7h8M8 11h6M8 15h4" />
+                <path d="M4 19h16" />
+              </svg>
+            </div>
+            <h3>Interactive Learning</h3>
+            <p>Engaging live sessions with feedback, practice, and real-time correction.</p>
+          </article>
+          <article class="feature-card reveal">
+            <div class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20" />
+              </svg>
+            </div>
+            <h3>Worldwide Availability</h3>
+            <p>Students across the world join us every day from their homes.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learning Process -->
+    <section class="section process" id="process">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">Learning Process</span>
+          <h2>Your Path From Enrollment to Learning</h2>
+          <p>A clear, guided journey designed for lasting progress.</p>
+        </header>
+        <ol class="timeline timeline-4">
+          <li class="timeline-item reveal">
+            <span class="timeline-num">1</span>
+            <h3>Easy Enrollment</h3>
+            <p>Fill out a short registration form or contact us via WhatsApp to begin your learning journey.</p>
+          </li>
+          <li class="timeline-item reveal delay-1">
+            <span class="timeline-num">2</span>
+            <h3>Connect with Us</h3>
+            <p>Our team will contact you, understand your learning goals, and help you choose the right course and
+              teacher.</p>
+          </li>
+          <li class="timeline-item reveal delay-2">
+            <span class="timeline-num">3</span>
+            <h3>Free Trial Class</h3>
+            <p>Attend a free live trial class and experience our teaching method before enrolling.</p>
+          </li>
+          <li class="timeline-item reveal delay-3">
+            <span class="timeline-num">4</span>
+            <h3>Start Learning</h3>
+            <p>Complete your enrollment and begin live Quran and Islamic studies classes at your preferred schedule.</p>
+          </li>
+        </ol>
       </div>
     </section>
 
@@ -446,263 +546,8 @@
       </div>
     </section>
 
-    <div class="teachers-about-separator" aria-hidden="true">
-      <span></span>
-    </div>
 
-    <!-- Success Stories 
-    <section class="section success" id="success">
-      <div class="container">
-        <header class="section-header reveal">
-          <span class="section-eyebrow">Student Success Stories</span>
-          <h2>Real Progress. Real Transformation.</h2>
-          <p>See how students grow in Quran fluency, confidence, and love for Islamic knowledge.</p>
-        </header>
-        <div class="success-stats reveal">
-          <div><strong>Premium</strong><span>Courses</span></div>
-          <div><strong>100%</strong><span>Online Learning</span></div>
-          <div><strong>24/7</strong><span>Student Support</span></div>
-        </div>
-        <div class="success-grid">
-          <article class="success-card reveal">
-            <div class="success-video" role="img" aria-label="Video testimonial placeholder">
-              <button type="button" class="play-btn" aria-label="Play testimonial video">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M8 5v14l11-7z"/></svg>
-              </button>
-              <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=700&q=80" alt="" loading="lazy" decoding="async">
-            </div>
-            <div class="success-body">
-              <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-              <h3>From Qaida to Fluent Reading</h3>
-              <p>Amina, age 9, went from recognizing letters to reading Juz Amma with confidence in 8 months.</p>
-              <div class="journey">
-                <span>Before: Alphabet stage</span>
-                <span aria-hidden="true">→</span>
-                <span>After: Fluent Juz Amma</span>
-              </div>
-            </div>
-          </article>
-          <article class="success-card reveal delay-1">
-            <div class="success-video" role="img" aria-label="Video testimonial placeholder">
-              <button type="button" class="play-btn" aria-label="Play testimonial video">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M8 5v14l11-7z"/></svg>
-              </button>
-              <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=700&q=80" alt="" loading="lazy" decoding="async">
-            </div>
-            <div class="success-body">
-              <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-              <h3>Professional Finds Balance</h3>
-              <p>Omar balanced a full-time job with Tajweed classes and completed his course in under a year.</p>
-              <div class="journey">
-                <span>Before: Irregular recitation</span>
-                <span aria-hidden="true">→</span>
-                <span>After: Tajweed certified</span>
-              </div>
-            </div>
-          </article>
-          <article class="success-card reveal delay-2">
-            <div class="success-video" role="img" aria-label="Video testimonial placeholder">
-              <button type="button" class="play-btn" aria-label="Play testimonial video">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M8 5v14l11-7z"/></svg>
-              </button>
-              <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=700&q=80" alt="" loading="lazy" decoding="async">
-            </div>
-            <div class="success-body">
-              <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-              <h3>Revert Finds Community</h3>
-              <p>Sarah, a new Muslim, built a strong foundation in Salah, duas, and Quran reading with a female teacher.</p>
-              <div class="journey">
-                <span>Before: New to Islam</span>
-                <span aria-hidden="true">→</span>
-                <span>After: Confident worship</span>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-    -->
-
-    <!-- About -->
-    <section class="section about" id="about">
-      <div class="container">
-        <header class="section-header reveal">
-          <span class="section-eyebrow">About Madarsa</span>
-          <h2>Sabeel Us Salaam Online</h2>
-          <p>Learn Quran. Learn Islam. Transform Your Life.</p>
-        </header>
-
-        <div class="about-intro reveal">
-          <p>Madarsa Sabeel-us-Salam Online provides various online courses. These courses are taught only through
-            <strong>live classes</strong> (not recorded ones). The Madarsa has a dedicated team of certified and
-            experienced teachers available for learners at all times through WhatsApp, where they may post queries about
-            anything they have doubts about.
-          </p>
-          <p>Madarsa Sabeel Us Salam Online, initiated under Ameen Educational Foundation with an eye to the present-day
-            needs and engagements of people, is a significant and religious missionary institution. As time is gliding
-            by, the Ulama are becoming cognizant and aware of the needs of the time. As people are getting more and more
-            preoccupied with the day, they are also complaining of the dearth of time. The engagements of life have
-            shackled people so extremely that it has become difficult for them to travel for the basic religious
-            education rewarding this life and the life hereafter. Consequently, they are bereft of basic Islamic
-            education, too. For this very purpose, the need of such an institution was being felt very strongly, where
-            every person (male and female) could attain Islamic education sparing themselves enough time and from long
-            and exhaustive journeys, so that their beliefs, prayers, other matters and every moment of life could follow
-            the prophetic precepts and be blessed thereupon.</p>
-
-          <h3>Aims and Objectives</h3>
-          <ul class="about-aims">
-            <li>To provide the best platform for Islamic Education, equipped with the latest technology.</li>
-            <li>Online publication and promotion of Islamic education.</li>
-            <li>Inviting and preaching the words of Tawheed to every human being.</li>
-            <li>Create a platform to conduct online education and training in a systematic manner.</li>
-            <li>Management of religious education for men and women (at any stage of life).</li>
-            <li>An online community section for questions related to the religion of Islam where they can be answered at
-              any time by an expert team.</li>
-            <li>Create a permanent online platform for women where every subject can be taught by lady teachers only.
-            </li>
-          </ul>
-
-          <h3>How It Started</h3>
-          <p>A number of Muslim brothers and sisters are busy with their businesses and college studies and desire to
-            learn Deen/Islam with a deep understanding, along with their current engagements. This was the real cause
-            and impetus that led to the establishment of Madarsa Sabeel-us-Salam Online. With this aim in mind, Madarsa
-            Sabeel-us-Salam commits itself to provide a trusted and authentic platform competent enough to teach and
-            lace the learners with the best Islamic Education in the comfort of their homes.</p>
-          <p>Therefore, the classes have been designed keeping learners of all age groups (above 15 years of age) in
-            mind. All learners need is a computer, laptop, or mobile and a fast internet connection — they are all set
-            to learn Deen.</p>
-        </div>
-
-        <div class="about-grid about-grid-3">
-          <article class="about-card reveal">
-            <h3>Our Mission</h3>
-            <p>To make authentic Quranic and Islamic education accessible to every household worldwide through caring,
-              qualified teachers and flexible online learning.</p>
-          </article>
-          <article class="about-card reveal delay-1">
-            <h3>Our Vision</h3>
-            <p>A generation connected to the Quran — reading with Tajweed, understanding with clarity, and living with
-              Iman — no matter where they live.</p>
-          </article>
-          <article class="about-card reveal delay-2">
-            <h3>Overview</h3>
-            <p>Sabeel Us-Salam Online is a trusted madarsa offering live Quran and Islamic studies classes for kids,
-              adults, sisters, brothers, and reverts across the world.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- Why Choose Us -->
-    <section class="section why-us" id="why-us">
-      <div class="container">
-        <header class="section-header reveal">
-          <span class="section-eyebrow">Why Choose Us</span>
-          <h2>Why Choose Us</h2>
-          <p>Premium online Islamic education built around your schedule, your goals, and your family's values.</p>
-        </header>
-        <div class="features-grid">
-          <article class="feature-card reveal">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z" />
-                <path d="M9 12l2 2 4-4" />
-              </svg>
-            </div>
-            <h3>Experienced &amp; Certified Teachers</h3>
-            <p>Highly qualified instructors with authentic ijazah and years of teaching experience.</p>
-          </article>
-          <article class="feature-card reveal delay-1">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <rect x="3" y="4" width="18" height="14" rx="2" />
-                <path d="M8 20h8M12 18v2" />
-                <circle cx="9" cy="10" r="1.5" />
-                <circle cx="15" cy="10" r="1.5" />
-              </svg>
-            </div>
-            <h3>Live Online Classes</h3>
-            <p>Interactive live classes with qualified teachers in structured learning batches.</p>
-          </article>
-          <article class="feature-card reveal delay-2">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <circle cx="9" cy="8" r="3" />
-                <circle cx="15" cy="8" r="3" />
-                <path d="M3 20c0-3 3-5 6-5s6 2 6 5M12 15c3 0 6 2 6 5" />
-              </svg>
-            </div>
-            <h3>Availability of recordings</h3>
-            <p>Flexible learning options for students of all ages, with male and female tutors available to support your
-              Islamic education journey.</p>
-          </article>
-          <article class="feature-card reveal">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
-              </svg>
-            </div>
-            <h3>Affordable Fees</h3>
-            <p>Quality Islamic education at transparent, family-friendly pricing.</p>
-          </article>
-          <article class="feature-card reveal delay-2">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M4 19V5a2 2 0 012-2h12" />
-                <path d="M8 7h8M8 11h6M8 15h4" />
-                <path d="M4 19h16" />
-              </svg>
-            </div>
-            <h3>Interactive Learning</h3>
-            <p>Engaging live sessions with feedback, practice, and real-time correction.</p>
-          </article>
-          <article class="feature-card reveal">
-            <div class="feature-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20" />
-              </svg>
-            </div>
-            <h3>Worldwide Availability</h3>
-            <p>Students across the world join us every day from their homes.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- Learning Process -->
-    <section class="section process" id="process">
-      <div class="container">
-        <header class="section-header reveal">
-          <span class="section-eyebrow">Learning Process</span>
-          <h2>Your Path From Enrollment to Learning</h2>
-          <p>A clear, guided journey designed for lasting progress.</p>
-        </header>
-        <ol class="timeline timeline-4">
-          <li class="timeline-item reveal">
-            <span class="timeline-num">1</span>
-            <h3>Easy Enrollment</h3>
-            <p>Fill out a short registration form or contact us via WhatsApp to begin your learning journey.</p>
-          </li>
-          <li class="timeline-item reveal delay-1">
-            <span class="timeline-num">2</span>
-            <h3>Connect with Us</h3>
-            <p>Our team will contact you, understand your learning goals, and help you choose the right course and
-              teacher.</p>
-          </li>
-          <li class="timeline-item reveal delay-2">
-            <span class="timeline-num">3</span>
-            <h3>Free Trial Class</h3>
-            <p>Attend a free live trial class and experience our teaching method before enrolling.</p>
-          </li>
-          <li class="timeline-item reveal delay-3">
-            <span class="timeline-num">4</span>
-            <h3>Start Learning</h3>
-            <p>Complete your enrollment and begin live Quran and Islamic studies classes at your preferred schedule.</p>
-          </li>
-        </ol>
-      </div>
-    </section>
+    <div class="section-soft-separator" aria-hidden="true"><span></span></div>
 
     <!-- Testimonials Marquee -->
     <section class="section testimonials" id="testimonials" aria-label="Student testimonials">
@@ -751,6 +596,22 @@
             with Tajweed." — <cite>Mrs. Ayesha, Saudi Arabia</cite></blockquote>
           <blockquote class="marquee-item" aria-hidden="true">"Professional, punctual, and sincere teaching. Highly
             recommended." — <cite>Mr. Imran, Qatar</cite></blockquote>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Latest Blog -->
+    <section class="section latest-blog" id="latest-blog">
+      <div class="container">
+        <header class="section-header reveal">
+          <span class="section-eyebrow">Latest Blog</span>
+          <h2>Insights from Our Teachers</h2>
+          <p>Articles and learning notes to support your Quran and Islamic studies journey.</p>
+        </header>
+        <div class="latest-blog-cta reveal">
+          <p>Browse published posts from Sabeel Us Salaam Online educators.</p>
+          <a class="btn btn-primary" href="blog/">Visit Blog</a>
         </div>
       </div>
     </section>
@@ -828,12 +689,6 @@
               <label for="course">Course</label>
               <select id="course" name="course" required>
                 <option value="">Select a course</option>
-                <option value="Personal Tutoring">Personal Tutoring</option>
-                <option value="Basic Urdu Course">Basic Urdu Course</option>
-                <option value="Short Term Alimiyyat">Short Term Alimiyyat</option>
-                <option value="Advanced Arabic Diploma">Advanced Arabic Diploma</option>
-                <option value="Translation of The Quran">Translation of The Quran</option>
-                <option value="Elementary Course In Islamic Education">Elementary Course In Islamic Education</option>
               </select>
             </div>
             <div class="form-group">
@@ -912,14 +767,16 @@
         <ul class="footer-links">
           <li><a href="#home">Home</a></li>
           <li><a href="#courses">Courses</a></li>
-          <li><a href="#teachers">Our Team</a></li>
-          <li><a href="#about">About Us</a></li>
-          <li><a href="#why-us">Why Choose Us</a></li>
-          <li><a href="#testimonials">Testimonials</a></li>
-          <li><a href="blog/">Blog</a></li>
+          <li><a href="#student-services">Student Services</a></li>
           <li><a href="student-portal/">Student Portal</a></li>
-          <li><a href="library/">Library</a></li>
-          <li><a href="#contact">Contact Us</a></li>
+          <li><a href="student-portal/public/">Results</a></li>
+          <li><a href="library/">Digital Library</a></li>
+          <li><a href="blog/">Blog</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#teachers">Our Team</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="courses-admin.html">Courses Admin</a></li>
         </ul>
       </div>
       <div>
@@ -982,7 +839,8 @@
     </div>
   </div>
 
-  <script src="script.js?v=20260725singleHero" defer></script>
+  <script src="script.js?v=20260726sitemapNav1" defer></script>
+  <script src="js/website-courses.js?v=20260726sitemapNav1" defer></script>
 </body>
 
 </html>

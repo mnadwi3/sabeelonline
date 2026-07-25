@@ -597,23 +597,28 @@ table.data.marks-entry-table {
   font-weight: 500;
 }
 .ms-meta {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 1.25rem;
-  align-items: start;
+  display: block;
   margin-bottom: 1.1rem;
-  padding: 0.85rem 0.15rem 1rem;
-  border-top: 1px solid var(--ms-line);
-  border-bottom: 1px solid var(--ms-line);
+  padding: 0;
+  border: 0;
   background: transparent;
-  border-radius: 0;
 }
-.ms-info {
+.ms-meta-heading {
+  padding: 0.38rem 0.65rem;
+  background: #006878;
+  color: #fff;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.ms-meta .ms-info {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.45rem 2rem;
+  grid-template-columns: 1fr;
+  gap: 2px;
   width: 100%;
-  text-align: left;
+  padding: 2px;
+  background: #fff;
+  border: 1px solid #aeb8c4;
 }
 .ms-info-bold {
   font-weight: 600;
@@ -627,27 +632,36 @@ table.data.marks-entry-table {
   text-align: left;
   min-width: 0;
 }
-.ms-row {
+.ms-meta .ms-row {
   display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 0.35rem;
-  align-items: baseline;
+  grid-template-columns: 138px minmax(0, 1fr);
+  gap: 2px;
+  align-items: stretch;
   text-align: left;
 }
-.ms-label {
-  font-weight: 600;
-  color: #5b6b82;
-  text-align: left;
-  font-size: 0.86rem;
+.ms-meta .ms-label {
+  display: flex;
+  align-items: center;
+  padding: 0.34rem 0.5rem;
+  background: #006878;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.84rem;
 }
-.ms-label::after {
-  content: ':';
-}
-.ms-value {
+.ms-meta .ms-label::after { content: ''; }
+.ms-meta .ms-value {
+  min-width: 0;
+  padding: 0.34rem 0.6rem;
+  border: 1px solid #aeb8c4;
+  background: #fff;
   font-weight: 600;
   color: var(--ms-ink);
-  text-align: left;
+  text-align: center;
   word-break: break-word;
+}
+.ms-meta .ms-photo {
+  display: block;
+  margin: 0.75rem auto 0;
 }
 .ms-photo {
   width: 92px;
@@ -813,6 +827,14 @@ table.data.marks-entry-table {
 }
 .not-found h2 { color: var(--royal-deep); font-size: 2.2rem; }
 .actions-bar { display: flex; gap: 0.75rem; flex-wrap: wrap; margin: 1rem 0; align-items: center; }
+.marksheet-actions {
+  justify-content: center;
+  margin: 1.25rem auto 0;
+}
+.marksheet-download-hint {
+  text-align: center;
+  margin: 0.6rem auto 1.25rem;
+}
 .actions-bar .btn[disabled] { opacity: 0.7; cursor: wait; }
 
 /* Offscreen clone (legacy) */
@@ -978,29 +1000,25 @@ table.data.marks-entry-table {
   .ms-meta {
     gap: 0.5rem;
     margin-bottom: 0.5rem;
-    padding: 0.5rem 0.55rem;
-    border-width: 1px;
-    border-radius: 6px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
   }
-  .ms-info {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.25rem 0.65rem;
+  .ms-meta .ms-info {
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 2px;
   }
   .ms-info-bold { font-size: 0.78rem; }
   .ms-col { gap: 0.22rem; }
-  .ms-row {
-    grid-template-columns: 1fr;
-    gap: 0;
+  .ms-meta .ms-row {
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 2px;
   }
-  .ms-label {
-    font-size: 0.65rem;
-    font-weight: 700;
-    opacity: 0.75;
-    line-height: 1.2;
-  }
-  .ms-value {
-    font-size: 0.78rem;
-    font-weight: 700;
+  .ms-meta .ms-label,
+  .ms-meta .ms-value {
+    padding: 0.3rem 0.4rem;
+    font-size: 0.72rem;
     line-height: 1.25;
   }
   .ms-photo {

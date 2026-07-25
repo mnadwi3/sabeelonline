@@ -42,7 +42,7 @@ if ($viewId > 0) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Portal — <?= e(app_config('app_name')) ?></title>
-  <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>?v=20260725selects1">
+  <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>?v=20260725studentinfo1">
 </head>
 <body class="portal-page">
 <?php if (!$searched || !$results): ?>
@@ -109,7 +109,8 @@ if ($viewId > 0) {
   </div>
 <?php else: ?>
   <div class="portal-shell portal-shell-wide">
-    <div class="actions-bar no-print">
+    <?php render_marksheet($view, false); ?>
+    <div class="actions-bar marksheet-actions no-print">
       <a class="btn btn-outline" href="<?= e(base_url('public/index.php')) ?>">New search</a>
       <?php if (count($results) > 1): ?>
         <a class="btn btn-outline" href="<?= e(base_url('public/index.php?q=' . urlencode($query))) ?>">All semesters</a>
@@ -117,8 +118,7 @@ if ($viewId > 0) {
       <button class="btn btn-primary" type="button" id="btnDownloadPdf">Download PDF</button>
       <button class="btn btn-emerald" type="button" id="btnDownloadImage">Download Image</button>
     </div>
-    <p class="download-hint no-print muted">Use <strong>Download PDF</strong> or <strong>Download Image</strong> for a clean copy (no blank page space). Browser Print always uses full A4.</p>
-    <?php render_marksheet($view, false); ?>
+    <p class="download-hint marksheet-download-hint no-print muted">Use <strong>Download PDF</strong> or <strong>Download Image</strong> for a clean copy (no blank page space). Browser Print always uses full A4.</p>
   </div>
 <?php endif; ?>
 <script src="<?= e(asset('js/app.js')) ?>?v=20260725pad1"></script>

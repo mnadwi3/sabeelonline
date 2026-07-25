@@ -177,19 +177,15 @@ function render_marksheet(array $r, bool $showPrintBar = true): void
         <?php endif; ?>
 
         <div class="ms-meta">
+          <div class="ms-meta-heading">Student Information</div>
           <div class="ms-info ms-info-bold">
-            <div class="ms-col">
-              <div class="ms-row"><span class="ms-label">Student ID</span><span class="ms-value"><?= e($studentId ?: '—') ?></span></div>
-              <div class="ms-row"><span class="ms-label">Name</span><span class="ms-value"><?= e($r['s_name_e'] ?? '—') ?></span></div>
-              <div class="ms-row"><span class="ms-label">Date of Birth</span><span class="ms-value"><?= e(format_date($r['dob'] ?? null)) ?></span></div>
-              <div class="ms-row"><span class="ms-label">Semester Year</span><span class="ms-value"><?= e($r['semester_year'] ?? '—') ?></span></div>
-            </div>
-            <div class="ms-col">
-              <div class="ms-row"><span class="ms-label">Roll No</span><span class="ms-value"><?= e($r['student_roll_no'] ?? $r['roll_no']) ?></span></div>
-              <div class="ms-row"><span class="ms-label">Father's Name</span><span class="ms-value"><?= e($r['f_name_e'] ?? '—') ?></span></div>
-              <div class="ms-row"><span class="ms-label">Semester</span><span class="ms-value"><?= e($r['semester'] ?? '—') ?></span></div>
-              <div class="ms-row"><span class="ms-label">Address</span><span class="ms-value"><?= e($r['address_e'] ?? '—') ?></span></div>
-            </div>
+            <div class="ms-row"><span class="ms-label">Admission No</span><span class="ms-value"><?= e((string) ($r['student_id'] ?? $r['admin_no'] ?? '—')) ?></span></div>
+            <div class="ms-row"><span class="ms-label">Roll No</span><span class="ms-value"><?= e($r['student_roll_no'] ?? $r['roll_no']) ?></span></div>
+            <div class="ms-row"><span class="ms-label">Student ID</span><span class="ms-value"><?= e($studentId ?: '—') ?></span></div>
+            <div class="ms-row"><span class="ms-label">Student Name</span><span class="ms-value"><?= e($r['s_name_e'] ?? '—') ?></span></div>
+            <div class="ms-row"><span class="ms-label">Father Name</span><span class="ms-value"><?= e($r['f_name_e'] ?? '—') ?></span></div>
+            <div class="ms-row"><span class="ms-label">Date of Birth</span><span class="ms-value"><?= e(format_date($r['dob'] ?? null)) ?></span></div>
+            <div class="ms-row"><span class="ms-label">Address</span><span class="ms-value"><?= e($r['address_e'] ?? '—') ?></span></div>
           </div>
           <?php if ($photo): ?>
             <img class="ms-photo" src="<?= e($photo) ?>" alt="Photo">
@@ -256,12 +252,12 @@ function render_marksheet(array $r, bool $showPrintBar = true): void
       </div>
     </div>
     <?php if ($showPrintBar): ?>
-    <div class="actions-bar no-print">
+    <div class="actions-bar marksheet-actions no-print">
       <button class="btn btn-primary" type="button" id="btnDownloadPdf">Download PDF</button>
       <button class="btn btn-emerald" type="button" id="btnDownloadImage">Download Image</button>
       <a class="btn btn-outline" href="javascript:history.back()">Back</a>
     </div>
-    <p class="download-hint no-print muted">Use Download PDF or Download Image for the full marksheet (signatures + grading). Browser Print may clip or add blank A4 space.</p>
+    <p class="download-hint marksheet-download-hint no-print muted">Use Download PDF or Download Image for the full marksheet (signatures + grading). Browser Print may clip or add blank A4 space.</p>
     <?php endif; ?>
     <?php
 }

@@ -1122,6 +1122,38 @@ main:not(:has(.hero)) {
   gap: 1.5rem;
 }
 
+/* Soft transition from the teachers section into About Madarsa */
+.teachers-about-separator {
+  position: relative;
+  height: 84px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 50% 100% at 50% 100%, rgba(132, 196, 240, 0.32), transparent 72%),
+    linear-gradient(180deg, #ffffff 0%, #edf7ff 56%, #dceffd 100%);
+}
+.teachers-about-separator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(61, 139, 253, 0.22) 20%, rgba(61, 139, 253, 0.5) 50%, rgba(61, 139, 253, 0.22) 80%, transparent 100%);
+}
+.teachers-about-separator span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  border: 3px solid #f8fcff;
+  border-radius: 3px;
+  background: #65aef0;
+  box-shadow: 0 0 0 1px rgba(61, 139, 253, 0.38), 0 4px 12px rgba(61, 139, 253, 0.2);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
 .teacher-card {
   position: relative;
   background: var(--white);

@@ -221,8 +221,35 @@ table.data th {
 table.data tr:hover td { background: #fafbff; }
 
 /* Marks entry: compact columns keep score inputs easy to scan. */
+.marks-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: stretch;
+}
+.marks-overview .card {
+  margin: 0;
+  padding: 1rem 1.1rem;
+}
+.marks-overview h2 {
+  font-size: 1.2rem;
+}
+.marks-overview .form-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.marks-overview .form-grid > :first-child {
+  grid-column: span 2;
+}
+.marks-overview .ms-info {
+  grid-template-columns: 1fr 1fr !important;
+  gap: 0.45rem 1rem;
+  font-size: 0.9rem;
+}
 .marks-entry-card {
-  max-width: 900px;
+  width: 100%;
+  padding: 1rem 1.1rem;
 }
 .marks-entry-card h2 {
   font-size: 1.2rem;
@@ -255,6 +282,46 @@ table.data.marks-entry-table {
 }
 .marks-entry-table .obt-marks {
   max-width: 10rem;
+}
+@media (max-width: 1100px) {
+  .marks-overview {
+    grid-template-columns: 1fr;
+  }
+  .marks-overview .form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+  .marks-overview .form-grid > :first-child {
+    grid-column: auto;
+  }
+}
+@media (min-width: 1001px) {
+  .marks-entry-form {
+    display: grid;
+    grid-template-columns: minmax(420px, 1fr) minmax(230px, 280px);
+    grid-template-areas:
+      "table summary"
+      "table settings"
+      "table actions";
+    gap: 0.75rem 1rem;
+    align-items: start;
+  }
+  .marks-entry-form > .marks-entry-table-wrap { grid-area: table; max-width: none; }
+  .marks-entry-form > .ms-summary {
+    grid-area: summary;
+    grid-template-columns: 1fr 1fr;
+    margin: 0;
+  }
+  .marks-entry-form > .form-grid {
+    grid-area: settings;
+    margin: 0;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+  .marks-entry-form > .actions-bar {
+    grid-area: actions;
+    margin: 0;
+  }
+  .marks-entry-form > .actions-bar .btn { width: 100%; }
 }
 .badge {
   display: inline-block;

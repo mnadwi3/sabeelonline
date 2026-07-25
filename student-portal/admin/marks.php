@@ -193,54 +193,58 @@ require __DIR__ . '/../includes/admin_header.php';
   Har semester ka marksheet alag save / download hota hai.
 </div>
 
-<div class="card marks-select-card mb-2">
-  <h2>1. Select Student</h2>
-  <form method="get" class="form-grid mt-2">
-    <div>
-      <label>Roll No *</label>
-      <select name="roll_no" required onchange="this.form.submit()">
-        <option value="">— Select Roll No —</option>
-        <?php foreach ($allRolls as $r): ?>
-          <option value="<?= e($r['roll_no']) ?>" <?= $roll === $r['roll_no'] ? 'selected' : '' ?>>
-            <?= e($r['roll_no'] . ' — ' . $r['s_name_e']) ?>
-          </option>
-        <?php endforeach; ?>
-      </select>
-    </div>
-    <?php if ($student): ?>
+<div class="marks-overview">
+  <div class="card marks-select-card">
+    <h2>1. Select Student</h2>
+    <form method="get" class="form-grid mt-2">
       <div>
-        <label>Semester for this result *</label>
-        <select name="semester" required onchange="this.form.submit()">
-          <option value="">— Select —</option>
-          <?php foreach ($semesters as $sem): ?>
-            <option value="<?= e($sem) ?>" <?= $selectedSem === $sem ? 'selected' : '' ?>><?= e($sem) ?></option>
+        <label>Roll No *</label>
+        <select name="roll_no" required onchange="this.form.submit()">
+          <option value="">— Select Roll No —</option>
+          <?php foreach ($allRolls as $r): ?>
+            <option value="<?= e($r['roll_no']) ?>" <?= $roll === $r['roll_no'] ? 'selected' : '' ?>>
+              <?= e($r['roll_no'] . ' — ' . $r['s_name_e']) ?>
+            </option>
           <?php endforeach; ?>
         </select>
       </div>
-      <div>
-        <label>Semester Year *</label>
-        <input name="semester_year" required placeholder="e.g. 2026" value="<?= e($selectedYear) ?>"
-               onchange="this.form.submit()">
-      </div>
-      <div style="display:flex;align-items:end">
-        <button class="btn btn-outline" type="submit">Load</button>
-      </div>
-    <?php endif; ?>
-  </form>
+      <?php if ($student): ?>
+        <div>
+          <label>Semester for this result *</label>
+          <select name="semester" required onchange="this.form.submit()">
+            <option value="">— Select —</option>
+            <?php foreach ($semesters as $sem): ?>
+              <option value="<?= e($sem) ?>" <?= $selectedSem === $sem ? 'selected' : '' ?>><?= e($sem) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div>
+          <label>Semester Year *</label>
+          <input name="semester_year" required placeholder="e.g. 2026" value="<?= e($selectedYear) ?>"
+                 onchange="this.form.submit()">
+        </div>
+        <div style="display:flex;align-items:end">
+          <button class="btn btn-outline" type="submit">Load</button>
+        </div>
+      <?php endif; ?>
+    </form>
+  </div>
+
+  <?php if ($student): ?>
+  <div class="card marks-student-card">
+    <h2>2. Student</h2>
+    <div class="ms-info mt-2" style="grid-template-columns:1fr 1fr 1fr">
+      <div><strong>Name:</strong> <?= e($student['s_name_e']) ?></div>
+      <div><strong>Roll No:</strong> <?= e($student['roll_no']) ?></div>
+      <div><strong>Course:</strong> <?= e($student['course_name'] ?? '—') ?></div>
+      <div><strong>Current semester (profile):</strong> <?= e($student['semester'] ?? '—') ?> / <?= e($student['semester_year'] ?? '—') ?></div>
+      <div><strong>Entering marks for:</strong> <?= e($selectedSem ?: '—') ?> / <?= e($selectedYear ?: '—') ?></div>
+    </div>
+  </div>
+  <?php endif; ?>
 </div>
 
 <?php if ($student): ?>
-<div class="card marks-student-card mb-2">
-  <h2>2. Student</h2>
-  <div class="ms-info mt-2" style="grid-template-columns:1fr 1fr 1fr">
-    <div><strong>Name:</strong> <?= e($student['s_name_e']) ?></div>
-    <div><strong>Roll No:</strong> <?= e($student['roll_no']) ?></div>
-    <div><strong>Course:</strong> <?= e($student['course_name'] ?? '—') ?></div>
-    <div><strong>Current semester (profile):</strong> <?= e($student['semester'] ?? '—') ?> / <?= e($student['semester_year'] ?? '—') ?></div>
-    <div><strong>Entering marks for:</strong> <?= e($selectedSem ?: '—') ?> / <?= e($selectedYear ?: '—') ?></div>
-  </div>
-</div>
-
 <?php if ($history): ?>
 <div class="card mb-2">
   <h2>Saved semester results (all kept)</h2>

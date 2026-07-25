@@ -159,6 +159,19 @@ function verify_csrf(?string $token): bool
 }
 
 /**
+ * Public display name for a post author.
+ * Uses custom writer name when set; otherwise the account name.
+ */
+function post_author_name(array $post): string
+{
+    $custom = trim((string) ($post['author_name'] ?? ''));
+    if ($custom !== '') {
+        return $custom;
+    }
+    return trim((string) ($post['teacher_name'] ?? 'Author'));
+}
+
+/**
  * Turn plain blog text into HTML paragraphs (tighter, cleaner spacing)
  * - Splits on blank lines into <p> tags
  * - Single line breaks become <br>

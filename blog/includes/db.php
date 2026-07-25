@@ -57,3 +57,29 @@ function db_run(PDO $pdo, string $sql, array $params = []): bool
     $stmt = $pdo->prepare($sql);
     return $stmt->execute($params);
 }
+
+/**
+ * Ensure posts.author_name exists (public writer name on articles).
+ */
+function ensure_blog_author_column(PDO $pdo): void
+{
+    static $done = false;
+    if ($done) {
+        return;
+    }
+    $done = true;
+
+    try {
+        $stmt = $pdo->query("SHOW COLUMNS FROM posts LIKE 'author_name'");
+        $exists = $stmt && $stmt->fetch();
+        if (!$exists) {
+            $pdo->exec("ALTER TABLE posts ADD COLUMN author_name VARCHAR(120) NULL AFTER teacher_id");
+        }
+    } catch (Throwable $e) {
+        error_log('ensure_blog_author_column: ' . $e->getMessage());
+    }
+}
+
+if (isset($pdo) && $pdo instanceof PDO) {
+    ensure_blog_author_column($pdo);
+}

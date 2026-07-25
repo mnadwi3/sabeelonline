@@ -52,7 +52,7 @@ require_once __DIR__ . '/includes/header.php';
             <p class="excerpt">
               <?php echo e($post['short_description'] ?: substr(strip_tags($post['content']), 0, 120) . '...'); ?>
             </p>
-            <div class="post-meta">By <?php echo e($post['teacher_name']); ?></div>
+            <div class="post-meta">By <?php echo e(post_author_name($post)); ?></div>
             <a class="btn btn-sm btn-primary read-more-btn" href="post.php?slug=<?php echo e(urlencode($post['slug'])); ?>">Read More</a>
           </div>
         </article>

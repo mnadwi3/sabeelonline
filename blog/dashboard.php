@@ -95,7 +95,7 @@ require_once __DIR__ . '/includes/header.php';
           <tr>
             <td><?php echo e($post['title']); ?></td>
             <?php if (is_admin()): ?>
-              <td><?php echo e($post['teacher_name']); ?></td>
+              <td><?php echo e(post_author_name($post)); ?></td>
             <?php endif; ?>
             <td>
               <span class="badge badge-<?php echo e($post['status']); ?>">

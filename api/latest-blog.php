@@ -61,10 +61,13 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
 }
 
 try {
+    if (function_exists('ensure_blog_author_column')) {
+        ensure_blog_author_column($pdo);
+    }
     $rows = db_all(
         $pdo,
         "SELECT p.title, p.slug, p.featured_image, p.short_description, p.content,
-                p.published_at, p.created_at,
+                p.published_at, p.created_at, p.author_name,
                 t.name AS teacher_name,
                 c.name AS category_name
          FROM posts p
@@ -89,7 +92,9 @@ foreach ($rows as $row) {
         'image' => latest_blog_image($row['featured_image'] ?? null),
         'excerpt' => latest_blog_excerpt($row),
         'category' => (string) ($row['category_name'] ?: 'General'),
-        'author' => (string) ($row['teacher_name'] ?? ''),
+        'author' => (string) (trim((string) ($row['author_name'] ?? '')) !== ''
+            ? $row['author_name']
+            : ($row['teacher_name'] ?? '')),
         'date' => $dateRaw !== '' ? date('d M Y', strtotime($dateRaw)) : '',
     ];
 }

@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $title = trim($_POST['title'] ?? '');
     $slug = trim($_POST['slug'] ?? '');
+    $authorName = trim($_POST['author_name'] ?? '');
     $content = trim($_POST['content'] ?? '');
     $tags = trim($_POST['tags'] ?? '');
     $metaTitle = trim($_POST['meta_title'] ?? '');
@@ -42,6 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($title === '' || $content === '') {
         $error = 'Title and Content are required.';
+    } elseif (strlen($authorName) > 120) {
+        $error = 'Writer name must be 120 characters or less.';
     } else {
         try {
             $slug = $slug !== '' ? make_slug($slug) : make_slug($title);
@@ -75,13 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo,
                 "UPDATE posts SET
                     title = ?, slug = ?, featured_image = ?,
-                    content = ?, tags = ?,
+                    author_name = ?, content = ?, tags = ?,
                     meta_title = ?, meta_description = ?, status = ?, published_at = ?
                  WHERE id = ?",
                 [
                     $title,
                     $slug,
                     $imagePath,
+                    $authorName !== '' ? $authorName : null,
                     $content,
                     $tags,
                     $metaTitle !== '' ? $metaTitle : $title,
@@ -129,6 +133,14 @@ require_once __DIR__ . '/includes/header.php';
   <div class="form-group">
     <label for="slug">Slug</label>
     <input type="text" id="slug" name="slug" data-manual="1" value="<?php echo e($post['slug']); ?>">
+  </div>
+
+  <div class="form-group">
+    <label for="author_name">Writer’s Name</label>
+    <input type="text" id="author_name" name="author_name" maxlength="120"
+           value="<?php echo e($post['author_name'] ?? ''); ?>"
+           placeholder="Shown publicly as “By …” (e.g. Junaidur Rehman Nadwi)">
+    <p class="post-meta" style="margin-top:0.4rem;">Leave blank to use your profile name (<?php echo e(current_user_name()); ?>).</p>
   </div>
 
   <div class="form-group">

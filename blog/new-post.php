@@ -14,6 +14,7 @@ $error = '';
 $form = [
     'title' => '',
     'slug' => '',
+    'author_name' => '',
     'content' => '',
     'tags' => '',
     'meta_title' => '',
@@ -25,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $form['title'] = trim($_POST['title'] ?? '');
     $form['slug'] = trim($_POST['slug'] ?? '');
+    $form['author_name'] = trim($_POST['author_name'] ?? '');
     $form['content'] = trim($_POST['content'] ?? '');
     $form['tags'] = trim($_POST['tags'] ?? '');
     $form['meta_title'] = trim($_POST['meta_title'] ?? '');
@@ -32,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($form['title'] === '' || $form['content'] === '') {
         $error = 'Title and Content are required.';
+    } elseif (strlen($form['author_name']) > 120) {
+        $error = 'Writer name must be 120 characters or less.';
     } else {
         try {
             $slug = $form['slug'] !== '' ? make_slug($form['slug']) : make_slug($form['title']);
@@ -58,14 +62,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $publishedAt = null;
             }
 
+            $authorName = $form['author_name'] !== '' ? $form['author_name'] : null;
+
             db_run(
                 $pdo,
                 "INSERT INTO posts
-                 (teacher_id, category_id, title, slug, featured_image, short_description,
+                 (teacher_id, author_name, category_id, title, slug, featured_image, short_description,
                   content, tags, meta_title, meta_description, status, published_at)
-                 VALUES (?, NULL, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?)",
+                 VALUES (?, ?, NULL, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?)",
                 [
                     current_user_id(),
+                    $authorName,
                     $form['title'],
                     $slug,
                     $imagePath,
@@ -110,6 +117,14 @@ require_once __DIR__ . '/includes/header.php';
     <label for="slug">Slug (auto generated)</label>
     <input type="text" id="slug" name="slug" value="<?php echo e($form['slug']); ?>"
            placeholder="leave blank to auto-create from title">
+  </div>
+
+  <div class="form-group">
+    <label for="author_name">Writer’s Name</label>
+    <input type="text" id="author_name" name="author_name" maxlength="120"
+           value="<?php echo e($form['author_name']); ?>"
+           placeholder="Shown publicly as “By …” (e.g. Junaidur Rehman Nadwi)">
+    <p class="post-meta" style="margin-top:0.4rem;">Leave blank to use your profile name (<?php echo e(current_user_name()); ?>).</p>
   </div>
 
   <div class="form-group">

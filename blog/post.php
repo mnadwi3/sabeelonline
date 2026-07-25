@@ -74,7 +74,7 @@ require_once __DIR__ . '/includes/header.php';
       <h1><?php echo e($post['title']); ?></h1>
 
       <div class="post-meta">
-        By <?php echo e($post['teacher_name']); ?>
+        By <?php echo e(post_author_name($post)); ?>
         · <?php echo e(format_date($post['published_at'] ?: $post['created_at'])); ?>
         · <?php echo e($post['category_name'] ?: 'General'); ?>
         · <?php echo e(reading_time($post['content'])); ?>

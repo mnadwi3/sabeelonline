@@ -55,7 +55,8 @@ CREATE TABLE IF NOT EXISTS categories (
 -- ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS posts (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  teacher_id INT UNSIGNED NOT NULL,       -- who wrote this post
+  teacher_id INT UNSIGNED NOT NULL,       -- account that saved the post
+  author_name VARCHAR(120) NULL,          -- public writer name (shown on blog)
   category_id INT UNSIGNED NULL,          -- optional category
   title VARCHAR(200) NOT NULL,
   slug VARCHAR(220) NOT NULL,              -- URL-friendly title

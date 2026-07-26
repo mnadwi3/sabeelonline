@@ -1,0 +1,19 @@
+<?php
+/**
+ * Optional local/production overrides.
+ * Copy to config.local.php on the server (not required if config.php already has Hostinger DB settings).
+ *
+ * Location: /config/config.local.php
+ */
+
+declare(strict_types=1);
+
+return [
+    'db' => [
+        'host' => 'localhost',
+        'name' => 'u917534606_u123sabeel',
+        'user' => 'u917534606_adminpanel',
+        'pass' => 'YOUR_MYSQL_PASSWORD',
+    ],
+    'mail_from' => 'noreply@yourdomain.com',
+];

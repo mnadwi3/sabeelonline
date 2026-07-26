@@ -1,0 +1,7 @@
+# Deny all web access to config (PHP includes still work via filesystem)
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Deny from all
+</IfModule>

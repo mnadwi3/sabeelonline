@@ -1,0 +1,20 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# Local overrides (never deploy / never commit secrets)
+config/config.local.php
+student-portal/config/config.local.php
+
+# Logs and temp
+*.log
+*.tmp
+*.bak
+*.old
+
+# Optional local dumps
+*.sql.gz

@@ -1,4 +1,4 @@
-# Sabeel Us Salaam Online — clean professional URLs
+# Sabeel Us Salaam Online — clean professional URLs + block sensitive paths
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
@@ -8,6 +8,14 @@
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+  # Block direct web access to internal / sensitive folders
+  RewriteRule ^(config|sql|classes|includes)/ - [F,L]
+
+  # Block credential / notes / local overrides
+  RewriteRule ^(CREDENTIALS\.txt|AUTH-SYSTEM\.md)$ - [F,L]
+  RewriteRule (^|/)\.gitignore$ - [F,L]
+  RewriteRule config\.local\.php$ - [F,L]
+
   # /index.html → /  (keeps #section in the browser)
   RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
   RewriteRule ^index\.html$ / [R=301,L]
@@ -16,5 +24,12 @@
   RewriteCond %{THE_REQUEST} \s/+(.+?)/index\.html[\s?] [NC]
   RewriteRule ^(.+?)/index\.html$ /$1/ [R=301,L]
 </IfModule>
+
+# Extra deny for credential file (Apache 2.4+)
+<Files "CREDENTIALS.txt">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</Files>
 
 DirectoryIndex index.html index.php

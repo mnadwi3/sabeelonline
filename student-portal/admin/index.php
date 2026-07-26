@@ -56,7 +56,7 @@ require __DIR__ . '/../includes/admin_header.php';
             <td><?= e($row['s_name_e'] ?? '—') ?></td>
             <td><?= e($row['course_name'] ?? '—') ?></td>
             <td><?= e($row['semester'] ?? '—') ?></td>
-            <td><?= e((string) $row['percentage']) ?></td>
+            <td><?= e(format_percentage_display($row['percentage'])) ?></td>
             <td><?= e($row['grade']) ?></td>
             <td><span class="badge <?= $row['result_status'] === 'Pass' ? 'badge-pass' : 'badge-fail' ?>"><?= e($row['result_status']) ?></span></td>
             <td><a class="btn btn-outline btn-sm" href="<?= e(base_url('admin/marksheet.php?id=' . $row['id'])) ?>">Marksheet</a></td>

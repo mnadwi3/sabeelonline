@@ -432,8 +432,8 @@
           var n = document.getElementById(id);
           if (n) n.textContent = val;
         };
-        set('live-total', obtained.toFixed(2) + ' / ' + maximum.toFixed(2));
-        set('live-pct', p.toFixed(2) + '%');
+        set('live-total', Math.round(obtained) + ' / ' + Math.round(maximum));
+        set('live-pct', (Math.abs(p - Math.round(p)) < 0.001 ? String(Math.round(p)) : p.toFixed(1)) + '%');
         set('live-grade', grade);
         set('live-status', status);
       };

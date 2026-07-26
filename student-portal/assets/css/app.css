@@ -546,48 +546,68 @@ table.data.marks-entry-table {
   border-top: 4px solid var(--gold);
 }
 
-/* Marksheet — clean modern school certificate */
+/* Marksheet — modern professional certificate */
 .marksheet {
-  --ms-blue: #1e3a6e;
-  --ms-blue-deep: #152a4f;
-  --ms-blue-soft: #f3f6fb;
-  --ms-blue-head: #006878;
-  --ms-gold: #b0892e;
+  --ms-blue: #16407a;
+  --ms-blue-deep: #0f2d57;
+  --ms-blue-soft: #eef5fb;
+  --ms-teal: #0a6e7a;
+  --ms-teal-soft: #e7f6f7;
+  --ms-emerald: #0d7a5f;
+  --ms-gold: #b8922a;
+  --ms-gold-soft: #f8f1dd;
   --ms-ink: #1c2434;
-  --ms-line: #d5dde8;
+  --ms-line: #c9d5e4;
   width: min(880px, 100%);
   margin: 0 auto;
-  background: #fff;
-  border: 1px solid #c8d2e0;
+  background:
+    linear-gradient(180deg, #f7fbff 0%, #ffffff 18%, #ffffff 100%);
+  border: 1px solid #b7c7db;
+  border-radius: 14px;
   box-shadow:
-    0 0 0 6px #fff,
-    0 0 0 7px #c8d2e0,
-    0 18px 40px rgba(21, 40, 80, 0.08);
+    0 0 0 5px #fff,
+    0 0 0 6px #c5a35a,
+    0 0 0 7px #16407a,
+    0 20px 44px rgba(15, 45, 87, 0.12);
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   color: var(--ms-ink);
 }
+.marksheet::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 6px;
+  background: linear-gradient(90deg, #16407a 0%, #0a6e7a 45%, #c5a35a 100%);
+}
 .marksheet-clean::before { display: none !important; }
-.marksheet-inner { position: relative; z-index: 1; padding: 1.35rem 1.5rem 1.85rem; }
+.marksheet-inner { position: relative; z-index: 1; padding: 1.5rem 1.55rem 1.9rem; }
 .marksheet-header img {
   width: 100%;
   display: block;
-  border-radius: 0;
-  margin-bottom: 0.85rem;
+  border-radius: 8px;
+  margin-bottom: 0.95rem;
+  box-shadow: 0 4px 14px rgba(15, 45, 87, 0.08);
 }
 .ms-doc-label {
   text-align: center;
   font-size: 0.72rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #6b778c;
-  font-weight: 600;
-  margin-bottom: 0.35rem;
+  color: #fff;
+  font-weight: 700;
+  margin: 0 auto 0.55rem;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.35rem 0.95rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #16407a, #0a6e7a);
+  box-shadow: 0 4px 12px rgba(10, 110, 122, 0.22);
 }
 .marksheet-title {
   text-align: center;
   margin: 0;
-  color: var(--ms-blue);
+  color: var(--ms-blue-deep);
   font-family: var(--font-display);
   font-size: clamp(1.35rem, 2.4vw, 1.75rem);
   font-weight: 700;
@@ -598,34 +618,39 @@ table.data.marks-entry-table {
 }
 .ms-subtitle {
   text-align: center;
-  margin: 0.35rem 0 1rem;
-  color: #667085;
+  margin: 0.4rem 0 1.05rem;
+  color: #5f6f86;
   font-size: 0.92rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 .ms-meta {
   display: block;
-  margin-bottom: 1.1rem;
+  margin-bottom: 1.15rem;
   padding: 0;
   border: 0;
   background: transparent;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(15, 45, 87, 0.06);
 }
 .ms-meta-heading {
-  padding: 0.38rem 0.65rem;
-  background: #006878;
+  padding: 0.42rem 0.7rem;
+  background: linear-gradient(90deg, #0a6e7a, #16407a);
   color: #fff;
   text-align: center;
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 700;
+  letter-spacing: 0.04em;
 }
 .ms-meta .ms-info {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2px;
   width: 100%;
-  padding: 2px;
-  background: #fff;
-  border: 1px solid #aeb8c4;
+  padding: 3px;
+  background: #eef5fb;
+  border: 1px solid #b7c7db;
+  border-top: 0;
 }
 .ms-info-bold {
   font-weight: 600;
@@ -649,8 +674,8 @@ table.data.marks-entry-table {
 .ms-meta .ms-label {
   display: flex;
   align-items: center;
-  padding: 0.34rem 0.5rem;
-  background: #006878;
+  padding: 0.36rem 0.55rem;
+  background: linear-gradient(180deg, #127a88, #0a6e7a);
   color: #fff;
   font-weight: 700;
   font-size: 0.84rem;
@@ -658,8 +683,8 @@ table.data.marks-entry-table {
 .ms-meta .ms-label::after { content: ''; }
 .ms-meta .ms-value {
   min-width: 0;
-  padding: 0.34rem 0.6rem;
-  border: 1px solid #aeb8c4;
+  padding: 0.36rem 0.65rem;
+  border: 1px solid #c2d0e0;
   background: #fff;
   font-weight: 600;
   color: var(--ms-ink);
@@ -668,77 +693,111 @@ table.data.marks-entry-table {
 }
 .ms-meta .ms-photo {
   display: block;
-  margin: 0.75rem auto 0;
+  margin: 0.8rem auto 0;
 }
 .ms-photo {
   width: 92px;
   height: 112px;
   object-fit: cover;
-  border: 1px solid var(--ms-line);
-  border-radius: 4px;
+  border: 2px solid #c5a35a;
+  border-radius: 6px;
   background: #f7f8fa;
+  box-shadow: 0 4px 12px rgba(15, 45, 87, 0.1);
 }
 .ms-table {
   width: 100%;
-  border-collapse: collapse;
-  margin: 0.35rem 0 1rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0.45rem 0 1.05rem;
   font-size: 0.94rem;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid #b7c7db;
+  box-shadow: 0 6px 18px rgba(15, 45, 87, 0.05);
 }
 .ms-table th, .ms-table td {
-  border: 1px solid var(--ms-line);
-  padding: 0.55rem 0.65rem;
+  border-right: 1px solid #d5e0ec;
+  border-bottom: 1px solid #d5e0ec;
+  padding: 0.58rem 0.65rem;
   text-align: center;
 }
+.ms-table th:last-child,
+.ms-table td:last-child { border-right: 0; }
+.ms-table tbody tr:last-child td { border-bottom: 0; }
 .ms-table th {
-  background: var(--ms-blue-head);
+  background: linear-gradient(180deg, #17808d 0%, #0a6e7a 100%);
   color: #fff;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
-.ms-table td.ms-subject { text-align: left; font-weight: 500; }
-.ms-table tbody tr:nth-child(even):not(.ms-total-row) { background: #fafbfd; }
-.ms-table .ms-total-row {
-  background: var(--ms-blue-soft);
+.ms-table td.ms-subject { text-align: left; font-weight: 600; color: #243247; }
+.ms-table td.ms-marks {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: #163a63;
 }
-.ms-table .ms-total-row td { border-top: 2px solid #b8c5d8; }
+.ms-table tbody tr:nth-child(odd):not(.ms-total-row) { background: #ffffff; }
+.ms-table tbody tr:nth-child(even):not(.ms-total-row) { background: #f3fafb; }
+.ms-table tbody tr:not(.ms-total-row):hover { background: #eaf6f8; }
+.ms-table .ms-total-row {
+  background: linear-gradient(90deg, #f8f1dd, #eef5fb);
+}
+.ms-table .ms-total-row td {
+  border-top: 2px solid #c5a35a;
+  color: var(--ms-blue-deep);
+}
 .ms-summary {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-  margin: 0.35rem 0 0;
+  gap: 0.45rem;
+  margin: 0.45rem 0 0;
   position: relative;
   z-index: 2;
-  border: 1px solid var(--ms-line);
-  border-radius: 8px;
-  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
 }
 .ms-summary div {
   background: #fff;
-  border: none;
-  border-right: 1px solid var(--ms-line);
-  border-radius: 0;
-  padding: 0.7rem 0.5rem;
+  border: 1px solid #c9d5e4;
+  border-radius: 10px;
+  padding: 0.75rem 0.5rem;
   text-align: center;
+  box-shadow: 0 4px 12px rgba(15, 45, 87, 0.05);
 }
-.ms-summary div:last-child { border-right: none; }
+.ms-summary div:last-child { border-right: 1px solid #c9d5e4; }
+.ms-summary-result.is-pass {
+  background: linear-gradient(180deg, #e9f8f2, #ffffff);
+  border-color: #8dccb5;
+}
+.ms-summary-result.is-fail {
+  background: linear-gradient(180deg, #fdeeee, #ffffff);
+  border-color: #e2a8a3;
+}
 .ms-summary span {
   display: block;
   font-size: 0.7rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #6b778c;
-  margin-bottom: 0.2rem;
-  font-weight: 600;
+  margin-bottom: 0.22rem;
+  font-weight: 700;
 }
 .ms-summary strong {
-  font-size: 1.05rem;
-  color: var(--ms-blue);
+  font-size: 1.08rem;
+  color: var(--ms-blue-deep);
   font-family: var(--font-display);
 }
+.ms-summary-result.is-pass strong { color: var(--ms-emerald); }
+.ms-summary-result.is-fail strong { color: #b42318; }
 .ms-remarks {
-  margin: 0.85rem 0 0;
+  margin: 0.9rem 0 0;
   font-size: 0.9rem;
   color: #445066;
+  background: #f7fafc;
+  border-left: 3px solid #0a6e7a;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0 8px 8px 0;
 }
 
 /* Signatures — clear of grade boxes, principal rotated slightly */
@@ -817,16 +876,17 @@ table.data.marks-entry-table {
   color: var(--ms-blue-deep);
 }
 .grade-legend {
-  margin-top: 1.25rem;
+  margin-top: 1.35rem;
   margin-bottom: 0.15rem;
   font-size: 0.74rem;
-  color: #6b778c;
-  border-top: 1px solid var(--ms-line);
-  padding-top: 0.7rem;
-  padding-bottom: 0.35rem;
+  color: #4f6078;
+  border-top: 1px solid #d2dcea;
+  background: linear-gradient(90deg, rgba(22, 64, 122, 0.05), rgba(10, 110, 122, 0.08), rgba(197, 163, 90, 0.1));
+  padding: 0.7rem 0.65rem 0.45rem;
   line-height: 1.5;
   text-align: center;
   letter-spacing: 0.01em;
+  border-radius: 0 0 8px 8px;
 }
 .not-found {
   text-align: center;

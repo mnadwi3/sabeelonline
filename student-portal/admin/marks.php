@@ -104,8 +104,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
         if ($subName === '') {
             continue;
         }
-        $max = (float) ($maxes[$i] ?? 100);
-        $obt = (float) ($obts[$i] ?? 0);
+        $max = (int) round((float) ($maxes[$i] ?? 100));
+        $obt = (int) round((float) ($obts[$i] ?? 0));
         if ($obt < 0) {
             $obt = 0;
         }
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
         }
         $totalObt += $obt;
         $totalMax += $max;
-        $rows[] = ['subject_name' => $subName, 'max_marks' => (int) $max, 'obtained' => $obt];
+        $rows[] = ['subject_name' => $subName, 'max_marks' => $max, 'obtained' => $obt];
     }
 
     if (!$rows) {
@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
         }
 
         $pdo->commit();
-        flash('success', $semester . ' (' . $semYear . ') saved. Other semester results are safe. ' . $calc['percentage'] . '% — ' . $calc['grade']);
+        flash('success', $semester . ' (' . $semYear . ') saved. Other semester results are safe. ' . format_percentage_display($calc['percentage']) . '% — ' . $calc['grade']);
         redirect('admin/marksheet.php?id=' . $resultId);
     } catch (Throwable $e) {
         $pdo->rollBack();
@@ -260,7 +260,7 @@ require __DIR__ . '/../includes/admin_header.php';
             <td><?= e($h['semester']) ?></td>
             <td><?= e($h['semester_year']) ?></td>
             <td><?= e($h['course_name'] ?? '—') ?></td>
-            <td><?= e((string) $h['percentage']) ?></td>
+            <td><?= e(format_percentage_display($h['percentage'])) ?></td>
             <td><?= e($h['grade']) ?></td>
             <td><span class="badge <?= $h['result_status'] === 'Pass' ? 'badge-pass' : 'badge-fail' ?>"><?= e($h['result_status']) ?></span></td>
             <td><span class="badge <?= $h['is_published'] ? 'badge-pub' : 'badge-hide' ?>"><?= $h['is_published'] ? 'Published' : 'Hidden' ?></span></td>
@@ -307,8 +307,8 @@ require __DIR__ . '/../includes/admin_header.php';
                        value="<?= e((string) ($ex['max_marks'] ?? $sub['max_marks'])) ?>">
               </td>
               <td>
-                <input class="obt-marks" type="number" step="0.01" min="0" name="obtained[]"
-                       value="<?= e((string) ($ex['obtained'] ?? '')) ?>" placeholder="0" required>
+                <input class="obt-marks" type="number" step="1" min="0" name="obtained[]"
+                       value="<?= e(isset($ex['obtained']) && $ex['obtained'] !== '' && $ex['obtained'] !== null ? format_marks_display($ex['obtained']) : '') ?>" placeholder="0" required>
               </td>
             </tr>
           <?php endforeach; ?>

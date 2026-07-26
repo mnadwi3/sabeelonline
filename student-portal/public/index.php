@@ -75,7 +75,7 @@ $displayQuery = $query !== '' ? $query : (string) ($studentSession['student_id']
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Portal — <?= e(app_config('app_name')) ?></title>
   <link rel="stylesheet" href="/style.css?v=20260726navMobile1">
-  <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>?v=20260726sharedNav1">
+  <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>?v=20260726mscolor1">
 </head>
 <body class="portal-page has-site-nav">
   <header class="site-header" id="siteHeader">
@@ -151,7 +151,7 @@ $displayQuery = $query !== '' ? $query : (string) ($studentSession['student_id']
             <h2><?= e($row['semester'] ?? 'Semester') ?></h2>
             <p><?= e(marksheet_course_title($row)) ?> · <?= e($row['semester_year'] ?? '') ?></p>
             <div class="result-meta">
-              <span><?= e((string) ($row['percentage'] ?? '')) ?>%</span>
+              <span><?= e(format_percentage_display($row['percentage'] ?? 0)) ?>%</span>
               <span><?= e($row['grade'] ?? '') ?></span>
               <span class="badge <?= ($row['result_status'] ?? '') === 'Pass' ? 'badge-pass' : 'badge-fail' ?>"><?= e($row['result_status'] ?? '') ?></span>
             </div>
@@ -179,6 +179,6 @@ $displayQuery = $query !== '' ? $query : (string) ($studentSession['student_id']
   </div>
 <?php endif; ?>
 <script src="/script.js?v=20260726sharedNav1" defer></script>
-<script src="<?= e(asset('js/app.js')) ?>?v=20260726sharedNav1"></script>
+<script src="<?= e(asset('js/app.js')) ?>?v=20260726mscolor1"></script>
 </body>
 </html>

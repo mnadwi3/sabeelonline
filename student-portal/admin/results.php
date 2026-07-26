@@ -55,8 +55,8 @@ require __DIR__ . '/../includes/admin_header.php';
             <td><?= e($r['course_name'] ?? '—') ?></td>
             <td><?= e($r['semester'] ?? '—') ?></td>
             <td><?= e($r['semester_year'] ?? '—') ?></td>
-            <td><?= e($r['grand_total'] . '/' . $r['max_total']) ?></td>
-            <td><?= e((string) $r['percentage']) ?></td>
+            <td><?= e(format_marks_display($r['grand_total']) . '/' . format_marks_display($r['max_total'])) ?></td>
+            <td><?= e(format_percentage_display($r['percentage'])) ?></td>
             <td><?= e($r['grade']) ?></td>
             <td><span class="badge <?= $r['result_status'] === 'Pass' ? 'badge-pass' : 'badge-fail' ?>"><?= e($r['result_status']) ?></span></td>
             <td><span class="badge <?= $r['is_published'] ? 'badge-pub' : 'badge-hide' ?>"><?= $r['is_published'] ? 'Published' : 'Hidden' ?></span></td>

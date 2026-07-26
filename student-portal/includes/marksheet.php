@@ -424,21 +424,21 @@ function render_marksheet(array $r, bool $showPrintBar = true): void
               <tr>
                 <td><?= str_pad((string) $i++, 2, '0', STR_PAD_LEFT) ?></td>
                 <td class="ms-subject"><?= e($m['subject_name']) ?></td>
-                <td><?= (int) $m['max_marks'] ?></td>
-                <td><?= e((string) $m['obtained']) ?></td>
+                <td class="ms-marks"><?= e(format_marks_display($m['max_marks'] ?? 0)) ?></td>
+                <td class="ms-marks"><?= e(format_marks_display($m['obtained'] ?? 0)) ?></td>
               </tr>
             <?php endforeach; ?>
             <tr class="ms-total-row">
               <td colspan="2"><strong>Grand Total</strong></td>
-              <td><strong><?= e((string) $r['max_total']) ?></strong></td>
-              <td><strong><?= e((string) $r['grand_total']) ?></strong></td>
+              <td class="ms-marks"><strong><?= e(format_marks_display($r['max_total'] ?? 0)) ?></strong></td>
+              <td class="ms-marks"><strong><?= e(format_marks_display($r['grand_total'] ?? 0)) ?></strong></td>
             </tr>
           </tbody>
         </table>
 
         <div class="ms-summary">
-          <div><span>Result</span><strong><?= e($r['result_status']) ?></strong></div>
-          <div><span>Percentage</span><strong><?= e((string) $r['percentage']) ?>%</strong></div>
+          <div class="ms-summary-result<?= strcasecmp((string) ($r['result_status'] ?? ''), 'Pass') === 0 ? ' is-pass' : ' is-fail' ?>"><span>Result</span><strong><?= e($r['result_status']) ?></strong></div>
+          <div><span>Percentage</span><strong><?= e(format_percentage_display($r['percentage'] ?? 0)) ?>%</strong></div>
           <div><span>Grade</span><strong><?= e($r['grade']) ?></strong></div>
           <div><span>Session</span><strong><?= e($r['month_year'] ?? '—') ?></strong></div>
         </div>

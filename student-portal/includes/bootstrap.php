@@ -240,6 +240,22 @@ function current_admin(): ?array
     ];
 }
 
+/** Whole-number marks for display (95 not 95.00). */
+function format_marks_display(mixed $value): string
+{
+    return (string) (int) round((float) $value);
+}
+
+/** Percentage without trailing zeros when whole (e.g. 95 or 79.5). */
+function format_percentage_display(mixed $value): string
+{
+    $n = round((float) $value, 2);
+    if (abs($n - round($n)) < 0.001) {
+        return (string) (int) round($n);
+    }
+    return rtrim(rtrim(number_format($n, 2, '.', ''), '0'), '.');
+}
+
 /**
  * Calculate percentage, grade, and Pass/Fail from totals.
  * Uses threshold bands (no gaps): e.g. 79.25 → B1, not F.

@@ -32,18 +32,19 @@ function latest_blog_image(?string $path): string
 function latest_blog_excerpt(array $row): string
 {
     $excerpt = trim((string) ($row['short_description'] ?? ''));
-    if ($excerpt !== '') {
-        return $excerpt;
+    if ($excerpt === '') {
+        $excerpt = trim((string) preg_replace('/\s+/', ' ', strip_tags((string) ($row['content'] ?? ''))));
+    } else {
+        $excerpt = trim((string) preg_replace('/\s+/', ' ', $excerpt));
     }
-    $plain = trim((string) preg_replace('/\s+/', ' ', strip_tags((string) ($row['content'] ?? ''))));
-    if ($plain === '') {
+    if ($excerpt === '') {
         return '';
     }
-    $len = function_exists('mb_strlen') ? mb_strlen($plain) : strlen($plain);
-    if ($len <= 140) {
-        return $plain;
+    $len = function_exists('mb_strlen') ? mb_strlen($excerpt) : strlen($excerpt);
+    if ($len <= 110) {
+        return $excerpt;
     }
-    $cut = function_exists('mb_substr') ? mb_substr($plain, 0, 137) : substr($plain, 0, 137);
+    $cut = function_exists('mb_substr') ? mb_substr($excerpt, 0, 107) : substr($excerpt, 0, 107);
     return rtrim($cut) . '…';
 }
 

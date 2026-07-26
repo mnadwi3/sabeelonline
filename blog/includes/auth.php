@@ -66,16 +66,6 @@ function verify_password(string $password, string $hash): bool
     return password_verify($password, $hash);
 }
 
-function login_user(array $user): void
-{
-    // Legacy path — Blog login form redirects to unified login.
-    session_regenerate_id(true);
-    $_SESSION['user_id'] = (int) $user['id'];
-    $_SESSION['user_name'] = $user['name'];
-    $_SESSION['user_email'] = $user['email'];
-    $_SESSION['user_role'] = $user['role'];
-}
-
 function is_logged_in(): bool
 {
     if (!empty($_SESSION['user_id']) && !empty($_SESSION['auth_user_id'])) {
@@ -174,65 +164,6 @@ function require_staff(): void
         header('Location: ' . sabeel_login_url('/blog/dashboard.php'));
         exit;
     }
-}
-
-/**
- * Legacy Blog login — prefer unified /pages/login.php.
- * Still works so old bookmarks don't break; also creates/links unified user.
- */
-function attempt_login(string $email, string $password): ?array
-{
-    global $pdo;
-
-    $email = trim(strtolower($email));
-    $user = db_one(
-        $pdo,
-        'SELECT * FROM teachers WHERE email = ? AND is_active = 1 LIMIT 1',
-        [$email]
-    );
-
-    if (!$user || !verify_password($password, $user['password'])) {
-        return null;
-    }
-
-    // Prefer unified users row when present
-    try {
-        sabeel_ensure_user_columns($pdo);
-        $unified = $pdo->prepare(
-            'SELECT u.*, r.slug AS role_slug, r.name AS role_name
-             FROM users u INNER JOIN roles r ON r.id = u.role_id
-             WHERE u.email = ? OR u.blog_teacher_id = ? LIMIT 1'
-        );
-        $unified->execute([$email, (int) $user['id']]);
-        $urow = $unified->fetch();
-        if ($urow && (int) $urow['is_active'] === 1 && password_verify($password, (string) $urow['password'])) {
-            $_SESSION['auth_user_id'] = (int) $urow['id'];
-            $_SESSION['auth_username'] = (string) $urow['username'];
-            $_SESSION['auth_email'] = (string) $urow['email'];
-            $_SESSION['auth_full_name'] = (string) ($urow['full_name'] ?? '');
-            $_SESSION['auth_role'] = (string) $urow['role_slug'];
-            $_SESSION['auth_role_name'] = (string) $urow['role_name'];
-            $_SESSION['auth_modules'] = sabeel_user_has_module($urow, 'blog') || ($urow['role_slug'] === 'super_admin')
-                ? (sabeel_parse_modules((string) $urow['modules']) ?: ['blog'])
-                : ['blog'];
-            if ($urow['role_slug'] === 'super_admin') {
-                $_SESSION['auth_modules'] = sabeel_module_keys();
-            } elseif (!in_array('blog', $_SESSION['auth_modules'], true)) {
-                // Grant blog for this legacy login path
-                $mods = array_merge($_SESSION['auth_modules'], ['blog']);
-                $pdo->prepare('UPDATE users SET modules = ?, blog_teacher_id = ?, updated_at = NOW() WHERE id = ?')
-                    ->execute([sabeel_encode_modules($mods), (int) $user['id'], (int) $urow['id']]);
-                $_SESSION['auth_modules'] = sabeel_parse_modules(sabeel_encode_modules($mods));
-            }
-            blog_sync_unified_session($urow);
-            return $user;
-        }
-    } catch (Throwable $e) {
-        error_log('blog attempt_login unified: ' . $e->getMessage());
-    }
-
-    login_user($user);
-    return $user;
 }
 
 function logout_user(): void

@@ -15,8 +15,8 @@ Website path: `/student-portal/` (folder next to `index.html`, `blog/`, `library
 1. Keep this folder named `student-portal` inside the website root.
 2. Edit `config/config.php` — set MySQL credentials. Keep `'base_url' => '/student-portal'`.
 3. Open `http://localhost/student-portal/install.php` and click **Run Installation**.
-4. Login: **admin** / **Admin@123** (change immediately).
-5. Delete or rename `install.php` after install.
+4. Sign in at `/pages/login.php` with your Admin ID (from `/pages/install.php`), then open Results from Admin Hub.
+5. Delete or rename `student-portal/install.php` after install.
 
 ## URLs
 

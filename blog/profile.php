@@ -1,6 +1,6 @@
 <?php
 /**
- * Edit own profile (name, bio, password)
+ * Edit own profile (name, bio). Password: /pages/change-password.php
  */
 
 require_once __DIR__ . '/includes/auth.php';
@@ -10,10 +10,10 @@ require_staff();
 $page_title = 'Profile';
 $page_mode = 'admin';
 
-$user = db_one($pdo, "SELECT * FROM teachers WHERE id = ? LIMIT 1", [current_user_id()]);
+$user = db_one($pdo, 'SELECT * FROM teachers WHERE id = ? LIMIT 1', [current_user_id()]);
 if (!$user) {
     logout_user();
-    header('Location: login.php');
+    header('Location: ' . sabeel_login_url('/blog/dashboard.php'));
     exit;
 }
 
@@ -23,34 +23,29 @@ $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $bio = trim($_POST['bio'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $password2 = $_POST['password_confirm'] ?? '';
 
     if ($name === '') {
         $error = 'Name is required.';
-    } elseif ($password !== '' && $password !== $password2) {
-        $error = 'Passwords do not match.';
-    } elseif ($password !== '' && strlen($password) < 6) {
-        $error = 'Password must be at least 6 characters.';
     } else {
-        if ($password !== '') {
-            db_run(
-                $pdo,
-                "UPDATE teachers SET name = ?, bio = ?, password = ? WHERE id = ?",
-                [$name, $bio, hash_password($password), current_user_id()]
-            );
-        } else {
-            db_run(
-                $pdo,
-                "UPDATE teachers SET name = ?, bio = ? WHERE id = ?",
-                [$name, $bio, current_user_id()]
-            );
+        db_run(
+            $pdo,
+            'UPDATE teachers SET name = ?, bio = ? WHERE id = ?',
+            [$name, $bio, current_user_id()]
+        );
+
+        // Keep unified users.full_name in sync when present
+        if (!empty($_SESSION['auth_user_id'])) {
+            try {
+                $pdo->prepare('UPDATE users SET full_name = ?, updated_at = NOW() WHERE id = ?')
+                    ->execute([$name, (int) $_SESSION['auth_user_id']]);
+            } catch (Throwable $e) {
+                // ignore if users table unavailable
+            }
         }
 
-        // Update session name
         $_SESSION['user_name'] = $name;
         $success = 'Profile updated successfully.';
-        $user = db_one($pdo, "SELECT * FROM teachers WHERE id = ? LIMIT 1", [current_user_id()]);
+        $user = db_one($pdo, 'SELECT * FROM teachers WHERE id = ? LIMIT 1', [current_user_id()]);
     }
 }
 
@@ -80,16 +75,10 @@ require_once __DIR__ . '/includes/header.php';
     <textarea id="bio" name="bio"><?php echo e($user['bio']); ?></textarea>
   </div>
 
-  <div class="form-row">
-    <div class="form-group">
-      <label for="password">New Password (optional)</label>
-      <input type="password" id="password" name="password" placeholder="Leave blank to keep current">
-    </div>
-    <div class="form-group">
-      <label for="password_confirm">Confirm Password</label>
-      <input type="password" id="password_confirm" name="password_confirm">
-    </div>
-  </div>
+  <p class="muted" style="margin:0 0 1rem;">
+    To change your sign-in password, use
+    <a href="/pages/change-password.php">Admin Change Password</a>.
+  </p>
 
   <button type="submit" class="btn btn-primary">Save Profile</button>
 </form>

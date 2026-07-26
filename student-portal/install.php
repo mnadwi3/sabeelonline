@@ -1,6 +1,7 @@
 <?php
 /**
- * One-time installer: creates DB tables and default admin (admin / Admin@123)
+ * One-time installer: creates Results DB tables.
+ * Admin sign-in is /pages/login.php (create account via /pages/install.php).
  */
 declare(strict_types=1);
 
@@ -83,14 +84,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         run_sql_file($pdo, __DIR__ . '/sql/schema.sql', $messages);
         run_sql_file($pdo, __DIR__ . '/sql/seed.sql', $messages);
 
-        $hash = password_hash('Admin@123', PASSWORD_DEFAULT);
+        // Legacy tbl_users row kept for schema compatibility only (not used for login).
+        $hash = password_hash(bin2hex(random_bytes(24)), PASSWORD_DEFAULT);
         $pdo->prepare(
             'INSERT INTO tbl_users (t_name, login_name, password_hash) VALUES (?, ?, ?)
-             ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash), t_name = VALUES(t_name)'
+             ON DUPLICATE KEY UPDATE t_name = VALUES(t_name)'
         )->execute(['System Administrator', 'admin', $hash]);
 
-        $messages[] = 'Admin ready: username admin / password Admin@123 — change after first login.';
-        $messages[] = 'Delete install.php after setup.';
+        $messages[] = 'Results tables ready. Sign in at /pages/login.php (create Admin via /pages/install.php if needed).';
+        $messages[] = 'Delete this install.php after setup.';
         $ok = true;
     } catch (Throwable $e) {
         $messages[] = 'Error: ' . $e->getMessage();
@@ -120,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
       <?php else: ?>
         <div class="portal-actions">
-          <a class="btn btn-primary" href="admin/login.php">Admin Login</a>
+          <a class="btn btn-primary" href="/pages/login.php?redirect=/student-portal/admin/">Admin Login</a>
           <a class="btn btn-outline" href="public/index.php">Result Portal</a>
         </div>
       <?php endif; ?>

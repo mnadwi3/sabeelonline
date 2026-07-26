@@ -84,14 +84,7 @@
     if (cachedUnified && cachedUnified.authenticated && (cachedUnified.can_library || cachedUnified.is_admin)) {
       return true;
     }
-    try {
-      var raw = localStorage.getItem(cfg.SESSION_KEY);
-      if (!raw) return false;
-      var session = JSON.parse(raw);
-      return !!(session && session.authenticated === true && session.via === 'student_id');
-    } catch (e) {
-      return false;
-    }
+    return false;
   }
 
   function getSession() {

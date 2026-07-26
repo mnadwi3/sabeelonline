@@ -28,12 +28,13 @@ $flash = get_flash();
         'students'  => ['admin/students.php', 'Students'],
         'marks'     => ['admin/marks.php', 'Marks Entry'],
         'results'   => ['admin/results.php', 'Results'],
-        'password'  => ['admin/password.php', 'Change Password'],
       ];
       foreach ($links as $key => [$href, $label]):
       ?>
         <a class="<?= ($active ?? '') === $key ? 'active' : '' ?>" href="<?= e(base_url($href)) ?>"><?= e($label) ?></a>
       <?php endforeach; ?>
+      <a href="/admin-hub.html">Admin Hub</a>
+      <a href="/pages/change-password.php">Change Password</a>
       <a href="<?= e(base_url('public/index.php')) ?>" target="_blank">Public Portal</a>
       <a href="<?= e(base_url('admin/logout.php')) ?>">Logout</a>
     </nav>

@@ -60,6 +60,8 @@ if (!function_exists('is_logged_in')) {
 
   $adminNavItems = array_merge($adminNavItems, [
       ['profile.php', 'Profile'],
+      ['/pages/change-password.php', 'Change Password'],
+      ['/admin-hub.html', 'Admin Hub'],
       ['index.php', 'View Blog'],
       ['/', 'Main Website'],
       ['logout.php', 'Logout'],

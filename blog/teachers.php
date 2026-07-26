@@ -32,14 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = (int) ($_POST['id'] ?? 0);
         $name = trim($_POST['name'] ?? '');
         $email = trim(strtolower($_POST['email'] ?? ''));
-        $password = $_POST['password'] ?? '';
         $bio = trim($_POST['bio'] ?? '');
         $isActive = isset($_POST['is_active']) ? 1 : 0;
 
+        // Teachers are author profiles only. Sign-in is Admin Login (/pages/login.php).
         if ($name === '' || $email === '') {
             $error = 'Name and email are required.';
-        } elseif ($id === 0 && $password === '') {
-            $error = 'Password is required for a new teacher.';
         } else {
             if ($id > 0) {
                 $exists = db_one(
@@ -49,16 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
                 if ($exists) {
                     $error = 'This email is already registered.';
-                } elseif ($password !== '') {
-                    db_run(
-                        $pdo,
-                        "UPDATE teachers
-                         SET name = ?, email = ?, password = ?, bio = ?, is_active = ?
-                         WHERE id = ? AND role = 'teacher'",
-                        [$name, $email, hash_password($password), $bio, $isActive, $id]
-                    );
-                    header('Location: teachers.php?msg=updated');
-                    exit;
                 } else {
                     db_run(
                         $pdo,
@@ -75,11 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($exists) {
                     $error = 'This email is already registered.';
                 } else {
+                    $placeholder = hash_password(bin2hex(random_bytes(24)));
                     db_run(
                         $pdo,
                         "INSERT INTO teachers (name, email, password, role, bio, is_active)
                          VALUES (?, ?, ?, 'teacher', ?, 1)",
-                        [$name, $email, hash_password($password), $bio]
+                        [$name, $email, $placeholder, $bio]
                     );
                     header('Location: teachers.php?msg=created');
                     exit;
@@ -132,23 +121,22 @@ require_once __DIR__ . '/includes/header.php';
     </div>
   </div>
 
-  <div class="form-row">
-    <div class="form-group">
-      <label for="password">Password <?php echo $editUser ? '(optional)' : ''; ?></label>
-      <input type="password" id="password" name="password" <?php echo $editUser ? '' : 'required'; ?>>
-    </div>
-    <div class="form-group">
-      <label for="bio">Bio</label>
-      <input type="text" id="bio" name="bio" value="<?php echo e($editUser['bio'] ?? ''); ?>">
-    </div>
+  <div class="form-group">
+    <label for="bio">Bio</label>
+    <input type="text" id="bio" name="bio" value="<?php echo e($editUser['bio'] ?? ''); ?>">
   </div>
+
+  <p class="muted" style="margin:0 0 1rem;">
+    Teachers are author profiles for posts. Website sign-in uses
+    <a href="/pages/login.php">Admin Login</a> only.
+  </p>
 
   <?php if ($editUser): ?>
     <div class="form-group">
       <label>
         <input type="checkbox" name="is_active" value="1"
           <?php echo !empty($editUser['is_active']) ? 'checked' : ''; ?>>
-        Active (can login)
+        Active (shown as author)
       </label>
     </div>
   <?php endif; ?>

@@ -181,14 +181,46 @@ function lib_require_admin(): void
 
 function lib_require_library_student(): void
 {
-    $user = sabeel_peek_user();
-    if ($user && sabeel_user_has_module($user, 'library')) {
+    // Admin may browse student library; otherwise Student ID session (SABEELSTUDENT).
+    if (lib_unified_admin_user()) {
         return;
     }
+
+    $prevActive = session_status() === PHP_SESSION_ACTIVE;
+    $prevName = $prevActive ? session_name() : null;
+    $prevId = $prevActive ? session_id() : null;
+    if ($prevActive) {
+        session_write_close();
+    }
+
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    session_name('SABEELSTUDENT');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    session_start();
+    $ok = !empty($_SESSION['student_ok']) && !empty($_SESSION['student_id']);
+    session_write_close();
+
+    if ($prevName !== null && $prevId !== null) {
+        session_name($prevName);
+        session_id($prevId);
+        session_start();
+    }
+
+    if ($ok) {
+        return;
+    }
+
     lib_json([
         'ok' => false,
-        'error' => 'Library login required.',
-        'login' => '/pages/login.php?redirect=/library/',
+        'error' => 'Student ID required.',
+        'login' => '/library/',
     ], 401);
 }
 

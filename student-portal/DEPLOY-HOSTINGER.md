@@ -66,10 +66,10 @@ Open:
 
 Click **Run Installation**.
 
-Login: `admin` / `Admin@123` → **change password immediately**.
+Admin login: `/pages/login.php` (same Admin ID as the rest of the site).
 
 ### 7) Lock down after install
-1. **Delete** `install.php` from the server (important).
+1. **Delete** `student-portal/install.php` from the server (important).
 2. Do not upload Access `.accdb` or `_extract/`.
 3. Keep `sql/` and `config/` on server (blocked by `.htaccess` / `index.php`).
 

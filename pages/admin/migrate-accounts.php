@@ -56,9 +56,9 @@ render_auth_header('Import legacy accounts', true);
       <li>Safe to run more than once — already-imported emails/usernames are skipped.</li>
     </ul>
     <p class="help" style="margin-top:1rem;">
-      Library / Courses previously used shared access codes. Create those people under
-      <a href="<?php echo e(app_url('/pages/admin/users.php')); ?>">Manage users</a>
-      and tick <strong>Digital Library</strong> and/or <strong>Courses &amp; Admissions Admin</strong>.
+      After import, everyone signs in at
+      <a href="<?php echo e(app_url('/pages/login.php')); ?>">Admin Login</a>
+      with their existing password. One Admin account opens every panel via Admin Hub.
     </p>
     <form method="post" action="" style="margin-top:1.25rem;">
       <?php echo csrf_field(); ?>

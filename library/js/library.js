@@ -30,7 +30,7 @@
     els.viewDenied = $('viewDenied');
     els.viewDashboard = $('viewDashboard');
     els.accessForm = $('accessForm');
-    els.accessCode = $('accessCode');
+    els.accessCode = $('studentId') || $('accessCode');
     els.accessError = $('accessError');
     els.btnContactAdmin = $('btnContactAdmin');
     els.btnDeniedWhatsApp = $('btnDeniedWhatsApp');

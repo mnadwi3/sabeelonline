@@ -7,7 +7,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/bootstrap.php';
-requireLogin();
+requireSiteAdmin();
 
 $error = '';
 $success = '';
@@ -74,7 +74,8 @@ render_auth_header('Change Password');
   </form>
 
   <div class="auth-links">
-    <a href="<?php echo e(app_url('/pages/dashboard.php')); ?>">Back to dashboard</a>
+    <a href="<?php echo e(app_url('/admin-hub.html')); ?>">← Back to Admin Hub</a>
+    <a href="<?php echo e(app_url('/pages/logout.php')); ?>">Logout</a>
   </div>
 </div>
 <?php render_auth_footer(); ?>

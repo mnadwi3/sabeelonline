@@ -4,19 +4,19 @@ One **Admin ID + password** for every management page.
 
 ## How you use it
 
-1. Go to `/pages/login.php`
-2. Enter your Admin ID (username or email) and password  
-   (the Super Admin account you created at install)
-3. You land on the Admin Dashboard with links to:
-   - Admin Hub  
-   - Blog Admin  
-   - Library Admin  
-   - Courses Admin  
-   - Admissions Admin  
-   - Results Admin (Student Portal)
+### Everyday use (recommended)
 
-You stay logged in across those pages. Use **Logout** when finished.  
-Change your password anytime at `/pages/change-password.php`.
+1. Open **`/admin-hub.html`**
+2. Enter the hub code: `admin@sabeel` or `ADMIN-SABEEL`
+3. Open Courses, Admissions, Library, Blog, or Results from the cards
+
+### Full Admin Login (Blog / Results / password)
+
+1. Go to `/pages/login.php` (or the “Admin Login” button on the hub)
+2. Enter your Admin ID + password (Super Admin from install)
+3. You return to **Admin Hub**
+
+Change password: `/pages/change-password.php`.
 
 ## What students do (not this login)
 

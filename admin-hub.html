@@ -162,15 +162,18 @@
     <section id="viewHubGate" class="hub-gate">
       <div class="hub-card">
         <h1>Admin Hub</h1>
-        <p class="hub-subtitle">Use the same Admin ID and password as the rest of the site.</p>
+        <p class="hub-subtitle">One place for every admin panel. Enter the website admin code to continue.</p>
         <form class="hub-form" id="hubGateForm" autocomplete="off">
-          <input type="hidden" id="adminCode" value="">
-          <p class="hub-inline-error" id="hubGateError" hidden>Please sign in as Admin first.</p>
+          <label for="adminCode">Admin Access Code</label>
+          <input type="password" id="adminCode" required placeholder="Enter admin code">
+          <p class="hub-inline-error" id="hubGateError" hidden>Invalid admin code.</p>
           <div class="hub-actions">
-            <a class="btn btn-primary" id="hubStaffLogin" href="/pages/login.php?redirect=/admin-hub.html">Admin Login</a>
+            <button type="submit" class="btn btn-primary">Open Admin Hub</button>
+            <a class="btn btn-outline" href="/pages/login.php?redirect=/admin-hub.html">Admin Login</a>
             <a class="btn btn-outline" href="/#home">Back to website</a>
           </div>
         </form>
+        <p class="muted" style="margin:1rem 0 0;">Codes: <code>admin@sabeel</code> or <code>ADMIN-SABEEL</code></p>
       </div>
     </section>
 
@@ -186,12 +189,13 @@
         </div>
       </header>
       <section class="hub-shell">
-      <p class="hub-lead">You are signed in as Admin. Open any panel — same login for all of them.</p>
+      <p class="hub-lead">Open the panel you need. Website tools use this hub code; Blog and Results open with your Admin Login when prompted.</p>
 
       <article class="hub-panel">
         <div class="hub-group">
           <h2>Website tools</h2>
-          <p class="hub-group-note">Library, Courses, and Admissions.</p>
+          <p class="hub-group-note">Library, Courses, and Admissions — unlocked by this Admin Hub code.</p>
+          <p class="hub-cred">Code: <code>admin@sabeel</code> or <code>ADMIN-SABEEL</code></p>
           <div class="hub-grid">
             <a class="hub-link" href="courses-admin.html">
               <strong>Courses Admin</strong>
@@ -212,12 +216,11 @@
 
         <div class="hub-group">
           <h2>Results Admin (Student Portal)</h2>
-          <p class="hub-group-note">Separate username and password. Change the default after first login.</p>
-          <p class="hub-cred">Username: <code>admin</code> · Default password: <code>Admin@123</code></p>
+          <p class="hub-group-note">Use your Admin Login (same Super Admin account) when asked to sign in.</p>
           <div class="hub-grid">
-            <a class="hub-link" href="student-portal/admin/login.php">
-              <strong>Results Admin Login</strong>
-              <span>Enter marks, publish marksheets, manage students.</span>
+            <a class="hub-link" href="student-portal/admin/">
+              <strong>Results Admin</strong>
+              <span>Enter marks, publish marksheets, manage students &amp; Student IDs.</span>
             </a>
             <a class="hub-link" href="student-portal/public/">
               <strong>Public Results Page</strong>
@@ -230,11 +233,10 @@
 
         <div class="hub-group">
           <h2>Blog Admin</h2>
-          <p class="hub-group-note">Separate email login for blog posts and teachers. Change the default password.</p>
-          <p class="hub-cred">Email: <code>admin@sabeel.com</code> · Default password: <code>password</code></p>
+          <p class="hub-group-note">Use your Admin Login when asked to sign in.</p>
           <div class="hub-grid">
-            <a class="hub-link" href="blog/login.php">
-              <strong>Blog Login</strong>
+            <a class="hub-link" href="blog/dashboard.php">
+              <strong>Blog Admin</strong>
               <span>Publish posts, manage categories and teachers.</span>
             </a>
             <a class="hub-link" href="blog/">
@@ -248,25 +250,26 @@
 
         <div class="hub-group">
           <h2>Student access (not admin)</h2>
-          <p class="hub-group-note">Codes for enrolled students to open the digital library.</p>
-          <p class="hub-cred">Library codes: <code>student@sabeel</code> · <code>SABEEL2026</code> · <code>STUDENT001</code></p>
+          <p class="hub-group-note">Students use one <strong>Student ID</strong> (from Results Admin) for Results and Library.</p>
           <div class="hub-grid">
             <a class="hub-link" href="library/">
               <strong>Student Library</strong>
-              <span>Download Coursebooks portal for students.</span>
+              <span>Download Coursebooks — Student ID login.</span>
+            </a>
+            <a class="hub-link" href="pages/login.php?redirect=/admin-hub.html">
+              <strong>Admin Login</strong>
+              <span>Full Admin ID + password (Blog, Results, password change).</span>
             </a>
           </div>
         </div>
-
-        <p class="muted" style="margin:1.25rem 0 0">Tip: save each login in a password manager as “Sabeel – Courses”, “Sabeel – Results”, “Sabeel – Blog”.</p>
       </article>
       </section>
     </div>
   </main>
 
-  <script src="script.js?v=20260726adminHeader1" defer></script>
-  <script src="js/site-nav.js?v=20260726adminHeader1"></script>
+  <script src="script.js?v=20260726adminHub2" defer></script>
+  <script src="js/site-nav.js?v=20260726adminHub2"></script>
   <script src="library/js/config.js"></script>
-  <script src="js/admin-hub.js?v=20260726adminHeader1"></script>
+  <script src="js/admin-hub.js?v=20260726adminHub2"></script>
 </body>
 </html>

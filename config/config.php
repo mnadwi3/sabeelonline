@@ -35,7 +35,8 @@ $config = [
 
     // Paths (web-relative from site root)
     'login_path' => '/pages/login.php',
-    'dashboard_path' => '/pages/dashboard.php',
+    // After Admin Login, land on the convenient Admin Hub
+    'dashboard_path' => '/admin-hub.html',
 
     // Database — Hostinger MySQL (same DB as blog app; new tables only)
     'db' => [

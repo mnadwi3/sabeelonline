@@ -617,6 +617,7 @@ table.data.marks-entry-table {
   margin-top: 0.35rem;
 }
 .ms-meta-heading {
+  margin: 0;
   padding: 0.55rem 0.7rem;
   background: var(--ms-head);
   color: #fff;
@@ -626,7 +627,9 @@ table.data.marks-entry-table {
   letter-spacing: 0.02em;
   box-shadow: none;
   border: 0;
+  border-bottom: 1px solid #d5e0ec;
   background-image: none;
+  line-height: 1.25;
 }
 .ms-meta .ms-info {
   display: grid;
@@ -637,6 +640,11 @@ table.data.marks-entry-table {
   padding: 0;
   background: #fff;
   border: 0;
+  border-top: 0;
+}
+.ms-meta .ms-row:first-child {
+  margin: 0;
+  padding: 0;
   border-top: 0;
 }
 .ms-info-bold {
@@ -853,20 +861,12 @@ table.data.marks-entry-table {
   display: block;
 }
 .ms-signs img.sign-principal {
-  max-height: 58px;
-  max-width: 132px;
+  max-height: 48px;
+  max-width: 120px;
   transform: rotate(-8deg) translateY(2px);
   transform-origin: center bottom;
-  /* Bolden thin principal strokes */
-  filter:
-    contrast(1.35)
-    brightness(0.92)
-    drop-shadow(0.85px 0 0 rgba(14, 40, 90, 0.95))
-    drop-shadow(-0.85px 0 0 rgba(14, 40, 90, 0.95))
-    drop-shadow(0 0.85px 0 rgba(14, 40, 90, 0.95))
-    drop-shadow(0 -0.85px 0 rgba(14, 40, 90, 0.95))
-    drop-shadow(0.55px 0.55px 0 rgba(14, 40, 90, 0.75))
-    drop-shadow(-0.55px -0.55px 0 rgba(14, 40, 90, 0.75));
+  /* No extra bolding — natural stroke weight */
+  filter: contrast(1.05);
 }
 .ms-signs img.sign-exam {
   max-height: 42px;
@@ -975,15 +975,7 @@ table.data.marks-entry-table {
 .marksheet.marksheet-exporting .ms-signs img.sign-principal {
   transform: rotate(-8deg) !important;
   transform-origin: center bottom !important;
-  filter:
-    contrast(1.35)
-    brightness(0.92)
-    drop-shadow(0.85px 0 0 rgba(14, 40, 90, 0.95))
-    drop-shadow(-0.85px 0 0 rgba(14, 40, 90, 0.95))
-    drop-shadow(0 0.85px 0 rgba(14, 40, 90, 0.95))
-    drop-shadow(0 -0.85px 0 rgba(14, 40, 90, 0.95))
-    drop-shadow(0.55px 0.55px 0 rgba(14, 40, 90, 0.75))
-    drop-shadow(-0.55px -0.55px 0 rgba(14, 40, 90, 0.75)) !important;
+  filter: contrast(1.05) !important;
 }
 .marksheet.marksheet-exporting .grade-legend {
   margin-top: 1rem !important;
@@ -1056,8 +1048,8 @@ table.data.marks-entry-table {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.25rem;
   }
-  .ms-info { grid-template-columns: 1fr 1fr; }
-  .ms-row { grid-template-columns: minmax(72px, 90px) 1fr; }
+  .ms-meta .ms-info { grid-template-columns: 1fr; }
+  .ms-meta .ms-row { grid-template-columns: minmax(72px, 90px) 1fr; gap: 0; }
   .ms-summary { grid-template-columns: repeat(2, 1fr); }
   .ms-signs { grid-template-columns: 1fr 1fr; }
   .ms-meta { width: 100%; }

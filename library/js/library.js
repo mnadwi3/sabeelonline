@@ -674,8 +674,14 @@
       els.accessForm.addEventListener('submit', function (e) {
         e.preventDefault();
         els.accessError.hidden = true;
+        var code = (els.accessCode && els.accessCode.value) ? els.accessCode.value.trim() : '';
+        // Empty submit → unified staff / student login
+        if (!code) {
+          window.location.href = (auth.staffLoginUrl && auth.staffLoginUrl('/library/')) || '/pages/login.php?redirect=/library/';
+          return;
+        }
         try {
-          if (auth.login(els.accessCode.value)) {
+          if (auth.login(code)) {
             enterDashboard();
           } else {
             showView('denied');
@@ -816,8 +822,16 @@
       return;
     }
 
-    if (auth.isAuthenticated()) enterDashboard();
-    else showView('access');
+    var ready = function () {
+      if (auth.isAuthenticated()) enterDashboard();
+      else showView('access');
+    };
+
+    if (auth.fetchUnifiedSession) {
+      auth.fetchUnifiedSession().then(ready).catch(ready);
+    } else {
+      ready();
+    }
   }
 
   if (document.readyState === 'loading') {

@@ -74,9 +74,20 @@ final class User
             $password = hash_password($password);
         }
 
+        if (function_exists('sabeel_ensure_user_columns')) {
+            sabeel_ensure_user_columns($this->pdo);
+        }
+
+        $modules = '';
+        if (isset($data['modules'])) {
+            $modules = is_array($data['modules'])
+                ? sabeel_encode_modules($data['modules'])
+                : sabeel_encode_modules(sabeel_parse_modules((string) $data['modules']));
+        }
+
         $stmt = $this->pdo->prepare(
-            'INSERT INTO users (username, email, password, phone, full_name, role_id, is_active, password_changed_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, NOW())'
+            'INSERT INTO users (username, email, password, phone, full_name, role_id, modules, blog_teacher_id, is_active, password_changed_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())'
         );
         $stmt->execute([
             $data['username'],
@@ -85,29 +96,100 @@ final class User
             $data['phone'] ?? null,
             $data['full_name'] ?? '',
             (int) $data['role_id'],
+            $modules,
+            isset($data['blog_teacher_id']) ? (int) $data['blog_teacher_id'] : null,
             isset($data['is_active']) ? (int) (bool) $data['is_active'] : 1,
         ]);
 
-        return (int) $this->pdo->lastInsertId();
+        $newId = (int) $this->pdo->lastInsertId();
+
+        // Auto-link a teachers row when Blog access is granted
+        if ($newId > 0 && function_exists('sabeel_user_has_module') && function_exists('sabeel_ensure_blog_teacher')) {
+            $created = $this->findById($newId);
+            if ($created && sabeel_user_has_module($created, 'blog')) {
+                sabeel_ensure_blog_teacher($this->pdo, $created);
+            }
+        }
+
+        return $newId;
     }
 
     public function updateProfile(int $id, array $data): bool
     {
-        $stmt = $this->pdo->prepare(
-            'UPDATE users SET
-                username = ?, email = ?, phone = ?, full_name = ?,
-                role_id = ?, is_active = ?, updated_at = NOW()
-             WHERE id = ?'
-        );
-        return $stmt->execute([
-            $data['username'],
-            $data['email'],
-            $data['phone'] ?? null,
-            $data['full_name'] ?? '',
-            (int) $data['role_id'],
-            (int) (bool) $data['is_active'],
-            $id,
-        ]);
+        if (function_exists('sabeel_ensure_user_columns')) {
+            sabeel_ensure_user_columns($this->pdo);
+        }
+
+        $modules = null;
+        if (array_key_exists('modules', $data)) {
+            $modules = is_array($data['modules'])
+                ? sabeel_encode_modules($data['modules'])
+                : sabeel_encode_modules(sabeel_parse_modules((string) $data['modules']));
+        }
+
+        if ($modules !== null) {
+            $stmt = $this->pdo->prepare(
+                'UPDATE users SET
+                    username = ?, email = ?, phone = ?, full_name = ?,
+                    role_id = ?, modules = ?, is_active = ?, updated_at = NOW()
+                 WHERE id = ?'
+            );
+            $ok = $stmt->execute([
+                $data['username'],
+                $data['email'],
+                $data['phone'] ?? null,
+                $data['full_name'] ?? '',
+                (int) $data['role_id'],
+                $modules,
+                (int) (bool) $data['is_active'],
+                $id,
+            ]);
+        } else {
+            $stmt = $this->pdo->prepare(
+                'UPDATE users SET
+                    username = ?, email = ?, phone = ?, full_name = ?,
+                    role_id = ?, is_active = ?, updated_at = NOW()
+                 WHERE id = ?'
+            );
+            $ok = $stmt->execute([
+                $data['username'],
+                $data['email'],
+                $data['phone'] ?? null,
+                $data['full_name'] ?? '',
+                (int) $data['role_id'],
+                (int) (bool) $data['is_active'],
+                $id,
+            ]);
+        }
+
+        if ($ok && function_exists('sabeel_ensure_blog_teacher')) {
+            $user = $this->findById($id);
+            if ($user && sabeel_user_has_module($user, 'blog')) {
+                sabeel_ensure_blog_teacher($this->pdo, $user);
+            }
+        }
+
+        return $ok;
+    }
+
+    /**
+     * @param list<string> $modules
+     */
+    public function setModules(int $id, array $modules): bool
+    {
+        if (function_exists('sabeel_ensure_user_columns')) {
+            sabeel_ensure_user_columns($this->pdo);
+        }
+        $encoded = sabeel_encode_modules($modules);
+        $stmt = $this->pdo->prepare('UPDATE users SET modules = ?, updated_at = NOW() WHERE id = ?');
+        $ok = $stmt->execute([$encoded, $id]);
+        if ($ok && function_exists('sabeel_ensure_blog_teacher')) {
+            $user = $this->findById($id);
+            if ($user && sabeel_user_has_module($user, 'blog')) {
+                sabeel_ensure_blog_teacher($this->pdo, $user);
+            }
+        }
+        return $ok;
     }
 
     public function setActive(int $id, bool $active): bool
@@ -167,8 +249,12 @@ final class User
      */
     public function listUsers(): array
     {
+        if (function_exists('sabeel_ensure_user_columns')) {
+            sabeel_ensure_user_columns($this->pdo);
+        }
         $stmt = $this->pdo->query(
-            'SELECT u.id, u.username, u.email, u.phone, u.full_name, u.role_id, u.is_active,
+            'SELECT u.id, u.username, u.email, u.phone, u.full_name, u.role_id, u.modules,
+                    u.blog_teacher_id, u.is_active,
                     u.last_login_at, u.created_at, u.failed_login_attempts, u.locked_until,
                     r.name AS role_name, r.slug AS role_slug
              FROM users u

@@ -21,6 +21,7 @@ require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/session.php';
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/csrf.php';
+require_once __DIR__ . '/sabeel_gate.php';
 require_once dirname(__DIR__) . '/classes/User.php';
 require_once dirname(__DIR__) . '/classes/Auth.php';
 require_once __DIR__ . '/auth.php';
@@ -30,6 +31,7 @@ start_secure_session();
 
 try {
     $pdo = db();
+    sabeel_ensure_user_columns($pdo);
     $GLOBALS['auth_service'] = new Auth($pdo, $GLOBALS['app_config']);
     $GLOBALS['auth_service']->attemptRememberLogin();
 } catch (Throwable $e) {

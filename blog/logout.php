@@ -1,11 +1,11 @@
 <?php
 /**
- * Logout — clear session and return to login page
+ * Logout — clear unified session and return to staff login.
  */
 
 require_once __DIR__ . '/includes/auth.php';
 
 logout_user();
 
-header('Location: login.php');
+header('Location: ../pages/login.php');
 exit;

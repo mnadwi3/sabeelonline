@@ -1,110 +1,107 @@
 <?php
 /**
- * =========================================================
- * Authentication Helpers
- * =========================================================
- * This file handles:
- * - Starting the login session
- * - Checking if a user is logged in
- * - Checking Admin / Teacher roles
- * - Password hashing + verifying
- * - Logging users out
+ * Blog authentication — bridged to the unified SABEELAUTH module.
  *
- * Include it on protected pages like this:
- *
- *   require_once __DIR__ . '/db.php';
- *   require_once __DIR__ . '/auth.php';
- *   require_login();                 // any logged-in user
- *   require_role('admin');           // admin only
- * =========================================================
+ * Staff sign in at /pages/login.php. This file maps that session onto
+ * Blog's existing helpers (current_user_id = teachers.id for posts).
  */
 
-// Start session only once (needed to remember login)
+declare(strict_types=1);
+
+require_once __DIR__ . '/db.php';
+require_once dirname(__DIR__, 2) . '/includes/sabeel_gate.php';
+
 if (session_status() === PHP_SESSION_NONE) {
+    $config = require dirname(__DIR__, 2) . '/config/config.php';
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    session_name((string) ($config['session_name'] ?? 'SABEELAUTH'));
     session_set_cookie_params([
         'lifetime' => 0,
         'path' => '/',
-        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+        'domain' => '',
+        'secure' => $secure,
         'httponly' => true,
         'samesite' => 'Lax',
     ]);
     session_start();
 }
 
-// Make sure database connection helpers are available
-require_once __DIR__ . '/db.php';
-
 /**
- * Create a secure password hash before saving to database
- *
- * Example:
- *   $hash = hash_password('Admin@123');
+ * Apply unified user onto Blog session keys (teachers.id as user_id).
  */
+function blog_sync_unified_session(?array $user = null): bool
+{
+    global $pdo;
+
+    if ($user === null) {
+        $user = sabeel_peek_user();
+    }
+    if (!$user || !sabeel_user_has_module($user, 'blog')) {
+        return false;
+    }
+
+    $teacherId = sabeel_ensure_blog_teacher($pdo, $user);
+    if (!$teacherId) {
+        return false;
+    }
+
+    $_SESSION['user_id'] = $teacherId;
+    $_SESSION['user_name'] = (string) ($user['full_name'] !== '' ? $user['full_name'] : $user['username']);
+    $_SESSION['user_email'] = (string) $user['email'];
+    $_SESSION['user_role'] = sabeel_blog_role_for_user($user);
+    $_SESSION['auth_user_id'] = (int) $user['id'];
+    $_SESSION['auth_blog_teacher_id'] = $teacherId;
+    $_SESSION['_last_activity'] = time();
+
+    return true;
+}
+
 function hash_password(string $password): string
 {
     return password_hash($password, PASSWORD_DEFAULT);
 }
 
-/**
- * Check a plain password against the hash stored in database
- *
- * Example:
- *   if (verify_password($input, $user['password'])) { ... }
- */
 function verify_password(string $password, string $hash): bool
 {
     return password_verify($password, $hash);
 }
 
-/**
- * Save logged-in user data into the session
- */
 function login_user(array $user): void
 {
-    // Prevent session fixation attacks (simple safety step)
+    // Legacy path — Blog login form redirects to unified login.
     session_regenerate_id(true);
-
-    $_SESSION['user_id']    = (int) $user['id'];
-    $_SESSION['user_name']  = $user['name'];
+    $_SESSION['user_id'] = (int) $user['id'];
+    $_SESSION['user_name'] = $user['name'];
     $_SESSION['user_email'] = $user['email'];
-    $_SESSION['user_role']  = $user['role']; // 'admin' or 'teacher'
+    $_SESSION['user_role'] = $user['role'];
 }
 
-/**
- * Is anyone logged in right now?
- */
 function is_logged_in(): bool
 {
-    return isset($_SESSION['user_id']);
+    if (!empty($_SESSION['user_id']) && !empty($_SESSION['auth_user_id'])) {
+        return true;
+    }
+    return blog_sync_unified_session();
 }
 
-/**
- * Get current logged-in user id (or 0 if guest)
- */
 function current_user_id(): int
 {
+    if (empty($_SESSION['user_id'])) {
+        blog_sync_unified_session();
+    }
     return isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : 0;
 }
 
-/**
- * Get current logged-in user role ('admin', 'teacher', or '')
- */
 function current_user_role(): string
 {
     return isset($_SESSION['user_role']) ? (string) $_SESSION['user_role'] : '';
 }
 
-/**
- * Get current logged-in user name
- */
 function current_user_name(): string
 {
     return isset($_SESSION['user_name']) ? (string) $_SESSION['user_name'] : '';
 }
 
-/**
- * Shortcut helpers for roles
- */
 function is_admin(): bool
 {
     return current_user_role() === 'admin';
@@ -115,120 +112,132 @@ function is_teacher(): bool
     return current_user_role() === 'teacher';
 }
 
-/**
- * Reload user from DB so disabled / role-changed accounts lose access
- */
 function refresh_session_user(): void
 {
     global $pdo;
 
-    if (!is_logged_in()) {
-        return;
+    if (!blog_sync_unified_session()) {
+        logout_user();
+        header('Location: ' . sabeel_login_url('/blog/dashboard.php'));
+        exit;
     }
 
     $user = db_one(
         $pdo,
-        "SELECT id, name, email, role, is_active FROM teachers WHERE id = ? LIMIT 1",
+        'SELECT id, name, email, role, is_active FROM teachers WHERE id = ? LIMIT 1',
         [current_user_id()]
     );
 
     if (!$user || (int) $user['is_active'] !== 1) {
         logout_user();
-        header('Location: login.php');
+        header('Location: ' . sabeel_login_url('/blog/dashboard.php'));
         exit;
     }
 
     $_SESSION['user_name'] = $user['name'];
     $_SESSION['user_email'] = $user['email'];
+    // Keep admin elevation from unified role (super_admin / admin)
+    if (!empty($_SESSION['auth_user_id'])) {
+        $unified = sabeel_load_user((int) $_SESSION['auth_user_id']);
+        if ($unified) {
+            $_SESSION['user_role'] = sabeel_blog_role_for_user($unified);
+            return;
+        }
+    }
     $_SESSION['user_role'] = $user['role'];
 }
 
-/**
- * Force login: if guest, send them to login.php
- */
 function require_login(): void
 {
     if (!is_logged_in()) {
-        header('Location: login.php');
+        $return = (string) ($_SERVER['REQUEST_URI'] ?? '/blog/dashboard.php');
+        header('Location: ' . sabeel_login_url($return));
         exit;
     }
-
     refresh_session_user();
 }
 
-/**
- * Force a specific role (admin or teacher)
- *
- * Example:
- *   require_role('admin');
- */
 function require_role(string $role): void
 {
     require_login();
-
     if (current_user_role() !== $role) {
-        // Logged in, but wrong role
         header('Location: dashboard.php');
         exit;
     }
 }
 
-/**
- * Allow either admin OR teacher (any staff member)
- */
 function require_staff(): void
 {
     require_login();
-
     $role = current_user_role();
     if ($role !== 'admin' && $role !== 'teacher') {
-        header('Location: login.php');
+        header('Location: ' . sabeel_login_url('/blog/dashboard.php'));
         exit;
     }
 }
 
 /**
- * Try to log in with email + password
- * Returns the user array on success, or null on failure
+ * Legacy Blog login — prefer unified /pages/login.php.
+ * Still works so old bookmarks don't break; also creates/links unified user.
  */
 function attempt_login(string $email, string $password): ?array
 {
     global $pdo;
 
     $email = trim(strtolower($email));
-
-    // Find active user by email (prepared statement = safer)
     $user = db_one(
         $pdo,
-        "SELECT * FROM teachers
-         WHERE email = ?
-           AND is_active = 1
-         LIMIT 1",
+        'SELECT * FROM teachers WHERE email = ? AND is_active = 1 LIMIT 1',
         [$email]
     );
 
-    if (!$user) {
+    if (!$user || !verify_password($password, $user['password'])) {
         return null;
     }
 
-    // Check password hash
-    if (!verify_password($password, $user['password'])) {
-        return null;
+    // Prefer unified users row when present
+    try {
+        sabeel_ensure_user_columns($pdo);
+        $unified = $pdo->prepare(
+            'SELECT u.*, r.slug AS role_slug, r.name AS role_name
+             FROM users u INNER JOIN roles r ON r.id = u.role_id
+             WHERE u.email = ? OR u.blog_teacher_id = ? LIMIT 1'
+        );
+        $unified->execute([$email, (int) $user['id']]);
+        $urow = $unified->fetch();
+        if ($urow && (int) $urow['is_active'] === 1 && password_verify($password, (string) $urow['password'])) {
+            $_SESSION['auth_user_id'] = (int) $urow['id'];
+            $_SESSION['auth_username'] = (string) $urow['username'];
+            $_SESSION['auth_email'] = (string) $urow['email'];
+            $_SESSION['auth_full_name'] = (string) ($urow['full_name'] ?? '');
+            $_SESSION['auth_role'] = (string) $urow['role_slug'];
+            $_SESSION['auth_role_name'] = (string) $urow['role_name'];
+            $_SESSION['auth_modules'] = sabeel_user_has_module($urow, 'blog') || ($urow['role_slug'] === 'super_admin')
+                ? (sabeel_parse_modules((string) $urow['modules']) ?: ['blog'])
+                : ['blog'];
+            if ($urow['role_slug'] === 'super_admin') {
+                $_SESSION['auth_modules'] = sabeel_module_keys();
+            } elseif (!in_array('blog', $_SESSION['auth_modules'], true)) {
+                // Grant blog for this legacy login path
+                $mods = array_merge($_SESSION['auth_modules'], ['blog']);
+                $pdo->prepare('UPDATE users SET modules = ?, blog_teacher_id = ?, updated_at = NOW() WHERE id = ?')
+                    ->execute([sabeel_encode_modules($mods), (int) $user['id'], (int) $urow['id']]);
+                $_SESSION['auth_modules'] = sabeel_parse_modules(sabeel_encode_modules($mods));
+            }
+            blog_sync_unified_session($urow);
+            return $user;
+        }
+    } catch (Throwable $e) {
+        error_log('blog attempt_login unified: ' . $e->getMessage());
     }
 
-    // Success → store session
     login_user($user);
     return $user;
 }
 
-/**
- * Log the user out and clear session data
- */
 function logout_user(): void
 {
     $_SESSION = [];
-
-    // Remove session cookie if it exists
     if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();
         setcookie(
@@ -236,21 +245,16 @@ function logout_user(): void
             '',
             time() - 42000,
             $params['path'],
-            $params['domain'],
-            $params['secure'],
-            $params['httponly']
+            $params['domain'] ?? '',
+            (bool) $params['secure'],
+            (bool) $params['httponly']
         );
     }
-
-    session_destroy();
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_destroy();
+    }
 }
 
-/**
- * Simple text cleaner for forms (prevents basic XSS in HTML output)
- *
- * Example in HTML:
- *   echo e($post['title']);
- */
 function e(?string $value): string
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');

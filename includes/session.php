@@ -27,7 +27,8 @@ function start_secure_session(): void
     ini_set('session.use_strict_mode', '1');
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_secure', $secure ? '1' : '0');
-    ini_set('session.cookie_samesite', 'Strict');
+    // Lax so post-login redirects into Blog / Library / Portal keep the session cookie
+    ini_set('session.cookie_samesite', 'Lax');
     ini_set('session.gc_maxlifetime', (string) $lifetime);
     ini_set('session.use_trans_sid', '0');
     ini_set('session.sid_length', '48');
@@ -41,7 +42,7 @@ function start_secure_session(): void
         'domain' => '',
         'secure' => $secure,
         'httponly' => true,
-        'samesite' => 'Strict',
+        'samesite' => 'Lax',
     ]);
 
     session_start();

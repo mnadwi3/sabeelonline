@@ -32,7 +32,9 @@ INSERT IGNORE INTO roles (id, name, slug, description) VALUES
   (4, 'Student', 'student', 'Student portal access');
 
 -- -----------------------------------------------------------------------------
--- Users (new auth accounts — independent of blog teachers / portal tbl_users)
+-- Users (unified accounts — Super Admin manages Blog / Library / Portal / Courses)
+-- modules: comma list — blog,library,portal,courses (super_admin always has all)
+-- blog_teacher_id: linked teachers.id for blog authorship (posts.teacher_id)
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS users (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -42,6 +44,8 @@ CREATE TABLE IF NOT EXISTS users (
   phone VARCHAR(20) NULL,
   full_name VARCHAR(120) NOT NULL DEFAULT '',
   role_id TINYINT UNSIGNED NOT NULL DEFAULT 4,
+  modules VARCHAR(120) NOT NULL DEFAULT '',
+  blog_teacher_id INT UNSIGNED NULL DEFAULT NULL,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
   failed_login_attempts INT UNSIGNED NOT NULL DEFAULT 0,
   locked_until DATETIME NULL,

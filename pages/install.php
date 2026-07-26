@@ -18,6 +18,7 @@ $GLOBALS['app_config'] = require dirname(__DIR__) . '/config/config.php';
 require_once dirname(__DIR__) . '/config/database.php';
 require_once dirname(__DIR__) . '/includes/security.php';
 require_once dirname(__DIR__) . '/includes/functions.php';
+require_once dirname(__DIR__) . '/includes/sabeel_gate.php';
 
 send_security_headers();
 
@@ -78,11 +79,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $hash = password_hash($password, PASSWORD_DEFAULT);
+            if (function_exists('sabeel_ensure_user_columns')) {
+                sabeel_ensure_user_columns($pdo);
+            }
+            $allModules = function_exists('sabeel_encode_modules') && function_exists('sabeel_module_keys')
+                ? sabeel_encode_modules(sabeel_module_keys())
+                : 'blog,library,portal,courses';
             $stmt = $pdo->prepare(
-                'INSERT INTO users (username, email, password, full_name, role_id, is_active, password_changed_at)
-                 VALUES (?, ?, ?, ?, 1, 1, NOW())'
+                'INSERT INTO users (username, email, password, full_name, role_id, modules, is_active, password_changed_at)
+                 VALUES (?, ?, ?, ?, 1, ?, 1, NOW())'
             );
-            $stmt->execute([$username, $email, $hash, $fullName]);
+            $stmt->execute([$username, $email, $hash, $fullName, $allModules]);
             $messages[] = 'Super Admin account created. You can sign in now.';
             $done = true;
         }

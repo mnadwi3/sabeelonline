@@ -433,12 +433,17 @@
     els.adminGateForm.addEventListener('submit', async function (e) {
       e.preventDefault();
       els.adminGateError.hidden = true;
-      var code = els.adminCode.value;
+      var code = (els.adminCode.value || '').trim();
+      if (!code) {
+        window.location.href = (auth.staffLoginUrl && auth.staffLoginUrl('/library/admin.html'))
+          || '/pages/login.php?redirect=/library/admin.html';
+        return;
+      }
       if (!auth.verifyAdminCode(code)) {
         els.adminGateError.hidden = false;
         return;
       }
-      adminCodeValue = code.trim();
+      adminCodeValue = code;
       try { sessionStorage.setItem('sabeel_lib_admin_code', adminCodeValue); } catch (err) {}
       auth.loginAdmin(code);
       try {
@@ -465,6 +470,7 @@
       adminCodeValue = '';
       try { sessionStorage.removeItem('sabeel_lib_admin_code'); } catch (err) {}
       fetch(API + '/logout.php', { method: 'POST', credentials: 'same-origin' }).catch(function () {});
+      window.location.href = '/pages/logout.php';
       showAdmin(false);
       els.adminCode.value = '';
     });
@@ -754,10 +760,17 @@
     try { adminCodeValue = sessionStorage.getItem('sabeel_lib_admin_code') || ''; }
     catch (err) { adminCodeValue = ''; }
 
+    if (auth.fetchUnifiedSession) {
+      try { await auth.fetchUnifiedSession(); } catch (err) { /* ignore */ }
+    }
+
     if (auth.isAdminAuthenticated()) {
       showAdmin(true);
       if (adminCodeValue) {
         try { await apiLogin(adminCodeValue); } catch (err) { /* ignore */ }
+      } else {
+        try { await fetch(API + '/login.php', { method: 'POST', body: new FormData(), credentials: 'same-origin' }); }
+        catch (err) { /* unified cookie may already authorize */ }
       }
       await loadServerList();
       refreshAllSelects();

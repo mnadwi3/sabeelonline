@@ -1,65 +1,78 @@
-# Secure Authentication System
+# Secure Authentication System (Unified)
 
-Production-ready PHP 8 + MySQL (PDO) auth for Hostinger. **Independent** of the existing Blog (`teachers`) and Student Portal (`tbl_users`) logins — those keep working unchanged.
+Production PHP 8 + MySQL (PDO) auth for Hostinger. **Super Admin manages all staff logins** for Blog, Digital Library, Student Portal (results admin), and Courses/Admissions.
 
-## Deploy (Hostinger)
+Public Student ID result lookup (`student-portal/public/`) stays password-less and is unchanged.
 
-1. Upload the new folders/files (`config/`, `includes/` auth files, `classes/`, `pages/`, `sql/`, `assets/css/auth.css`).
-2. Confirm DB settings in `config/config.php` (defaults match the blog Hostinger database).
-3. Visit `https://your-domain/pages/install.php`
-4. Create the first **Super Admin** (only if `users` is empty).
-5. **Delete** `pages/install.php` after install.
-6. Sign in at `/pages/login.php`
+## Deploy / first use
 
-Schema uses `CREATE TABLE IF NOT EXISTS` only — it never drops or rewrites existing tables/rows.
+1. Confirm DB settings in `config/config.php`.
+2. If not already done: visit `/pages/install.php` → create Super Admin → **delete** `install.php`.
+3. Sign in at `/pages/login.php`.
+4. As Super Admin open **Import legacy accounts** (`/pages/admin/migrate-accounts.php`) to copy:
+   - Blog `teachers` → `users` (Blog access, same passwords)
+   - Portal `tbl_users` → `users` (Portal access, same passwords)
+5. Under **Manage users**, tick portal access for each account:
+   - **Blog** — Blog Admin / Teacher
+   - **Digital Library** — Library student + admin UI
+   - **Student Portal** — Results admin
+   - **Courses & Admissions** — Courses Admin, Admissions Admin, Admin Hub
+6. Create Library/Courses staff as new users (legacy access codes are emergency-only).
+
+Schema uses `CREATE TABLE IF NOT EXISTS` + safe `ALTER` for `modules` / `blog_teacher_id`. Never drops existing tables or user rows.
+
+## How portals authenticate
+
+| Portal | Login | Access flag |
+|--------|--------|-------------|
+| Unified dashboard | `/pages/login.php` | any signed-in user |
+| Blog | redirects to unified login | `blog` module |
+| Library / Library Admin | unified session (codes = fallback) | `library` |
+| Courses / Admissions / Hub | unified session | `courses` (Hub also accepts `library`) |
+| Student Portal admin | redirects to unified login | `portal` |
+
+Super Admin always has every module.
 
 ## File map
 
 | Path | Purpose |
 |------|---------|
 | `config/config.php` | App + DB + security settings |
-| `config/database.php` | PDO singleton |
-| `config/config.local.php.example` | Optional secret overrides |
-| `sql/auth_schema.sql` | Tables: users, roles, login_attempts, password_resets, remember_tokens, audit_logs |
-| `includes/bootstrap.php` | Load config, session, CSRF, Auth |
-| `includes/session.php` | Secure cookies, timeout, regenerate |
-| `includes/csrf.php` | CSRF create / validate / rotate |
-| `includes/security.php` | Security headers, IP, HTTPS |
-| `includes/functions.php` | `e()`, validation, password migration |
-| `includes/auth.php` | `requireLogin()`, `requireRole()`, `isAdmin()`, … |
-| `classes/Auth.php` | Login, logout, remember-me, reset, audit |
-| `classes/User.php` | User CRUD / lockout |
-| `pages/login.php` | Login + Remember Me |
-| `pages/logout.php` | Logout |
-| `pages/forgot-password.php` | Request reset email |
-| `pages/reset-password.php` | Consume reset token |
-| `pages/change-password.php` | Logged-in password change |
-| `pages/dashboard.php` | Protected home |
-| `pages/admin/users.php` | Create / disable / roles / reset passwords |
-| `pages/admin/login-history.php` | Audit / login history |
-| `pages/install.php` | One-time schema + first Super Admin |
-| `assets/css/auth.css` | Auth UI |
+| `includes/bootstrap.php` | Auth bootstrap |
+| `includes/sabeel_gate.php` | Cross-portal session peek + legacy import |
+| `includes/auth.php` | `requireLogin()`, `requireModule()`, role helpers |
+| `classes/Auth.php` / `User.php` | Login, users, modules |
+| `pages/admin/users.php` | Create users, roles, **portal access**, passwords |
+| `pages/admin/migrate-accounts.php` | Import Blog + Portal accounts |
+| `sql/auth_schema.sql` | Tables including `users.modules`, `blog_teacher_id` |
+| `library/api/session.php` | JSON session check for Hub/Library JS |
 
-## Protecting a new page
+## Protecting a page
 
 ```php
 <?php
 require_once __DIR__ . '/../includes/bootstrap.php';
-requireLogin();                 // any signed-in role
-// requireRole('admin', 'super_admin');
-// requireMinRole('teacher');
+requireLogin();
+requireModule('blog'); // or library, portal, courses
 ```
 
-## Password migration (existing plaintext)
+Cross-app (Blog/Portal) without loading conflicting helpers:
 
-If a `users.password` value is **not** a `password_hash()` string, login still works with the current plaintext password. On success it is automatically replaced with `password_hash()` — no forced reset, no username/ID changes.
+```php
+require_once __DIR__ . '/../../includes/sabeel_gate.php';
+$user = sabeel_peek_user();
+if (!$user || !sabeel_user_has_module($user, 'portal')) { /* deny */ }
+```
 
 ## Roles
 
 `student` → `teacher` → `admin` → `super_admin`
 
+Portal access is separate from role: a Teacher can have Blog only; an Admin can have Portal + Courses, etc.
+
 ## Notes
 
-- Session name: `SABEELAUTH` (does not wipe Blog/Portal PHP sessions that use other names/keys in the default cookie — they still share the browser cookie jar by path; this module uses its own session name).
-- Failed logins: 5 attempts → 15 minute lock + DB logging + IP rate limit.
-- Forgot-password emails use PHP `mail()` (Hostinger). If mail fails, the reset link is written to the PHP error log.
+- Session name: `SABEELAUTH`
+- Failed logins: 5 attempts → 15 minute lock
+- Existing plaintext passwords in `users` auto-hash on successful login
+- Blog authorship still uses `teachers` via `users.blog_teacher_id` (auto-created when Blog access is granted)

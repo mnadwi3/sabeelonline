@@ -1,13 +1,31 @@
 <?php
 /**
  * Shared helpers for Library API (server-side PDF storage).
+ * Admin auth is the unified SABEELAUTH module (library / courses access).
  */
 declare(strict_types=1);
 
-session_start();
+require_once dirname(__DIR__, 2) . '/includes/sabeel_gate.php';
+
+// Prefer unified session name so Library APIs share login with /pages/login.php
+$config = require dirname(__DIR__, 2) . '/config/config.php';
+$secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+if (session_status() === PHP_SESSION_NONE) {
+    session_name((string) ($config['session_name'] ?? 'SABEELAUTH'));
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    session_start();
+}
 
 header('X-Content-Type-Options: nosniff');
 
+/** @deprecated Legacy access codes — kept only as emergency fallback */
 const LIB_ADMIN_CODE = 'admin@sabeel';
 const LIB_ADMIN_CODES = ['admin@sabeel', 'ADMIN-SABEEL'];
 const LIB_MAX_PDF_BYTES = 40 * 1024 * 1024;   // 40 MB
@@ -22,6 +40,21 @@ function lib_is_admin_code(string $code): bool
         }
     }
     return $code === strtoupper(LIB_ADMIN_CODE);
+}
+
+function lib_unified_admin_user(): ?array
+{
+    $user = sabeel_peek_user();
+    if (!$user) {
+        return null;
+    }
+    if (
+        sabeel_user_has_module($user, 'library')
+        || sabeel_user_has_module($user, 'courses')
+    ) {
+        return $user;
+    }
+    return null;
 }
 
 function lib_json(array $payload, int $status = 200): void
@@ -151,10 +184,16 @@ function lib_find_course(string $id): ?array
 
 function lib_require_admin(): void
 {
+    if (lib_unified_admin_user()) {
+        $_SESSION['lib_admin'] = true;
+        return;
+    }
+
     if (!empty($_SESSION['lib_admin']) && $_SESSION['lib_admin'] === true) {
         return;
     }
 
+    // Emergency legacy codes (create real users under Manage Users when possible)
     $code = '';
     if (isset($_POST['admin_code'])) {
         $code = (string) $_POST['admin_code'];
@@ -163,10 +202,27 @@ function lib_require_admin(): void
     }
 
     if (!lib_is_admin_code($code)) {
-        lib_json(['ok' => false, 'error' => 'Admin authentication required.'], 401);
+        lib_json([
+            'ok' => false,
+            'error' => 'Admin authentication required. Sign in at /pages/login.php with Library or Courses access.',
+            'login' => '/pages/login.php?redirect=/admin-hub.html',
+        ], 401);
     }
 
     $_SESSION['lib_admin'] = true;
+}
+
+function lib_require_library_student(): void
+{
+    $user = sabeel_peek_user();
+    if ($user && sabeel_user_has_module($user, 'library')) {
+        return;
+    }
+    lib_json([
+        'ok' => false,
+        'error' => 'Library login required.',
+        'login' => '/pages/login.php?redirect=/library/',
+    ], 401);
 }
 
 function lib_safe_filename(string $original, string $prefix, string $ext): string

@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin: list / create / disable users, change roles, reset passwords.
+ * Admin: list / create / disable users, change roles, modules, reset passwords.
  * Location: /pages/admin/users.php
  */
 
@@ -11,8 +11,21 @@ requireRole('admin', 'super_admin');
 
 $usersApi = auth()->users();
 $roles = $usersApi->listRoles();
+$moduleLabels = sabeel_module_labels();
 $error = '';
 $success = '';
+
+/**
+ * @return list<string>
+ */
+function admin_posted_modules(): array
+{
+    $raw = $_POST['modules'] ?? [];
+    if (!is_array($raw)) {
+        return [];
+    }
+    return array_values(array_map('strval', $raw));
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!validate_csrf()) {
@@ -27,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $phone = trim((string) ($_POST['phone'] ?? ''));
                 $roleId = (int) ($_POST['role_id'] ?? 0);
                 $password = (string) ($_POST['password'] ?? '');
+                $modules = admin_posted_modules();
 
                 if (!validate_username($username)) {
                     $error = 'Username must be 3–50 characters (letters, numbers, . _ -).';
@@ -41,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } elseif (!in_array($roleId, array_map(static fn ($r) => (int) $r['id'], $roles), true)) {
                     $error = 'Invalid role selected.';
                 } else {
-                    // Super Admin role only assignable by Super Admin
                     $roleSlug = '';
                     foreach ($roles as $r) {
                         if ((int) $r['id'] === $roleId) {
@@ -52,6 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($roleSlug === 'super_admin' && !is_super_admin()) {
                         $error = 'Only a Super Admin can create Super Admin accounts.';
                     } else {
+                        if ($roleSlug === 'super_admin') {
+                            $modules = sabeel_module_keys();
+                        }
                         $newId = $usersApi->create([
                             'username' => $username,
                             'email' => $email,
@@ -59,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'phone' => $phone !== '' ? $phone : null,
                             'full_name' => $fullName,
                             'role_id' => $roleId,
+                            'modules' => $modules,
                             'is_active' => 1,
                         ]);
                         auth()->audit((int) current_user_id(), 'admin_create_user', 'Created user #' . $newId);
@@ -99,8 +116,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = 'Only a Super Admin can change Super Admin roles.';
                 } else {
                     $usersApi->setRole($id, $roleId);
+                    if ($roleSlug === 'super_admin') {
+                        $usersApi->setModules($id, sabeel_module_keys());
+                    }
                     auth()->audit((int) current_user_id(), 'admin_change_role', 'User #' . $id . ' → ' . $roleSlug);
                     $success = 'Role updated.';
+                }
+            } elseif ($action === 'modules') {
+                $id = (int) ($_POST['user_id'] ?? 0);
+                $target = $usersApi->findById($id);
+                $modules = admin_posted_modules();
+                if (!$target) {
+                    $error = 'User not found.';
+                } elseif (($target['role_slug'] ?? '') === 'super_admin' && !is_super_admin()) {
+                    $error = 'Only a Super Admin can edit Super Admin access.';
+                } else {
+                    if (($target['role_slug'] ?? '') === 'super_admin') {
+                        $modules = sabeel_module_keys();
+                    }
+                    $usersApi->setModules($id, $modules);
+                    auth()->audit((int) current_user_id(), 'admin_set_modules', 'User #' . $id . ' → ' . implode(',', $modules));
+                    $success = 'Portal access updated for ' . $target['username'] . '.';
                 }
             } elseif ($action === 'reset_password') {
                 $id = (int) ($_POST['user_id'] ?? 0);
@@ -133,6 +169,7 @@ render_auth_header('Manage Users', true);
     <strong>User management</strong>
     <nav>
       <a href="<?php echo e(app_url('/pages/dashboard.php')); ?>">Dashboard</a>
+      <a href="<?php echo e(app_url('/pages/admin/migrate-accounts.php')); ?>">Import legacy accounts</a>
       <a href="<?php echo e(app_url('/pages/admin/login-history.php')); ?>">Login history</a>
       <a href="<?php echo e(app_url('/pages/logout.php')); ?>">Logout</a>
     </nav>
@@ -143,6 +180,7 @@ render_auth_header('Manage Users', true);
 
   <div class="panel">
     <h2>Create user</h2>
+    <p class="help" style="margin-top:0;">Assign a role and tick which portals this account may open. Super Admin always has every portal.</p>
     <form method="post" action="">
       <?php echo csrf_field(); ?>
       <input type="hidden" name="action" value="create">
@@ -178,6 +216,15 @@ render_auth_header('Manage Users', true);
           <p class="help"><?php echo e(password_rules_message()); ?></p>
         </div>
       </div>
+      <fieldset class="form-group" style="border:1px solid var(--auth-border);border-radius:8px;padding:.75rem 1rem;">
+        <legend style="padding:0 .35rem;font-weight:600;">Portal access</legend>
+        <?php foreach ($moduleLabels as $key => $label): ?>
+          <label style="display:block;margin:.35rem 0;">
+            <input type="checkbox" name="modules[]" value="<?php echo e($key); ?>">
+            <?php echo e($label); ?>
+          </label>
+        <?php endforeach; ?>
+      </fieldset>
       <button type="submit" class="btn btn-primary">Create user</button>
     </form>
   </div>
@@ -191,13 +238,18 @@ render_auth_header('Manage Users', true);
             <th>ID</th>
             <th>User</th>
             <th>Role</th>
+            <th>Portal access</th>
             <th>Status</th>
-            <th>Last login</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
         <?php foreach ($list as $row): ?>
+          <?php
+            $rowMods = (($row['role_slug'] ?? '') === 'super_admin')
+                ? sabeel_module_keys()
+                : sabeel_parse_modules((string) ($row['modules'] ?? ''));
+          ?>
           <tr>
             <td><?php echo (int) $row['id']; ?></td>
             <td>
@@ -205,6 +257,9 @@ render_auth_header('Manage Users', true);
               <span style="color:#667;"><?php echo e((string) $row['email']); ?></span>
               <?php if (!empty($row['full_name'])): ?>
                 <br><?php echo e((string) $row['full_name']); ?>
+              <?php endif; ?>
+              <?php if (!empty($row['blog_teacher_id'])): ?>
+                <br><span style="color:#667;font-size:.82rem;">Blog teacher #<?php echo (int) $row['blog_teacher_id']; ?></span>
               <?php endif; ?>
             </td>
             <td>
@@ -225,13 +280,35 @@ render_auth_header('Manage Users', true);
               </form>
             </td>
             <td>
+              <form method="post" action="">
+                <?php echo csrf_field(); ?>
+                <input type="hidden" name="action" value="modules">
+                <input type="hidden" name="user_id" value="<?php echo (int) $row['id']; ?>">
+                <?php foreach ($moduleLabels as $key => $label): ?>
+                  <label style="display:block;font-size:.86rem;margin:.2rem 0;">
+                    <input type="checkbox" name="modules[]" value="<?php echo e($key); ?>"
+                      <?php echo in_array($key, $rowMods, true) ? 'checked' : ''; ?>
+                      <?php echo (($row['role_slug'] ?? '') === 'super_admin') ? 'disabled' : ''; ?>>
+                    <?php echo e($label); ?>
+                  </label>
+                <?php endforeach; ?>
+                <?php if (($row['role_slug'] ?? '') !== 'super_admin'): ?>
+                  <button class="btn btn-secondary btn-sm" type="submit" style="margin-top:.4rem;">Save access</button>
+                <?php else: ?>
+                  <p class="help" style="margin:.35rem 0 0;">All portals (Super Admin)</p>
+                <?php endif; ?>
+              </form>
+            </td>
+            <td>
               <?php if ((int) $row['is_active']): ?>
                 <span class="badge badge-ok">Active</span>
               <?php else: ?>
                 <span class="badge badge-off">Disabled</span>
               <?php endif; ?>
+              <div style="margin-top:.45rem;font-size:.8rem;color:#667;">
+                <?php echo e((string) ($row['last_login_at'] ?: 'Never logged in')); ?>
+              </div>
             </td>
-            <td><?php echo e((string) ($row['last_login_at'] ?: '—')); ?></td>
             <td>
               <div class="actions">
                 <form method="post" action="">

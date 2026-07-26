@@ -189,8 +189,24 @@ function verify_csrf(): void
 
 function require_admin(): void
 {
+    // Unified SABEELAUTH accounts with Portal module
+    $gate = dirname(__DIR__, 2) . '/includes/sabeel_gate.php';
+    if (is_file($gate)) {
+        require_once $gate;
+        $user = sabeel_peek_user();
+        if ($user && sabeel_user_has_module($user, 'portal')) {
+            $_SESSION['admin_id'] = (int) $user['id'];
+            $_SESSION['admin_name'] = (string) ($user['full_name'] !== '' ? $user['full_name'] : $user['username']);
+            $_SESSION['admin_login'] = (string) $user['username'];
+            return;
+        }
+    }
+
     if (empty($_SESSION['admin_id'])) {
-        redirect('admin/login.php');
+        $return = '/student-portal/admin/';
+        $login = '/pages/login.php?redirect=' . rawurlencode($return);
+        header('Location: ' . $login);
+        exit;
     }
 }
 

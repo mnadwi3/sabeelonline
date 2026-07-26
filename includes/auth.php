@@ -146,12 +146,61 @@ function requireLogin(): void
         redirect((string) ($GLOBALS['app_config']['login_path'] ?? '/pages/login.php'));
     }
 
-    // Refresh role in case admin changed it
+    // Refresh role / modules in case admin changed them
     $_SESSION['auth_role'] = (string) $user['role_slug'];
     $_SESSION['auth_role_name'] = (string) $user['role_name'];
     $_SESSION['auth_full_name'] = (string) ($user['full_name'] ?? '');
     $_SESSION['auth_username'] = (string) $user['username'];
     $_SESSION['auth_email'] = (string) $user['email'];
+    $mods = sabeel_parse_modules((string) ($user['modules'] ?? ''));
+    if (($user['role_slug'] ?? '') === 'super_admin') {
+        $mods = sabeel_module_keys();
+        // Persist full access if the column was added after install
+        if (trim((string) ($user['modules'] ?? '')) === '') {
+            try {
+                auth()->users()->setModules((int) $user['id'], $mods);
+            } catch (Throwable $e) {
+                // non-fatal
+            }
+        }
+    }
+    $_SESSION['auth_modules'] = $mods;
+    $_SESSION['auth_blog_teacher_id'] = !empty($user['blog_teacher_id'])
+        ? (int) $user['blog_teacher_id']
+        : 0;
+}
+
+/**
+ * Current user's portal module keys.
+ *
+ * @return list<string>
+ */
+function current_user_modules(): array
+{
+    if (!empty($_SESSION['auth_modules']) && is_array($_SESSION['auth_modules'])) {
+        return array_values($_SESSION['auth_modules']);
+    }
+    return [];
+}
+
+function user_has_module(string $module): bool
+{
+    if (is_super_admin()) {
+        return true;
+    }
+    return in_array(strtolower(trim($module)), current_user_modules(), true);
+}
+
+/**
+ * Require login + access to a portal module (blog, library, portal, courses).
+ */
+function requireModule(string $module): void
+{
+    requireLogin();
+    if (!user_has_module($module)) {
+        http_response_code(403);
+        exit('Access denied. Your account is not enabled for this section. Ask a Super Admin to grant access.');
+    }
 }
 
 /**

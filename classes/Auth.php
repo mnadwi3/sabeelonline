@@ -110,6 +110,31 @@ final class Auth
         $_SESSION['auth_full_name'] = (string) ($user['full_name'] ?? '');
         $_SESSION['auth_role'] = (string) ($user['role_slug'] ?? '');
         $_SESSION['auth_role_name'] = (string) ($user['role_name'] ?? '');
+        $mods = function_exists('sabeel_parse_modules')
+            ? sabeel_parse_modules((string) ($user['modules'] ?? ''))
+            : [];
+        if (($user['role_slug'] ?? '') === 'super_admin' && function_exists('sabeel_module_keys')) {
+            $mods = sabeel_module_keys();
+        }
+        $_SESSION['auth_modules'] = $mods;
+        $blogTeacherId = !empty($user['blog_teacher_id']) ? (int) $user['blog_teacher_id'] : 0;
+        $wantsBlog = in_array('blog', $mods, true);
+        if ($blogTeacherId <= 0 && $wantsBlog && function_exists('sabeel_ensure_blog_teacher')) {
+            $ensured = sabeel_ensure_blog_teacher($this->pdo, $user);
+            if ($ensured) {
+                $blogTeacherId = $ensured;
+            }
+        }
+        $_SESSION['auth_blog_teacher_id'] = $blogTeacherId;
+        // Blog compatibility keys (same SABEELAUTH cookie)
+        if ($blogTeacherId > 0 && in_array('blog', $mods, true)) {
+            $_SESSION['user_id'] = $blogTeacherId;
+            $_SESSION['user_name'] = (string) ($user['full_name'] !== '' ? $user['full_name'] : $user['username']);
+            $_SESSION['user_email'] = (string) $user['email'];
+            $_SESSION['user_role'] = in_array((string) ($user['role_slug'] ?? ''), ['admin', 'super_admin'], true)
+                ? 'admin'
+                : 'teacher';
+        }
         $_SESSION['_last_activity'] = time();
     }
 

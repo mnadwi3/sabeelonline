@@ -634,10 +634,10 @@ table.data.marks-entry-table {
   gap: 0;
   width: 100%;
   margin: 0;
-  padding: 0.45rem 0 0;
+  padding: 0;
   background: #fff;
   border: 0;
-  border-top: 1px solid #d5e0ec;
+  border-top: 0;
 }
 .ms-info-bold {
   font-weight: 600;

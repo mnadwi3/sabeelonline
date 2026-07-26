@@ -10,7 +10,7 @@ $flash = get_flash();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= e($pageTitle ?? 'Admin') ?> — <?= e(app_config('app_name')) ?></title>
-  <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>?v=20260726mstit1">
+  <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>?v=20260726mssignfix1">
 </head>
 <body>
 <div class="app-shell">

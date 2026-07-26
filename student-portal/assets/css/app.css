@@ -558,55 +558,31 @@ table.data.marks-entry-table {
   --ms-gold-soft: #f8f1dd;
   --ms-ink: #1c2434;
   --ms-line: #c9d5e4;
+  --ms-head: linear-gradient(180deg, #17808d 0%, #0a6e7a 100%);
   width: min(880px, 100%);
   margin: 0 auto;
-  background:
-    linear-gradient(180deg, #f7fbff 0%, #ffffff 18%, #ffffff 100%);
-  border: 1px solid #b7c7db;
-  border-radius: 14px;
-  box-shadow:
-    0 0 0 5px #fff,
-    0 0 0 6px #c5a35a,
-    0 0 0 7px #16407a,
-    0 20px 44px rgba(15, 45, 87, 0.12);
+  background: #fff;
+  border: 1px solid #c8d2e0;
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(15, 45, 87, 0.08);
   position: relative;
   overflow: hidden;
   color: var(--ms-ink);
 }
-.marksheet::after {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 6px;
-  background: linear-gradient(90deg, #16407a 0%, #0a6e7a 45%, #c5a35a 100%);
-}
+.marksheet::after { display: none; }
 .marksheet-clean::before { display: none !important; }
-.marksheet-inner { position: relative; z-index: 1; padding: 1.5rem 1.55rem 1.9rem; }
+.marksheet-inner { position: relative; z-index: 1; padding: 1.35rem 1.5rem 1.75rem; }
 .marksheet-header img {
   width: 100%;
   display: block;
-  border-radius: 8px;
-  margin-bottom: 0.95rem;
-  box-shadow: 0 4px 14px rgba(15, 45, 87, 0.08);
+  border-radius: 0;
+  margin-bottom: 0.85rem;
+  box-shadow: none;
 }
-.ms-doc-label {
-  text-align: center;
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #fff;
-  font-weight: 700;
-  margin: 0 auto 0.55rem;
-  width: fit-content;
-  max-width: 100%;
-  padding: 0.35rem 0.95rem;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #16407a, #0a6e7a);
-  box-shadow: 0 4px 12px rgba(10, 110, 122, 0.22);
-}
+.ms-doc-label { display: none !important; }
 .marksheet-title {
   text-align: center;
-  margin: 0;
+  margin: 0.15rem 0 0;
   color: var(--ms-blue-deep);
   font-family: var(--font-display);
   font-size: clamp(1.35rem, 2.4vw, 1.75rem);
@@ -631,16 +607,17 @@ table.data.marks-entry-table {
   background: transparent;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 6px 18px rgba(15, 45, 87, 0.06);
+  box-shadow: none;
+  border: 1px solid #b7c7db;
 }
 .ms-meta-heading {
-  padding: 0.42rem 0.7rem;
-  background: linear-gradient(90deg, #0a6e7a, #16407a);
+  padding: 0.55rem 0.7rem;
+  background: var(--ms-head);
   color: #fff;
   text-align: center;
-  font-size: 0.84rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
 }
 .ms-meta .ms-info {
   display: grid;
@@ -648,8 +625,8 @@ table.data.marks-entry-table {
   gap: 2px;
   width: 100%;
   padding: 3px;
-  background: #eef5fb;
-  border: 1px solid #b7c7db;
+  background: #f3fafb;
+  border: 0;
   border-top: 0;
 }
 .ms-info-bold {
@@ -675,7 +652,7 @@ table.data.marks-entry-table {
   display: flex;
   align-items: center;
   padding: 0.36rem 0.55rem;
-  background: linear-gradient(180deg, #127a88, #0a6e7a);
+  background: var(--ms-head);
   color: #fff;
   font-weight: 700;
   font-size: 0.84rem;
@@ -725,10 +702,12 @@ table.data.marks-entry-table {
 .ms-table td:last-child { border-right: 0; }
 .ms-table tbody tr:last-child td { border-bottom: 0; }
 .ms-table th {
-  background: linear-gradient(180deg, #17808d 0%, #0a6e7a 100%);
+  background: var(--ms-head);
   color: #fff;
   font-weight: 700;
   letter-spacing: 0.02em;
+  font-size: 0.9rem;
+  padding: 0.55rem 0.65rem;
 }
 .ms-table td.ms-subject { text-align: left; font-weight: 600; color: #243247; }
 .ms-table td.ms-marks {

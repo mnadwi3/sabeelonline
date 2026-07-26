@@ -389,7 +389,6 @@ function render_marksheet(array $r, bool $showPrintBar = true): void
           <img src="<?= e(asset('images/logo_header.png')) ?>" alt="Madarsa Sabeel Us Salam Online">
         </div>
 
-        <div class="ms-doc-label">Statement of Marks</div>
         <h2 class="marksheet-title"><?= e($courseTitle) ?></h2>
         <?php if (!empty($r['month_year'])): ?>
           <p class="ms-subtitle"><?= e($r['month_year']) ?><?php if (!empty($r['semester'])): ?> · <?= e($r['semester']) ?><?php endif; ?></p>

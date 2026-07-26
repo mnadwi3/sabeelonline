@@ -32,16 +32,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect('admin/students.php' . ($id > 0 ? '?edit=' . $id : ''));
         }
 
-        if (!is_valid_student_id($roll)) {
-            flash(
-                'error',
-                'Student ID must be at least 8 characters, include letters (A–Z), and may use numbers/hyphen. Example: SUS00001 — not 1, 2, or 3.'
-            );
-            redirect('admin/students.php' . ($id > 0 ? '?edit=' . $id : ''));
-        }
-
         try {
             if ($id > 0) {
+                // Edit: keep/allow changing portal ID (for migrating guessable IDs)
+                if (!is_valid_student_id($roll)) {
+                    flash(
+                        'error',
+                        'Student ID must be at least 8 characters, include letters (A–Z), and may use numbers/hyphen.'
+                    );
+                    redirect('admin/students.php?edit=' . $id);
+                }
+                if (student_id_exists($pdo, $roll, $id)) {
+                    flash('error', 'This Student ID already exists. Use a unique ID.');
+                    redirect('admin/students.php?edit=' . $id);
+                }
+
                 $old = $pdo->prepare('SELECT roll_no FROM tbl_students WHERE admin_no=?');
                 $old->execute([$id]);
                 $prevRoll = (string) ($old->fetchColumn() ?: '');
@@ -54,17 +59,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($prevRoll !== '' && strcasecmp($prevRoll, $roll) !== 0) {
                     $pdo->prepare('UPDATE tbl_results SET roll_no=? WHERE roll_no=?')->execute([$roll, $prevRoll]);
                 }
-                flash('success', 'Student updated. Portal ID: ' . $roll);
+                flash('success', 'Student updated. Portal ID: ' . $roll . ' — give the student this ID if it changed.');
             } else {
-                $pdo->prepare(
-                    'INSERT INTO tbl_students (student_roll_no, roll_no, s_name_e, f_name_e, dob, address_e, course_id, semester, semester_year)
-                     VALUES (?,?,?,?,?,?,?,?,?)'
-                )->execute([$studentRoll, $roll, $name, $fname, $dob, $address, $courseId, $semester, $semYear]);
-                flash('success', 'Student added. Portal Student ID: ' . $roll);
+                // Create: non-guessable ID only (accept form preview if secure+free, else regenerate)
+                $posted = $roll;
+                if (
+                    is_secure_student_id_format($posted)
+                    && is_valid_student_id($posted)
+                    && !student_id_exists($pdo, $posted)
+                ) {
+                    $roll = $posted;
+                } else {
+                    $roll = generate_unique_student_id($pdo);
+                }
+
+                $saved = false;
+                for ($attempt = 0; $attempt < 5 && !$saved; $attempt++) {
+                    try {
+                        $pdo->prepare(
+                            'INSERT INTO tbl_students (student_roll_no, roll_no, s_name_e, f_name_e, dob, address_e, course_id, semester, semester_year)
+                             VALUES (?,?,?,?,?,?,?,?,?)'
+                        )->execute([$studentRoll, $roll, $name, $fname, $dob, $address, $courseId, $semester, $semYear]);
+                        $saved = true;
+                    } catch (Throwable $e) {
+                        if (stripos($e->getMessage(), 'Duplicate') === false || $attempt >= 4) {
+                            throw $e;
+                        }
+                        $roll = generate_unique_student_id($pdo);
+                    }
+                }
+                flash('success', 'Student added. Give them this Portal Student ID: ' . $roll);
             }
         } catch (Throwable $e) {
             $msg = stripos($e->getMessage(), 'Duplicate') !== false
-                ? 'This Student ID already exists. Use a unique ID.'
+                ? 'This Student ID already exists. Reload the form to get a new ID.'
                 : 'Could not save student.';
             flash('error', $msg);
         }
@@ -76,6 +104,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         flash('success', 'Student deleted.');
         redirect('admin/students.php');
     }
+
+    if ($action === 'regenerate_id') {
+        $id = (int) ($_POST['admin_no'] ?? 0);
+        if ($id <= 0) {
+            flash('error', 'Student not found.');
+            redirect('admin/students.php');
+        }
+        try {
+            $old = $pdo->prepare('SELECT roll_no FROM tbl_students WHERE admin_no=?');
+            $old->execute([$id]);
+            $prevRoll = (string) ($old->fetchColumn() ?: '');
+            if ($prevRoll === '') {
+                flash('error', 'Student not found.');
+                redirect('admin/students.php');
+            }
+            $roll = generate_unique_student_id($pdo);
+            $pdo->prepare('UPDATE tbl_students SET roll_no=? WHERE admin_no=?')->execute([$roll, $id]);
+            if (strcasecmp($prevRoll, $roll) !== 0) {
+                $pdo->prepare('UPDATE tbl_results SET roll_no=? WHERE roll_no=?')->execute([$roll, $prevRoll]);
+            }
+            flash('success', 'New Portal Student ID: ' . $roll . ' (was ' . $prevRoll . '). Tell the student immediately.');
+        } catch (Throwable $e) {
+            flash('error', 'Could not regenerate Student ID.');
+        }
+        redirect('admin/students.php?edit=' . $id);
+    }
 }
 
 $edit = null;
@@ -83,6 +137,15 @@ if (isset($_GET['edit'])) {
     $st = $pdo->prepare('SELECT * FROM tbl_students WHERE admin_no=?');
     $st->execute([(int) $_GET['edit']]);
     $edit = $st->fetch() ?: null;
+}
+
+$previewStudentId = '';
+if (!$edit) {
+    try {
+        $previewStudentId = generate_unique_student_id($pdo);
+    } catch (Throwable $e) {
+        $previewStudentId = '';
+    }
 }
 
 $courses = $pdo->query('SELECT * FROM tbl_courses ORDER BY course_name')->fetchAll();
@@ -100,9 +163,9 @@ require __DIR__ . '/../includes/admin_header.php';
 <div class="card mb-2">
   <h2><?= $edit ? 'Edit Student' : 'Add Student' ?></h2>
   <p class="muted">
-    Student ID is what students type on the Results Portal.
-    It must be <strong>at least 8 characters</strong> and include <strong>letters</strong>
-    (example: <code>SUS00001</code>). Numbers alone like 1, 2, 3 will not work.
+    <strong>Roll No</strong> is the class/batch number (e.g. SUS-001).
+    <strong>Student ID</strong> is the private portal code for the Results page —
+    new students get a random 10-character ID (hard to guess). Old IDs keep working until you change them.
   </p>
   <form method="post" class="mt-2">
     <?= csrf_field() ?>
@@ -116,13 +179,33 @@ require __DIR__ . '/../includes/admin_header.php';
                value="<?= e($edit['student_roll_no'] ?? '') ?>">
       </div>
       <div>
-        <label>Student ID (portal login) *</label>
-        <input name="roll_no" required minlength="8" maxlength="40"
-               pattern="(?=.*[A-Za-z])[A-Za-z0-9-]{8,40}"
-               title="At least 8 characters with letters (e.g. SUS00001)"
-               placeholder="e.g. SUS00001"
-               value="<?= e($edit['roll_no'] ?? '') ?>"
-               style="text-transform:uppercase">
+        <label>Student ID (portal login) <?= $edit ? '*' : '' ?></label>
+        <?php if ($edit): ?>
+          <?php $editIdSecure = is_secure_student_id_format((string) ($edit['roll_no'] ?? '')); ?>
+          <input name="roll_no" required minlength="8" maxlength="40"
+                 pattern="(?=.*[A-Za-z])[A-Za-z0-9-]{8,40}"
+                 title="At least 8 characters with letters"
+                 value="<?= e($edit['roll_no'] ?? '') ?>"
+                 style="text-transform:uppercase">
+          <?php if (!$editIdSecure): ?>
+            <p class="muted" style="margin:0.25rem 0 0;font-size:0.8rem;color:#b42318">
+              This ID looks guessable (batch-style). Use <strong>Regenerate secure Student ID</strong> below, then tell the student the new code.
+            </p>
+          <?php else: ?>
+            <p class="muted" style="margin:0.25rem 0 0;font-size:0.8rem">
+              Secure format. Change only if needed — tell the student the new ID after saving.
+            </p>
+          <?php endif; ?>
+        <?php else: ?>
+          <input name="roll_no" readonly required minlength="8" maxlength="40"
+                 value="<?= e($previewStudentId) ?>"
+                 style="text-transform:uppercase;letter-spacing:0.04em;font-weight:600"
+                 title="Auto-generated portal Student ID">
+          <p class="muted" style="margin:0.25rem 0 0;font-size:0.8rem">
+            Auto-generated (not sequential). <a href="<?= e(base_url('admin/students.php')) ?>">Generate another</a>
+            if needed. Copy this ID for the student after you save.
+          </p>
+        <?php endif; ?>
       </div>
       <div>
         <label>Name *</label>
@@ -174,6 +257,14 @@ require __DIR__ . '/../includes/admin_header.php';
       <?php endif; ?>
     </div>
   </form>
+  <?php if ($edit): ?>
+    <form method="post" class="mt-2" onsubmit="return confirm('Generate a new random Portal Student ID? The old ID will stop working. You must tell the student the new ID.');">
+      <?= csrf_field() ?>
+      <input type="hidden" name="action" value="regenerate_id">
+      <input type="hidden" name="admin_no" value="<?= (int) $edit['admin_no'] ?>">
+      <button class="btn btn-outline btn-sm" type="submit">Regenerate secure Student ID</button>
+    </form>
+  <?php endif; ?>
 </div>
 
 <div class="card">
@@ -191,6 +282,7 @@ require __DIR__ . '/../includes/admin_header.php';
           <?php
             $sid = (string) $st['roll_no'];
             $ok = is_valid_student_id($sid);
+            $secure = is_secure_student_id_format($sid);
             $portal = format_sabeel_student_id($st);
           ?>
           <tr>
@@ -199,6 +291,8 @@ require __DIR__ . '/../includes/admin_header.php';
               <strong><?= e($sid) ?></strong>
               <?php if (!$ok): ?>
                 <br><span class="badge badge-fail">Fix: need 8+ chars with letters</span>
+              <?php elseif (!$secure): ?>
+                <br><span class="badge badge-fail">Guessable — regenerate</span>
               <?php endif; ?>
             </td>
             <td><code><?= e($portal) ?></code></td>

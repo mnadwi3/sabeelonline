@@ -4,36 +4,39 @@ require_once __DIR__ . '/../includes/marksheet.php';
 
 $results = [];
 $searched = false;
+$rateLimited = false;
 $query = trim($_GET['q'] ?? '');
 $viewId = (int) ($_GET['id'] ?? 0);
 
+// Lookups require Student ID (q). Bare ?id= is not allowed (prevents enumerating result rows).
 if ($query !== '') {
     $searched = true;
-    try {
-        $results = find_all_published_by_roll_or_id(db(), $query);
-    } catch (Throwable $e) {
+    if (!portal_lookup_allowed(portal_client_ip())) {
+        $rateLimited = true;
         $results = [];
+    } else {
+        try {
+            $results = find_all_published_by_roll_or_id(db(), $query);
+        } catch (Throwable $e) {
+            $results = [];
+        }
     }
+} elseif ($viewId > 0) {
+    // id without matching Student ID → treat as not found (same message)
+    $searched = true;
+    $results = [];
 }
 
 $view = null;
-if ($viewId > 0) {
-    try {
-        $view = load_result_bundle(db(), $viewId, true);
-        if ($view && !$searched) {
-            $results = [$view];
-            $searched = true;
-            $query = format_sabeel_student_id($view);
+if ($viewId > 0 && $results !== []) {
+    foreach ($results as $row) {
+        if ((int) ($row['id'] ?? 0) === $viewId) {
+            $view = $row;
+            break;
         }
-    } catch (Throwable $e) {
-        $view = null;
-        $results = [];
-        $searched = true;
     }
 } elseif (count($results) === 1) {
     $view = $results[0];
-} elseif ($viewId === 0 && count($results) > 1) {
-    $view = null;
 }
 ?>
 <!DOCTYPE html>
@@ -69,21 +72,26 @@ if ($viewId > 0) {
         <p class="portal-kicker">Sabeel Us Salaam Online</p>
       </div>
       <h1>Student Results</h1>
-      <p class="muted">Enter your Student ID (at least 8 characters with letters), e.g. <strong>SUS00001</strong>.</p>
+      <p class="muted">Enter your personal Student ID (issued by admin), e.g. <strong>K7M2NP9QXH</strong>.</p>
       <form method="get" class="portal-search-form">
         <label for="studentId">Student ID</label>
-        <input id="studentId" name="q" required minlength="8"
-               placeholder="e.g. SUS00001 or Sabeel-26-SUS00001"
+        <input id="studentId" name="q" required minlength="8" maxlength="40"
+               placeholder="Your Student ID"
                value="<?= e($query) ?>" autocomplete="off"
                style="text-transform:uppercase">
         <button class="btn btn-primary btn-block" type="submit">View Result</button>
       </form>
-      <?php if ($searched && !$results): ?>
+      <?php if ($rateLimited): ?>
+        <div class="portal-empty">
+          <h2>Please try again later</h2>
+          <p class="muted">Too many lookups from this connection. Wait a few minutes, then try again with your Student ID.</p>
+        </div>
+      <?php elseif ($searched && !$results): ?>
         <div class="portal-empty">
           <h2>Result not found</h2>
           <p class="muted">
-            Use your Student ID with letters (example <strong>SUS00001</strong>), not numbers like 1 or 2.
-            Or try <strong>Sabeel-YY-STUDENTID</strong>. Ask admin if your result is published.
+            No published result matches that Student ID.
+            Check the ID carefully, or ask your admin if your result has been published.
           </p>
         </div>
       <?php endif; ?>

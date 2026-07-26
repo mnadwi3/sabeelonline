@@ -75,6 +75,108 @@ function normalize_student_id(string $id): string
     return strtoupper(trim($id));
 }
 
+/** True for auto-generated style IDs (no ambiguous 0/O/1/I/L, no hyphens). */
+function is_secure_student_id_format(string $id): bool
+{
+    return (bool) preg_match('/^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8,12}$/', normalize_student_id($id));
+}
+
+function student_id_exists(PDO $pdo, string $id, ?int $exceptAdminNo = null): bool
+{
+    $id = normalize_student_id($id);
+    if ($id === '') {
+        return false;
+    }
+    if ($exceptAdminNo !== null && $exceptAdminNo > 0) {
+        $st = $pdo->prepare(
+            'SELECT 1 FROM tbl_students WHERE LOWER(roll_no) = LOWER(?) AND admin_no <> ? LIMIT 1'
+        );
+        $st->execute([$id, $exceptAdminNo]);
+    } else {
+        $st = $pdo->prepare('SELECT 1 FROM tbl_students WHERE LOWER(roll_no) = LOWER(?) LIMIT 1');
+        $st->execute([$id]);
+    }
+    return (bool) $st->fetchColumn();
+}
+
+/**
+ * Non-guessable portal Student ID (10 chars, A–Z / 2–9, no ambiguous 0/O/1/I/L).
+ * Example: K7M2NP9QXH — not sequential batch codes like SUS-501-2024.
+ */
+function generate_unique_student_id(PDO $pdo, int $length = 10): string
+{
+    $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    $alphaLen = strlen($alphabet);
+    $length = max(8, min(40, $length));
+
+    for ($attempt = 0; $attempt < 32; $attempt++) {
+        $id = '';
+        for ($i = 0; $i < $length; $i++) {
+            $id .= $alphabet[random_int(0, $alphaLen - 1)];
+        }
+        if (!student_id_exists($pdo, $id)) {
+            return $id;
+        }
+    }
+
+    // Extremely unlikely; widen with a short random suffix still within VARCHAR(40)
+    $fallback = substr(strtoupper(bin2hex(random_bytes(8))), 0, 12);
+    if (!student_id_exists($pdo, $fallback) && is_valid_student_id($fallback)) {
+        return $fallback;
+    }
+
+    throw new RuntimeException('Could not generate a unique Student ID.');
+}
+
+/**
+ * Simple file-based rate limit for public result lookups (Hostinger-friendly).
+ * Returns true when the request is allowed.
+ */
+function portal_lookup_allowed(string $ip, int $maxAttempts = 20, int $windowSeconds = 600): bool
+{
+    $ip = trim($ip);
+    if ($ip === '') {
+        $ip = 'unknown';
+    }
+
+    $dir = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'sabeel_portal_rl';
+    if (!is_dir($dir) && !@mkdir($dir, 0700, true) && !is_dir($dir)) {
+        // If temp dir is unusable, fail open so students are not locked out
+        return true;
+    }
+
+    $file = $dir . DIRECTORY_SEPARATOR . hash('sha256', $ip) . '.json';
+    $now = time();
+    $hits = [];
+
+    if (is_file($file)) {
+        $raw = @file_get_contents($file);
+        $decoded = is_string($raw) ? json_decode($raw, true) : null;
+        if (is_array($decoded)) {
+            foreach ($decoded as $ts) {
+                $t = (int) $ts;
+                if ($t > ($now - $windowSeconds)) {
+                    $hits[] = $t;
+                }
+            }
+        }
+    }
+
+    if (count($hits) >= $maxAttempts) {
+        return false;
+    }
+
+    $hits[] = $now;
+    @file_put_contents($file, json_encode($hits), LOCK_EX);
+    return true;
+}
+
+function portal_client_ip(): string
+{
+    $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
+    return $ip !== '' ? $ip : 'unknown';
+}
+
 function format_sabeel_student_id(array $r): string
 {
     $yearRaw = trim((string) ($r['semester_year'] ?? ''));
@@ -99,8 +201,8 @@ function find_published_by_roll_or_id(PDO $pdo, string $query): ?array
 /**
  * Find published results by Student ID.
  * Accepts:
- *   - Sabeel-YY-STUDENTID  (e.g. Sabeel-26-SUS00001)
- *   - STUDENTID alone       (8+ chars with letters, e.g. SUS00001)
+ *   - Sabeel-YY-STUDENTID  (e.g. Sabeel-26-K7M2NP9QXH)
+ *   - STUDENTID alone       (8+ chars with letters, e.g. K7M2NP9QXH)
  */
 function find_all_published_by_roll_or_id(PDO $pdo, string $query): array
 {

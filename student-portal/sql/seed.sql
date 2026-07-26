@@ -18,11 +18,11 @@ CROSS JOIN (
 WHERE course_name = 'Short Term Alimiyyat';
 
 INSERT INTO tbl_students (student_roll_no, roll_no, s_name_e, f_name_e, dob, address_e, course_id, semester, semester_year)
-SELECT 'SUS-001', 'SUS00001', 'Ahmed Khan', 'Mohammad Khan', '2005-03-15', 'Shaheen Bagh, Okhla, New Delhi',
+SELECT 'SUS-001', 'K7M2NP9QXH', 'Ahmed Khan', 'Mohammad Khan', '2005-03-15', 'Shaheen Bagh, Okhla, New Delhi',
        course_id, 'Semester 1', '2024'
 FROM tbl_courses WHERE course_name = 'Short Term Alimiyyat' LIMIT 1;
 
 INSERT INTO tbl_students (student_roll_no, roll_no, s_name_e, f_name_e, dob, address_e, course_id, semester, semester_year)
-SELECT 'SUS-002', 'SUS00002', 'Fatima Zahra', 'Abdul Rahman', '2004-07-22', 'Okhla, New Delhi',
+SELECT 'SUS-002', 'R4T8W3YB6C', 'Fatima Zahra', 'Abdul Rahman', '2004-07-22', 'Okhla, New Delhi',
        course_id, 'Semester 1', '2024'
 FROM tbl_courses WHERE course_name = 'Short Term Alimiyyat' LIMIT 1;

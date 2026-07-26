@@ -9,9 +9,9 @@ One **Admin ID + password** for every management page. No access codes.
 3. You land on **Admin Hub** (`/admin-hub.html`)
 4. Open Courses, Admissions, Library, Blog, or Results from the cards
 
-Change password: `/pages/change-password.php`.
+Change password: `/pages/change-password.php` (minimum 10 characters, with upper, lower, number, special).
 
-Direct links to any admin page also send you to the same login, then return you there.
+Direct links to any admin page (including Results) use the same session — no second password.
 
 ## What students do (not Admin Login)
 

@@ -184,6 +184,7 @@ function sabeel_peek_user(): ?array
 
     $wasActive = session_status() === PHP_SESSION_ACTIVE;
     $prevName = $wasActive ? session_name() : null;
+    $prevId = $wasActive ? session_id() : null;
 
     if ($wasActive) {
         if ($prevName === $authName) {
@@ -192,6 +193,12 @@ function sabeel_peek_user(): ?array
             if ($userId <= 0) {
                 return null;
             }
+            $lastActivity = (int) ($_SESSION['_last_activity'] ?? 0);
+            $lifetime = (int) ($config['session_lifetime'] ?? 1800);
+            if ($lastActivity > 0 && (time() - $lastActivity) > $lifetime) {
+                return null;
+            }
+            $_SESSION['_last_activity'] = time();
             return sabeel_load_user($userId);
         }
         session_write_close();
@@ -215,11 +222,15 @@ function sabeel_peek_user(): ?array
     if ($userId > 0 && $lastActivity > 0 && (time() - $lastActivity) > $lifetime) {
         $userId = 0;
     }
+    if ($userId > 0) {
+        $_SESSION['_last_activity'] = time();
+    }
 
     session_write_close();
 
-    if ($wasActive && $prevName) {
+    if ($wasActive && $prevName && $prevId) {
         session_name($prevName);
+        session_id($prevId);
         @session_start();
     }
 

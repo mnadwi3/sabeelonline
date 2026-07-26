@@ -1,6 +1,6 @@
 <?php
 /**
- * Portal admin login — always uses the one Admin Login page.
+ * Results Admin — always the one Admin Login (no second password form).
  */
 require_once __DIR__ . '/../includes/bootstrap.php';
 
@@ -12,6 +12,8 @@ if (is_file($gate)) {
         $_SESSION['admin_id'] = (int) $user['id'];
         $_SESSION['admin_name'] = (string) ($user['full_name'] !== '' ? $user['full_name'] : $user['username']);
         $_SESSION['admin_login'] = (string) $user['username'];
+        $_SESSION['auth_user_id'] = (int) $user['id'];
+        $_SESSION['_last_activity'] = time();
         redirect('admin/index.php');
     }
     header('Location: ' . sabeel_login_url('/student-portal/admin/'));

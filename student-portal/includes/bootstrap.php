@@ -1,10 +1,25 @@
 <?php
 /**
  * Bootstrap: session, PDO, helpers
+ *
+ * Uses the same SABEELAUTH session cookie as /pages/login.php so Results Admin
+ * opens without a second username/password.
  */
 declare(strict_types=1);
 
 if (session_status() === PHP_SESSION_NONE) {
+    $authConfigFile = dirname(__DIR__, 2) . '/config/config.php';
+    $authConfig = is_file($authConfigFile) ? (require $authConfigFile) : [];
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    session_name((string) (($authConfig['session_name'] ?? '') ?: 'SABEELAUTH'));
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
     session_start();
 }
 
@@ -189,7 +204,7 @@ function verify_csrf(): void
 
 function require_admin(): void
 {
-    // One Admin Login session (SABEELAUTH)
+    // One Admin Login session (SABEELAUTH) — same cookie as Hub / Blog / Library
     $gate = dirname(__DIR__, 2) . '/includes/sabeel_gate.php';
     if (is_file($gate)) {
         require_once $gate;
@@ -198,13 +213,17 @@ function require_admin(): void
             $_SESSION['admin_id'] = (int) $user['id'];
             $_SESSION['admin_name'] = (string) ($user['full_name'] !== '' ? $user['full_name'] : $user['username']);
             $_SESSION['admin_login'] = (string) $user['username'];
+            $_SESSION['auth_user_id'] = (int) $user['id'];
+            $_SESSION['_last_activity'] = time();
             return;
         }
     }
 
-    // Clear stale portal-only session leftovers
     unset($_SESSION['admin_id'], $_SESSION['admin_name'], $_SESSION['admin_login']);
-    $return = '/student-portal/admin/';
+    $return = (string) ($_SERVER['REQUEST_URI'] ?? '/student-portal/admin/');
+    if ($return === '' || $return[0] !== '/') {
+        $return = '/student-portal/admin/';
+    }
     header('Location: /pages/login.php?redirect=' . rawurlencode($return));
     exit;
 }

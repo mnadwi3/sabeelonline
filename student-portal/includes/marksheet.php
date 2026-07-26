@@ -108,6 +108,7 @@ function portal_student_session_get(): ?array
 {
     $wasActive = session_status() === PHP_SESSION_ACTIVE;
     $prevName = $wasActive ? session_name() : null;
+    $prevId = $wasActive ? session_id() : null;
 
     if ($wasActive && $prevName === 'SABEELSTUDENT') {
         if (empty($_SESSION['student_ok']) || empty($_SESSION['student_id'])) {
@@ -144,8 +145,9 @@ function portal_student_session_get(): ?array
     }
     session_write_close();
 
-    if ($wasActive && $prevName) {
+    if ($wasActive && $prevName && $prevId) {
         session_name($prevName);
+        session_id($prevId);
         @session_start();
     }
 
@@ -161,6 +163,7 @@ function portal_student_session_set(string $studentId, string $name = ''): void
 
     $wasActive = session_status() === PHP_SESSION_ACTIVE;
     $prevName = $wasActive ? session_name() : null;
+    $prevId = $wasActive ? session_id() : null;
     if ($wasActive) {
         session_write_close();
     }
@@ -182,8 +185,9 @@ function portal_student_session_set(string $studentId, string $name = ''): void
     $_SESSION['student_login_at'] = time();
     session_write_close();
 
-    if ($wasActive && $prevName) {
+    if ($wasActive && $prevName && $prevId) {
         session_name($prevName);
+        session_id($prevId);
         @session_start();
     }
 }

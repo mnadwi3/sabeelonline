@@ -99,11 +99,11 @@ function validate_username(string $username): bool
 }
 
 /**
- * Strong password rules (min 12, upper, lower, digit, special).
+ * Strong password rules (min 10, upper, lower, digit, special).
  */
 function validate_password_strength(string $password): bool
 {
-    if (strlen($password) < 12) {
+    if (strlen($password) < 10) {
         return false;
     }
     if (!preg_match('/[A-Z]/', $password)) {
@@ -126,7 +126,7 @@ function validate_password_strength(string $password): bool
  */
 function password_rules_message(): string
 {
-    return 'Password must be at least 12 characters and include uppercase, lowercase, a number, and a special character.';
+    return 'Password must be at least 10 characters and include uppercase, lowercase, a number, and a special character.';
 }
 
 /**

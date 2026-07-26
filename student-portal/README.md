@@ -22,7 +22,7 @@ Website path: `/student-portal/` (folder next to `index.html`, `blog/`, `library
 
 - Website menu: **Student Portal** → `/student-portal/`
 - Public result search: `/student-portal/` or `/student-portal/public/index.php`
-- Admin panel: `/student-portal/admin/login.php`
+- Admin panel: `/pages/login.php` → Admin Hub → Results Admin
 
 ## Access DB mapping
 

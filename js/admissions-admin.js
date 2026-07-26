@@ -1,36 +1,25 @@
 /**
- * Admin viewer for Enroll Now admission applications.
+ * Admin viewer for Enroll Now admission applications — Admin Login session only.
  */
 (function () {
   'use strict';
 
-  const cfg = window.LIBRARY_CONFIG || {};
   const API_URL = 'api/admissions.php';
-  const ADMIN_CODES = (cfg.ADMIN_CODES || [cfg.ADMIN_CODE || 'admin@sabeel']).map((c) => String(c).toUpperCase());
-  const ADMIN_KEY = 'sabeel_admissions_admin';
-  const CODE_KEY = 'sabeel_lib_admin_code';
 
   const gateView = document.getElementById('viewAdminGate');
   const appView = document.getElementById('viewAdminApp');
-  const gateForm = document.getElementById('adminGateForm');
-  const gateError = document.getElementById('adminGateError');
   const statusEl = document.getElementById('appStatus');
   const listEl = document.getElementById('appsTableWrap');
   const btnLogout = document.getElementById('btnAdminLogout');
   const btnRefresh = document.getElementById('btnRefresh');
 
   let apps = [];
-  let adminCode = sessionStorage.getItem(CODE_KEY) || '';
 
   function showStatus(msg, ok) {
     if (!statusEl) return;
     statusEl.hidden = !msg;
     statusEl.textContent = msg || '';
     statusEl.className = 'form-status' + (ok ? ' is-ok' : ' is-error');
-  }
-
-  function isAdminCode(code) {
-    return ADMIN_CODES.includes(String(code || '').trim().toUpperCase());
   }
 
   function setAuthed(on) {
@@ -53,19 +42,10 @@
     return d.toLocaleString();
   }
 
-  async function apiLogin(code) {
-    try {
-      const body = new FormData();
-      body.append('admin_code', code);
-      await fetch('library/api/login.php', { method: 'POST', body, credentials: 'same-origin' });
-    } catch (_) { /* optional */ }
-  }
-
   async function apiGet(url) {
     const res = await fetch(url, {
       cache: 'no-store',
       credentials: 'same-origin',
-      headers: { 'X-Admin-Code': adminCode },
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.ok) throw new Error(data.error || 'Request failed.');
@@ -74,7 +54,6 @@
 
   async function apiPost(fields) {
     const body = new FormData();
-    body.append('admin_code', adminCode);
     Object.entries(fields || {}).forEach(([k, v]) => body.append(k, v));
     const res = await fetch(API_URL, { method: 'POST', body, credentials: 'same-origin' });
     const data = await res.json().catch(() => ({}));
@@ -139,7 +118,6 @@
     try {
       const res = await fetch(API_URL + '?action=file&id=' + encodeURIComponent(id) + '&t=' + Date.now(), {
         credentials: 'same-origin',
-        headers: { 'X-Admin-Code': adminCode },
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -155,35 +133,9 @@
     }
   }
 
-  gateForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const code = document.getElementById('adminCode').value.trim();
-    if (!isAdminCode(code)) {
-      gateError.hidden = false;
-      return;
-    }
-    gateError.hidden = true;
-    adminCode = code;
-    sessionStorage.setItem(CODE_KEY, code);
-    localStorage.setItem(ADMIN_KEY, '1');
-    await apiLogin(code);
-    setAuthed(true);
-    try {
-      await loadApps();
-      showStatus(apps.length ? '' : 'No applications yet.', true);
-    } catch (err) {
-      showStatus(err.message || 'Could not load applications.', false);
-    }
-  });
-
-  btnLogout?.addEventListener('click', async () => {
-    localStorage.removeItem(ADMIN_KEY);
-    sessionStorage.removeItem(CODE_KEY);
-    adminCode = '';
-    try {
-      await fetch('library/api/logout.php', { method: 'POST', credentials: 'same-origin' });
-    } catch (_) { /* ignore */ }
-    setAuthed(false);
+  btnLogout?.addEventListener('click', () => {
+    if (window.SabeelAdminGate) window.SabeelAdminGate.logoutAdmin();
+    else window.location.href = '/pages/logout.php';
   });
 
   btnRefresh?.addEventListener('click', async () => {
@@ -231,16 +183,15 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     if (window.SabeelSiteNav) window.SabeelSiteNav.mount();
-    if (localStorage.getItem(ADMIN_KEY) === '1' && adminCode && isAdminCode(adminCode)) {
-      await apiLogin(adminCode);
-      setAuthed(true);
-      try {
-        await loadApps();
-      } catch (err) {
-        showStatus(err.message || 'Could not load applications.', false);
-      }
-    } else {
-      setAuthed(false);
+    setAuthed(false);
+    const session = await window.SabeelAdminGate.requireAdminOrRedirect('/admissions-admin.html');
+    if (!session) return;
+    setAuthed(true);
+    try {
+      await loadApps();
+      showStatus(apps.length ? '' : 'No applications yet.', true);
+    } catch (err) {
+      showStatus(err.message || 'Could not load applications.', false);
     }
   });
 })();

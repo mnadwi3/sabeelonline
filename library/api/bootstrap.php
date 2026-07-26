@@ -25,22 +25,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 header('X-Content-Type-Options: nosniff');
 
-/** @deprecated Legacy access codes — kept only as emergency fallback */
-const LIB_ADMIN_CODE = 'admin@sabeel';
-const LIB_ADMIN_CODES = ['admin@sabeel', 'ADMIN-SABEEL'];
 const LIB_MAX_PDF_BYTES = 40 * 1024 * 1024;   // 40 MB
 const LIB_MAX_COVER_BYTES = 5 * 1024 * 1024;  // 5 MB
-
-function lib_is_admin_code(string $code): bool
-{
-    $code = strtoupper(trim($code));
-    foreach (LIB_ADMIN_CODES as $valid) {
-        if ($code === strtoupper(trim($valid))) {
-            return true;
-        }
-    }
-    return $code === strtoupper(LIB_ADMIN_CODE);
-}
 
 function lib_unified_admin_user(): ?array
 {
@@ -48,11 +34,7 @@ function lib_unified_admin_user(): ?array
     if (!$user) {
         return null;
     }
-    // Site Admin opens Library + Courses + Hub
     if (sabeel_is_site_admin($user)) {
-        return $user;
-    }
-    if (sabeel_user_has_module($user, 'library') || sabeel_user_has_module($user, 'courses')) {
         return $user;
     }
     return null;
@@ -190,27 +172,11 @@ function lib_require_admin(): void
         return;
     }
 
-    if (!empty($_SESSION['lib_admin']) && $_SESSION['lib_admin'] === true) {
-        return;
-    }
-
-    // Emergency legacy codes (create real users under Manage Users when possible)
-    $code = '';
-    if (isset($_POST['admin_code'])) {
-        $code = (string) $_POST['admin_code'];
-    } elseif (isset($_SERVER['HTTP_X_ADMIN_CODE'])) {
-        $code = (string) $_SERVER['HTTP_X_ADMIN_CODE'];
-    }
-
-    if (!lib_is_admin_code($code)) {
-        lib_json([
-            'ok' => false,
-            'error' => 'Admin authentication required. Sign in at /pages/login.php with Library or Courses access.',
-            'login' => '/pages/login.php?redirect=/admin-hub.html',
-        ], 401);
-    }
-
-    $_SESSION['lib_admin'] = true;
+    lib_json([
+        'ok' => false,
+        'error' => 'Admin Login required.',
+        'login' => '/pages/login.php?redirect=/admin-hub.html',
+    ], 401);
 }
 
 function lib_require_library_student(): void

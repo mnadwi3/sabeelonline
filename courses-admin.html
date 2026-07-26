@@ -140,16 +140,11 @@
     <section id="viewAdminGate" class="lib-gate">
       <div class="lib-card">
         <h1>Courses Admin</h1>
-        <p class="lib-subtitle">Manage homepage course cards without editing HTML. Same admin code as Library.</p>
-        <form class="lib-form" id="adminGateForm" autocomplete="off">
-          <label for="adminCode">Admin Access Code</label>
-          <input type="password" id="adminCode" required placeholder="Enter admin code">
-          <p class="lib-inline-error" id="adminGateError" hidden>Invalid admin code.</p>
-          <div class="lib-actions">
-            <button type="submit" class="btn btn-primary">Enter Admin Panel</button>
-            <a class="btn btn-outline" href="/#courses">Back to website</a>
-          </div>
-        </form>
+        <p class="lib-subtitle">Checking Admin Login…</p>
+        <div class="lib-actions">
+          <a class="btn btn-primary" href="/pages/login.php?redirect=/courses-admin.html">Go to Admin Login</a>
+          <a class="btn btn-outline" href="/admin-hub.html">Admin Hub</a>
+        </div>
       </div>
     </section>
 
@@ -237,8 +232,8 @@
     </div>
   </main>
 
-  <script src="script.js?v=20260726adminHeader1" defer></script>
-  <script src="library/js/config.js"></script>
-  <script src="js/courses-admin.js?v=20260726adminHeader1"></script>
+  <script src="script.js?v=20260726oneAdmin2" defer></script>
+  <script src="js/admin-gate.js?v=20260726oneAdmin2"></script>
+  <script src="js/courses-admin.js?v=20260726oneAdmin2"></script>
 </body>
 </html>

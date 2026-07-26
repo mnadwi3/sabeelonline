@@ -58,7 +58,7 @@ render_auth_header('Admin Login');
 ?>
 <div class="auth-card">
   <h1>Admin Login</h1>
-  <p class="subtitle">Sign in, then open Admin Hub for all management panels. For a quick start you can also use the Admin Hub access code.</p>
+  <p class="subtitle">One Admin ID and password opens every management panel (Hub, Courses, Admissions, Library, Blog, Results).</p>
 
   <?php if ($error !== ''): ?>
     <div class="alert alert-error" role="alert"><?php echo e($error); ?></div>

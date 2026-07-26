@@ -57,16 +57,11 @@
           </svg>
         </div>
         <h1>Library Admin</h1>
-        <p class="lib-subtitle">Enter the admin code to manage folders and books.</p>
-        <form class="lib-form" id="adminGateForm" autocomplete="off">
-          <label for="adminCode">Admin Access Code</label>
-          <input type="password" id="adminCode" required placeholder="Enter admin code">
-          <p class="lib-inline-error" id="adminGateError" hidden>Invalid admin code.</p>
-          <div class="lib-actions">
-            <button type="submit" class="btn btn-primary">Enter Admin Panel</button>
-            <a class="btn btn-outline" href="/library/">Back to Library</a>
-          </div>
-        </form>
+        <p class="lib-subtitle">Checking Admin Login…</p>
+        <div class="lib-actions">
+          <a class="btn btn-primary" href="/pages/login.php?redirect=/library/admin.html">Go to Admin Login</a>
+          <a class="btn btn-outline" href="/admin-hub.html">Admin Hub</a>
+        </div>
       </div>
     </section>
 
@@ -264,10 +259,11 @@
     </div>
   </footer>
 
-  <script src="../script.js?v=20260726sharedNav1"></script>
-  <script src="js/config.js?v=20260720b"></script>
+  <script src="../script.js?v=20260726oneAdmin2"></script>
+  <script src="../js/admin-gate.js?v=20260726oneAdmin2"></script>
+  <script src="js/config.js?v=20260726oneAdmin2"></script>
   <script src="js/data.js?v=20260724struct1"></script>
-  <script src="js/auth.js?v=20260720b"></script>
-  <script src="js/admin.js?v=20260724sync2"></script>
+  <script src="js/auth.js?v=20260726oneAdmin2"></script>
+  <script src="js/admin.js?v=20260726oneAdmin2"></script>
 </body>
 </html>

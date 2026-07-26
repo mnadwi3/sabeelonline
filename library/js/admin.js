@@ -13,7 +13,6 @@
   var serverList = [];
   var serverFolders = [];
   var liveCourses = [];
-  var adminCodeValue = '';
 
   var COLORS = ['#0B5ED7', '#198754', '#0A3D91', '#146c43', '#084298', '#D4AF37', '#b45309'];
 
@@ -251,10 +250,8 @@
     }
   }
 
-  async function apiLogin(code) {
-    var body = new FormData();
-    body.append('admin_code', code);
-    var res = await fetch(API + '/login.php', { method: 'POST', body: body, credentials: 'same-origin' });
+  async function apiLogin() {
+    var res = await fetch(API + '/login.php', { method: 'POST', body: new FormData(), credentials: 'same-origin' });
     var json = await res.json().catch(function () { return null; });
     return !!(res.ok && json && json.ok);
   }
@@ -335,7 +332,6 @@
 
   async function postAction(url, fields) {
     var body = new FormData();
-    body.append('admin_code', adminCodeValue);
     Object.keys(fields).forEach(function (k) { body.append(k, fields[k]); });
     var res = await fetch(API + '/' + url, { method: 'POST', body: body, credentials: 'same-origin' });
     var json = await res.json().catch(function () { return null; });
@@ -371,7 +367,6 @@
 
   async function publishToServer(pdfFile, coverFile, title, folderId) {
     var body = new FormData();
-    body.append('admin_code', adminCodeValue);
     body.append('title', title);
     body.append('courseId', els.fieldCourse.value);
     body.append('subjectId', els.fieldSubject.value);
@@ -430,50 +425,15 @@
       els.subjectCourse.addEventListener('change', renderSubjectsTable);
     }
 
-    els.adminGateForm.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      els.adminGateError.hidden = true;
-      var code = (els.adminCode.value || '').trim();
-      if (!code) {
-        window.location.href = (auth.staffLoginUrl && auth.staffLoginUrl('/library/admin.html'))
-          || '/pages/login.php?redirect=/library/admin.html';
-        return;
-      }
-      if (!auth.verifyAdminCode(code)) {
-        els.adminGateError.hidden = false;
-        return;
-      }
-      adminCodeValue = code;
-      try { sessionStorage.setItem('sabeel_lib_admin_code', adminCodeValue); } catch (err) {}
-      auth.loginAdmin(code);
-      try {
-        await apiLogin(code);
-        await loadServerList();
-      } catch (err) {
-        useServer = false;
-        liveCourses = getLocalStructure().courses || [];
-        serverFolders = getLocalFolders();
-      }
-      showAdmin(true);
-      refreshAllSelects();
-      renderFoldersTable();
-      renderTable();
-      if (els.storageNote) {
-        els.storageNote.textContent = useServer
-          ? 'Connected to server. Create courses → subjects → book folders → publish PDFs (up to 40 MB).'
-          : 'Local preview only. Upload Library to Hostinger for full server storage.';
-      }
-    });
-
-    els.btnAdminLogout.addEventListener('click', function () {
-      auth.logoutAdmin();
-      adminCodeValue = '';
-      try { sessionStorage.removeItem('sabeel_lib_admin_code'); } catch (err) {}
-      fetch(API + '/logout.php', { method: 'POST', credentials: 'same-origin' }).catch(function () {});
-      window.location.href = '/pages/logout.php';
-      showAdmin(false);
-      els.adminCode.value = '';
-    });
+    if (els.btnAdminLogout) {
+      els.btnAdminLogout.addEventListener('click', function () {
+        if (window.SabeelAdminGate) {
+          window.SabeelAdminGate.logoutAdmin();
+        } else {
+          window.location.href = '/pages/logout.php';
+        }
+      });
+    }
 
     els.courseForm.addEventListener('submit', async function (e) {
       e.preventDefault();
@@ -746,7 +706,7 @@
 
   async function init() {
     [
-      'viewAdminGate', 'viewAdminApp', 'adminGateForm', 'adminCode', 'adminGateError', 'btnAdminLogout',
+      'viewAdminGate', 'viewAdminApp', 'btnAdminLogout',
       'courseForm', 'courseName', 'courseColor', 'btnCreateCourse', 'courseStatus', 'coursesTableWrap',
       'subjectForm', 'subjectCourse', 'subjectName', 'btnCreateSubject', 'subjectStatus', 'subjectsTableWrap',
       'folderForm', 'folderName', 'folderCourse', 'folderSubject', 'btnCreateFolder', 'folderStatus', 'foldersTableWrap',
@@ -756,33 +716,29 @@
     ].forEach(function (id) { els[id] = $(id); });
 
     bind();
+    showAdmin(false);
 
-    try { adminCodeValue = sessionStorage.getItem('sabeel_lib_admin_code') || ''; }
-    catch (err) { adminCodeValue = ''; }
-
-    if (auth.fetchUnifiedSession) {
+    if (window.SabeelAdminGate) {
+      var session = await window.SabeelAdminGate.requireAdminOrRedirect('/library/admin.html');
+      if (!session) return;
+    } else if (auth.fetchUnifiedSession) {
       try { await auth.fetchUnifiedSession(); } catch (err) { /* ignore */ }
+      if (!auth.isAdminAuthenticated()) {
+        window.location.replace('/pages/login.php?redirect=/library/admin.html');
+        return;
+      }
     }
 
-    if (auth.isAdminAuthenticated()) {
-      showAdmin(true);
-      if (adminCodeValue) {
-        try { await apiLogin(adminCodeValue); } catch (err) { /* ignore */ }
-      } else {
-        try { await fetch(API + '/login.php', { method: 'POST', body: new FormData(), credentials: 'same-origin' }); }
-        catch (err) { /* unified cookie may already authorize */ }
-      }
-      await loadServerList();
-      refreshAllSelects();
-      renderFoldersTable();
-      renderTable();
-      if (els.storageNote) {
-        els.storageNote.textContent = useServer
-          ? 'Connected to server. Create courses → subjects → book folders → publish PDFs (up to 40 MB).'
-          : 'Local preview only. Upload Library to Hostinger for full server storage.';
-      }
-    } else {
-      showAdmin(false);
+    try { await apiLogin(); } catch (err) { /* session cookie authorizes */ }
+    showAdmin(true);
+    await loadServerList();
+    refreshAllSelects();
+    renderFoldersTable();
+    renderTable();
+    if (els.storageNote) {
+      els.storageNote.textContent = useServer
+        ? 'Connected to server. Create courses → subjects → book folders → publish PDFs (up to 40 MB).'
+        : 'Local preview only. Upload Library to Hostinger for full server storage.';
     }
   }
 

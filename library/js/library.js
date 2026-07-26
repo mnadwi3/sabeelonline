@@ -693,34 +693,15 @@
           }
         };
 
-        // 1) Portal Student ID (same as Results)
         if (auth.loginWithStudentId) {
           auth.loginWithStudentId(code).then(function (result) {
-            if (result && result.ok) {
-              finishOk();
-              return;
-            }
-            // 2) Legacy shared access codes (optional fallback)
-            try {
-              if (auth.login(code)) {
-                finishOk();
-              } else {
-                finishFail(result && result.error);
-              }
-            } catch (err) {
-              finishFail(result && result.error);
-            }
+            if (result && result.ok) finishOk();
+            else finishFail(result && result.error);
           });
           return;
         }
 
-        try {
-          if (auth.login(code)) finishOk();
-          else finishFail();
-        } catch (err) {
-          console.error(err);
-          showView('denied');
-        }
+        finishFail('Could not verify Student ID.');
       });
     }
 

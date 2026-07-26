@@ -1,21 +1,15 @@
 /**
- * Homepage courses admin — same admin codes as Library.
+ * Homepage courses admin — single Admin Login session.
  */
 (function () {
   'use strict';
 
-  const cfg = window.LIBRARY_CONFIG || {};
   const API_URL = 'api/website-courses.php';
   const FALLBACK_URL = 'data/website-courses.json';
-  const ADMIN_CODES = (cfg.ADMIN_CODES || [cfg.ADMIN_CODE || 'admin@sabeel']).map((c) => String(c).toUpperCase());
-  const ADMIN_KEY = 'sabeel_website_courses_admin';
-  const CODE_KEY = 'sabeel_lib_admin_code';
   const DEFAULT_IMAGE = 'assets/personal.png';
 
   const gateView = document.getElementById('viewAdminGate');
   const appView = document.getElementById('viewAdminApp');
-  const gateForm = document.getElementById('adminGateForm');
-  const gateError = document.getElementById('adminGateError');
   const statusEl = document.getElementById('courseStatus');
   const listEl = document.getElementById('coursesTableWrap');
   const form = document.getElementById('courseForm');
@@ -30,17 +24,12 @@
 
   let courses = [];
   let editingId = null;
-  let adminCode = sessionStorage.getItem(CODE_KEY) || '';
 
   function showStatus(msg, ok) {
     if (!statusEl) return;
     statusEl.hidden = !msg;
     statusEl.textContent = msg || '';
     statusEl.className = 'form-status' + (ok ? ' is-ok' : ' is-error');
-  }
-
-  function isAdminCode(code) {
-    return ADMIN_CODES.includes(String(code || '').trim().toUpperCase());
   }
 
   function setAuthed(on) {
@@ -73,18 +62,9 @@
     }
   }
 
-  async function apiLogin(code) {
-    try {
-      const body = new FormData();
-      body.append('admin_code', code);
-      await fetch('library/api/login.php', { method: 'POST', body, credentials: 'same-origin' });
-    } catch (_) { /* optional */ }
-  }
-
   async function postAction(action, fields) {
     const body = new FormData();
     body.append('action', action);
-    body.append('admin_code', adminCode);
     Object.entries(fields || {}).forEach(([k, v]) => body.append(k, v));
     const res = await fetch(API_URL, { method: 'POST', body, credentials: 'same-origin' });
     const data = await res.json().catch(() => ({}));
@@ -171,30 +151,9 @@
     return escapeHtml(value).replace(/'/g, '&#39;');
   }
 
-  gateForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const code = document.getElementById('adminCode').value.trim();
-    if (!isAdminCode(code)) {
-      gateError.hidden = false;
-      return;
-    }
-    gateError.hidden = true;
-    adminCode = code;
-    sessionStorage.setItem(CODE_KEY, code);
-    localStorage.setItem(ADMIN_KEY, '1');
-    await apiLogin(code);
-    setAuthed(true);
-    await loadCourses();
-  });
-
-  btnLogout?.addEventListener('click', async () => {
-    localStorage.removeItem(ADMIN_KEY);
-    sessionStorage.removeItem(CODE_KEY);
-    adminCode = '';
-    try {
-      await fetch('library/api/logout.php', { method: 'POST', credentials: 'same-origin' });
-    } catch (_) { /* ignore */ }
-    setAuthed(false);
+  btnLogout?.addEventListener('click', () => {
+    if (window.SabeelAdminGate) window.SabeelAdminGate.logoutAdmin();
+    else window.location.href = '/pages/logout.php';
   });
 
   registrationSelect?.addEventListener('change', updateCtaHint);
@@ -204,15 +163,10 @@
   imageFile?.addEventListener('change', async () => {
     const file = imageFile.files && imageFile.files[0];
     if (!file) return;
-    if (!adminCode) {
-      showStatus('Enter the admin panel first, then upload an image.', false);
-      return;
-    }
     showStatus('Uploading image…', true);
     try {
       const body = new FormData();
       body.append('action', 'upload_image');
-      body.append('admin_code', adminCode);
       body.append('image', file);
       const res = await fetch(API_URL, { method: 'POST', body, credentials: 'same-origin' });
       const data = await res.json().catch(() => ({}));
@@ -286,12 +240,10 @@
   document.addEventListener('DOMContentLoaded', async () => {
     updateCtaHint();
     setImage(DEFAULT_IMAGE);
-    if (localStorage.getItem(ADMIN_KEY) === '1' && adminCode && isAdminCode(adminCode)) {
-      await apiLogin(adminCode);
-      setAuthed(true);
-      await loadCourses();
-    } else {
-      setAuthed(false);
-    }
+    setAuthed(false);
+    const session = await window.SabeelAdminGate.requireAdminOrRedirect('/courses-admin.html');
+    if (!session) return;
+    setAuthed(true);
+    await loadCourses();
   });
 })();

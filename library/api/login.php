@@ -1,7 +1,6 @@
 <?php
 /**
- * Library admin login — prefers unified SABEELAUTH session.
- * Legacy admin codes still accepted as emergency fallback.
+ * Confirm Admin Login session for Library / Hub APIs.
  */
 require __DIR__ . '/bootstrap.php';
 
@@ -12,17 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $user = lib_unified_admin_user();
 if ($user) {
     $_SESSION['lib_admin'] = true;
-    lib_json(['ok' => true, 'via' => 'unified']);
-}
-
-$code = isset($_POST['admin_code']) ? trim((string) $_POST['admin_code']) : '';
-if ($code !== '' && lib_is_admin_code($code)) {
-    $_SESSION['lib_admin'] = true;
-    lib_json(['ok' => true, 'via' => 'legacy_code']);
+    lib_json(['ok' => true, 'via' => 'admin_login']);
 }
 
 lib_json([
     'ok' => false,
-    'error' => 'Sign in at /pages/login.php with an account that has Library or Courses access.',
+    'error' => 'Sign in at /pages/login.php with your Admin ID and password.',
     'login' => '/pages/login.php?redirect=/admin-hub.html',
 ], 401);

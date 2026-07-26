@@ -7,7 +7,7 @@ The results software lives in the website folder as **`student-portal/`** and is
 | Place | URL |
 |--------|-----|
 | Student Portal (public) | `https://sabeelussalamonline.com/student-portal/` |
-| Admin login | `https://sabeelussalamonline.com/student-portal/admin/login.php` |
+| Admin login | `https://sabeelussalamonline.com/pages/login.php` (then Admin Hub → Results) |
 
 Main website already links to `student-portal/` in the header, footer, and Results section.
 

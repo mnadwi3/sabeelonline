@@ -189,12 +189,12 @@ function verify_csrf(): void
 
 function require_admin(): void
 {
-    // Unified SABEELAUTH accounts with Portal module
+    // One Admin Login session (SABEELAUTH)
     $gate = dirname(__DIR__, 2) . '/includes/sabeel_gate.php';
     if (is_file($gate)) {
         require_once $gate;
         $user = sabeel_peek_user();
-        if ($user && (sabeel_is_site_admin($user) || sabeel_user_has_module($user, 'portal'))) {
+        if ($user && sabeel_is_site_admin($user)) {
             $_SESSION['admin_id'] = (int) $user['id'];
             $_SESSION['admin_name'] = (string) ($user['full_name'] !== '' ? $user['full_name'] : $user['username']);
             $_SESSION['admin_login'] = (string) $user['username'];
@@ -202,12 +202,11 @@ function require_admin(): void
         }
     }
 
-    if (empty($_SESSION['admin_id'])) {
-        $return = '/student-portal/admin/';
-        $login = '/pages/login.php?redirect=' . rawurlencode($return);
-        header('Location: ' . $login);
-        exit;
-    }
+    // Clear stale portal-only session leftovers
+    unset($_SESSION['admin_id'], $_SESSION['admin_name'], $_SESSION['admin_login']);
+    $return = '/student-portal/admin/';
+    header('Location: /pages/login.php?redirect=' . rawurlencode($return));
+    exit;
 }
 
 function current_admin(): ?array

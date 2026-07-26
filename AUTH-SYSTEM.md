@@ -1,35 +1,30 @@
 # Admin Login (simple)
 
-One **Admin ID + password** for every management page.
+One **Admin ID + password** for every management page. No access codes.
 
-## How you use it
+## Everyday use
 
-### Everyday use (recommended)
-
-1. Open **`/admin-hub.html`**
-2. Enter the hub code: `admin@sabeel` or `ADMIN-SABEEL`
-3. Open Courses, Admissions, Library, Blog, or Results from the cards
-
-### Full Admin Login (Blog / Results / password)
-
-1. Go to `/pages/login.php` (or the “Admin Login” button on the hub)
-2. Enter your Admin ID + password (Super Admin from install)
-3. You return to **Admin Hub**
+1. Go to **`/pages/login.php`**
+2. Sign in with your Admin ID + password (created at `/pages/install.php`)
+3. You land on **Admin Hub** (`/admin-hub.html`)
+4. Open Courses, Admissions, Library, Blog, or Results from the cards
 
 Change password: `/pages/change-password.php`.
 
-## What students do (not this login)
+Direct links to any admin page also send you to the same login, then return you there.
+
+## What students do (not Admin Login)
 
 | Task | How |
 |------|-----|
-| Download results | `/student-portal/public/` → enter **Student ID** (no password) |
-| Download coursebooks | Library page — access code or a separate student login if you create one |
+| Download results | `/student-portal/public/` → **Student ID** only |
+| Download coursebooks | `/library/` → same **Student ID** |
 
-## Emergency / install
+## Install / recovery
 
 - First account: `/pages/install.php` (delete after creating Admin)
 - Forgot password: `/pages/forgot-password.php`
 
 ## Technical note
 
-Session name: `SABEELAUTH`. Any account with role **Admin** or **Super Admin** can open every admin panel. Module checkboxes are no longer required for admins.
+Session name: `SABEELAUTH`. Role **Admin** or **Super Admin** opens every admin panel.

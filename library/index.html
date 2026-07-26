@@ -61,14 +61,15 @@
           </svg>
         </div>
         <h1>Student Library Access</h1>
-        <p class="lib-subtitle">This library is exclusively for enrolled students. Please enter your access code provided by the administration to continue.</p>
+        <p class="lib-subtitle">Enter the same <strong>Student ID</strong> you use for Download Results (issued by admin).</p>
 
         <form class="lib-form" id="accessForm" autocomplete="off">
-          <label for="accessCode">Student Access Code</label>
-          <input type="password" id="accessCode" name="accessCode" placeholder="Enter your access code" required autocomplete="off" inputmode="text">
-          <p class="lib-inline-error" id="accessError" hidden>Invalid access code. Please try again.</p>
+          <label for="accessCode">Student ID</label>
+          <input type="text" id="accessCode" name="accessCode" placeholder="e.g. K7M2NP9QXH" required autocomplete="off" inputmode="text" style="text-transform:uppercase">
+          <p class="lib-inline-error" id="accessError" hidden>Invalid Student ID. Please try again.</p>
           <div class="lib-actions">
             <button type="submit" class="btn btn-primary">Access Library</button>
+            <a class="btn btn-outline" href="/student-portal/public/">Download Results</a>
             <a class="btn btn-outline" id="btnContactAdmin" href="#" target="_blank" rel="noopener noreferrer">Contact Administration</a>
           </div>
         </form>
@@ -86,11 +87,11 @@
           </svg>
         </div>
         <h1>Students Only</h1>
-        <p class="lib-subtitle">This digital library is reserved exclusively for registered students of Sabeel Us Salaam Online. If you are currently enrolled and do not have an access code, please contact the administration.</p>
+        <p class="lib-subtitle">Use your portal Student ID from the administration. The same ID opens Download Results and this Library.</p>
         <div class="lib-gate-actions">
           <a class="btn btn-primary" id="btnDeniedWhatsApp" href="#" target="_blank" rel="noopener noreferrer">Contact on WhatsApp</a>
           <a class="btn btn-outline" href="/">Back to Home</a>
-          <button type="button" class="btn btn-ghost" data-back-access>Try another code</button>
+          <button type="button" class="btn btn-ghost" data-back-access>Try another Student ID</button>
         </div>
       </div>
     </section>

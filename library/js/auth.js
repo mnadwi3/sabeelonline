@@ -1,13 +1,15 @@
 /**
- * Access-control helpers for the Student Digital Library.
- * Prefers unified SABEELAUTH (/pages/login.php); legacy codes remain as fallback.
+ * Student Library access — primary: portal Student ID (same as Results).
+ * Legacy access codes kept as emergency fallback.
  */
 (function (global) {
   'use strict';
 
   var cfg = global.LIBRARY_CONFIG;
+  var STUDENT_API = '/api/student-access.php';
   var SESSION_API = 'api/session.php';
   var cachedUnified = null;
+  var cachedStudent = null;
 
   function normalizeCode(code) {
     return String(code || '').trim().toUpperCase();
@@ -15,14 +17,59 @@
 
   function getValidCodes() {
     if (!cfg || !cfg.ACCESS_CODES) return [];
-    return cfg.ACCESS_CODES
-      .map(normalizeCode)
-      .filter(function (code) { return !!code; });
+    return cfg.ACCESS_CODES.map(normalizeCode).filter(Boolean);
   }
 
   function staffLoginUrl(redirectPath) {
-    var path = redirectPath || '/library/';
-    return '/pages/login.php?redirect=' + encodeURIComponent(path);
+    return '/pages/login.php?redirect=' + encodeURIComponent(redirectPath || '/library/');
+  }
+
+  function fetchStudentSession() {
+    return fetch(STUDENT_API + '?t=' + Date.now(), {
+      credentials: 'same-origin',
+      cache: 'no-store'
+    })
+      .then(function (res) { return res.json().catch(function () { return null; }); })
+      .then(function (data) {
+        cachedStudent = data && data.ok && data.authenticated ? data : null;
+        return cachedStudent;
+      })
+      .catch(function () {
+        cachedStudent = null;
+        return null;
+      });
+  }
+
+  function loginWithStudentId(studentId) {
+    var body = new FormData();
+    body.append('action', 'login');
+    body.append('student_id', String(studentId || '').trim());
+    return fetch(STUDENT_API, {
+      method: 'POST',
+      body: body,
+      credentials: 'same-origin'
+    })
+      .then(function (res) { return res.json().then(function (data) { return { res: res, data: data }; }); })
+      .then(function (pack) {
+        if (pack.res.ok && pack.data && pack.data.ok && pack.data.authenticated) {
+          cachedStudent = pack.data;
+          localStorage.setItem(cfg.SESSION_KEY, JSON.stringify({
+            authenticated: true,
+            via: 'student_id',
+            studentId: pack.data.student_id,
+            name: pack.data.name || '',
+            loggedInAt: new Date().toISOString()
+          }));
+          return { ok: true, data: pack.data };
+        }
+        return {
+          ok: false,
+          error: (pack.data && pack.data.error) || 'Invalid Student ID.'
+        };
+      })
+      .catch(function () {
+        return { ok: false, error: 'Could not verify Student ID. Try again.' };
+      });
   }
 
   function fetchUnifiedSession() {
@@ -42,20 +89,29 @@
   }
 
   function isAuthenticated() {
-    if (cachedUnified && cachedUnified.authenticated && cachedUnified.can_library) {
+    if (cachedStudent && cachedStudent.authenticated) return true;
+    if (cachedUnified && cachedUnified.authenticated && (cachedUnified.can_library || cachedUnified.is_admin)) {
       return true;
     }
     try {
       var raw = localStorage.getItem(cfg.SESSION_KEY);
       if (!raw) return false;
       var session = JSON.parse(raw);
-      return !!(session && session.authenticated === true && session.code);
+      return !!(session && session.authenticated === true);
     } catch (e) {
       return false;
     }
   }
 
   function getSession() {
+    if (cachedStudent && cachedStudent.authenticated) {
+      return {
+        authenticated: true,
+        via: 'student_id',
+        studentId: cachedStudent.student_id,
+        name: cachedStudent.name || ''
+      };
+    }
     if (cachedUnified && cachedUnified.authenticated) {
       return {
         authenticated: true,
@@ -76,25 +132,29 @@
     return getValidCodes().indexOf(normalized) !== -1;
   }
 
+  /** Legacy code login (fallback). */
   function login(code) {
     var normalized = normalizeCode(code);
     if (!verifyAccessCode(normalized)) return false;
-    var session = {
+    localStorage.setItem(cfg.SESSION_KEY, JSON.stringify({
       authenticated: true,
+      via: 'access_code',
       code: normalized,
       loggedInAt: new Date().toISOString()
-    };
-    localStorage.setItem(cfg.SESSION_KEY, JSON.stringify(session));
+    }));
     return true;
   }
 
   function logout() {
     localStorage.removeItem(cfg.SESSION_KEY);
-    cachedUnified = null;
+    cachedStudent = null;
+    var body = new FormData();
+    body.append('action', 'logout');
+    fetch(STUDENT_API, { method: 'POST', body: body, credentials: 'same-origin' }).catch(function () {});
   }
 
   function isAdminAuthenticated() {
-    if (cachedUnified && cachedUnified.authenticated && (cachedUnified.can_library || cachedUnified.can_courses)) {
+    if (cachedUnified && cachedUnified.authenticated && (cachedUnified.can_library || cachedUnified.can_courses || cachedUnified.is_admin)) {
       return true;
     }
     try {
@@ -110,12 +170,7 @@
   function verifyAdminCode(code) {
     var normalized = normalizeCode(code);
     if (!normalized || !cfg) return false;
-    var list = [];
-    if (cfg.ADMIN_CODES && cfg.ADMIN_CODES.length) {
-      list = cfg.ADMIN_CODES;
-    } else if (cfg.ADMIN_CODE) {
-      list = [cfg.ADMIN_CODE];
-    }
+    var list = (cfg.ADMIN_CODES && cfg.ADMIN_CODES.length) ? cfg.ADMIN_CODES : (cfg.ADMIN_CODE ? [cfg.ADMIN_CODE] : []);
     for (var i = 0; i < list.length; i++) {
       if (normalizeCode(list[i]) === normalized) return true;
     }
@@ -146,6 +201,7 @@
     getSession: getSession,
     verifyAccessCode: verifyAccessCode,
     login: login,
+    loginWithStudentId: loginWithStudentId,
     logout: logout,
     isAdminAuthenticated: isAdminAuthenticated,
     verifyAdminCode: verifyAdminCode,
@@ -153,7 +209,9 @@
     logoutAdmin: logoutAdmin,
     whatsAppUrl: whatsAppUrl,
     fetchUnifiedSession: fetchUnifiedSession,
+    fetchStudentSession: fetchStudentSession,
     staffLoginUrl: staffLoginUrl,
-    getUnified: function () { return cachedUnified; }
+    getUnified: function () { return cachedUnified; },
+    getStudent: function () { return cachedStudent; }
   };
 })(window);

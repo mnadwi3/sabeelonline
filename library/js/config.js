@@ -1,10 +1,10 @@
 /**
  * Library portal configuration
- * Change ACCESS_CODES before going live. Client-side checks deter casual access
- * only — for production-grade security, verify codes on a server.
+ * Students sign in with their portal Student ID (same as Download Results).
+ * ACCESS_CODES remain only as an emergency fallback.
  */
 window.LIBRARY_CONFIG = {
-  /* Student access codes (case-insensitive). Any one works. */
+  /* Legacy fallback codes only (prefer Student ID from Results Admin). */
   ACCESS_CODES: [
     'student@sabeel',
     'SABEEL2026',

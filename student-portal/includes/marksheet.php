@@ -75,6 +75,119 @@ function normalize_student_id(string $id): string
     return strtoupper(trim($id));
 }
 
+/**
+ * Shared student session (Library + Results) — cookie name SABEELSTUDENT.
+ */
+function portal_student_session_start(): void
+{
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        // Portal admin may already have PHPSESSID; open SABEELSTUDENT separately when needed
+        if (session_name() === 'SABEELSTUDENT') {
+            return;
+        }
+        // Keep current portal session; student cookie is read via peek below
+        return;
+    }
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    session_name('SABEELSTUDENT');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    session_start();
+}
+
+/**
+ * @return array{student_id:string,name:string}|null
+ */
+function portal_student_session_get(): ?array
+{
+    $wasActive = session_status() === PHP_SESSION_ACTIVE;
+    $prevName = $wasActive ? session_name() : null;
+
+    if ($wasActive && $prevName === 'SABEELSTUDENT') {
+        if (empty($_SESSION['student_ok']) || empty($_SESSION['student_id'])) {
+            return null;
+        }
+        return [
+            'student_id' => (string) $_SESSION['student_id'],
+            'name' => (string) ($_SESSION['student_name'] ?? ''),
+        ];
+    }
+
+    if ($wasActive) {
+        session_write_close();
+    }
+
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    session_name('SABEELSTUDENT');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    @session_start();
+
+    $out = null;
+    if (!empty($_SESSION['student_ok']) && !empty($_SESSION['student_id'])) {
+        $out = [
+            'student_id' => (string) $_SESSION['student_id'],
+            'name' => (string) ($_SESSION['student_name'] ?? ''),
+        ];
+    }
+    session_write_close();
+
+    if ($wasActive && $prevName) {
+        session_name($prevName);
+        @session_start();
+    }
+
+    return $out;
+}
+
+function portal_student_session_set(string $studentId, string $name = ''): void
+{
+    $studentId = normalize_student_id($studentId);
+    if ($studentId === '') {
+        return;
+    }
+
+    $wasActive = session_status() === PHP_SESSION_ACTIVE;
+    $prevName = $wasActive ? session_name() : null;
+    if ($wasActive) {
+        session_write_close();
+    }
+
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    session_name('SABEELSTUDENT');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    @session_start();
+    $_SESSION['student_ok'] = true;
+    $_SESSION['student_id'] = $studentId;
+    $_SESSION['student_name'] = $name;
+    $_SESSION['student_login_at'] = time();
+    session_write_close();
+
+    if ($wasActive && $prevName) {
+        session_name($prevName);
+        @session_start();
+    }
+}
+
 /** True for auto-generated style IDs (no ambiguous 0/O/1/I/L, no hyphens). */
 function is_secure_student_id_format(string $id): bool
 {
@@ -281,7 +394,7 @@ function render_marksheet(array $r, bool $showPrintBar = true): void
         <div class="ms-meta">
           <div class="ms-meta-heading">Student Information</div>
           <div class="ms-info ms-info-bold">
-            <div class="ms-row"><span class="ms-label">Roll No</span><span class="ms-value"><?= e($r['student_roll_no'] ?? $r['roll_no']) ?></span></div>
+            <div class="ms-row"><span class="ms-label">Roll No</span><span class="ms-value"><?= e(trim((string) ($r['student_roll_no'] ?? '')) !== '' ? $r['student_roll_no'] : '—') ?></span></div>
             <div class="ms-row"><span class="ms-label">Student ID</span><span class="ms-value"><?= e($studentId ?: '—') ?></span></div>
             <div class="ms-row"><span class="ms-label">Student Name</span><span class="ms-value"><?= e($r['s_name_e'] ?? '—') ?></span></div>
             <div class="ms-row"><span class="ms-label">Father Name</span><span class="ms-value"><?= e($r['f_name_e'] ?? '—') ?></span></div>

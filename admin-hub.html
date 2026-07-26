@@ -162,14 +162,12 @@
     <section id="viewHubGate" class="hub-gate">
       <div class="hub-card">
         <h1>Admin Hub</h1>
-        <p class="hub-subtitle">Sign in with your staff account (managed by Super Admin). Emergency admin codes still work if needed.</p>
+        <p class="hub-subtitle">Use the same Admin ID and password as the rest of the site.</p>
         <form class="hub-form" id="hubGateForm" autocomplete="off">
-          <label for="adminCode">Emergency admin code (optional)</label>
-          <input type="password" id="adminCode" placeholder="Leave blank to use staff login">
-          <p class="hub-inline-error" id="hubGateError" hidden>Invalid admin code.</p>
+          <input type="hidden" id="adminCode" value="">
+          <p class="hub-inline-error" id="hubGateError" hidden>Please sign in as Admin first.</p>
           <div class="hub-actions">
-            <a class="btn btn-primary" id="hubStaffLogin" href="/pages/login.php?redirect=/admin-hub.html">Staff login</a>
-            <button type="submit" class="btn btn-outline">Use emergency code</button>
+            <a class="btn btn-primary" id="hubStaffLogin" href="/pages/login.php?redirect=/admin-hub.html">Admin Login</a>
             <a class="btn btn-outline" href="/#home">Back to website</a>
           </div>
         </form>
@@ -188,12 +186,12 @@
         </div>
       </header>
       <section class="hub-shell">
-      <p class="hub-lead">Open the panel you need. Accounts and portal access are managed by Super Admin at <a href="/pages/admin/users.php">Manage users</a>.</p>
+      <p class="hub-lead">You are signed in as Admin. Open any panel — same login for all of them.</p>
 
       <article class="hub-panel">
         <div class="hub-group">
           <h2>Website tools</h2>
-          <p class="hub-group-note">Requires Library and/or Courses access on your staff account.</p>
+          <p class="hub-group-note">Library, Courses, and Admissions.</p>
           <div class="hub-grid">
             <a class="hub-link" href="courses-admin.html">
               <strong>Courses Admin</strong>

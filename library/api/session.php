@@ -1,6 +1,6 @@
 <?php
 /**
- * Unified session status for Library / Hub frontends.
+ * Session status for Library / Hub frontends.
  */
 declare(strict_types=1);
 
@@ -15,7 +15,8 @@ if (!$user) {
     ]);
 }
 
-$modules = ($user['role_slug'] ?? '') === 'super_admin'
+$isAdmin = sabeel_is_site_admin($user);
+$modules = $isAdmin
     ? sabeel_module_keys()
     : sabeel_parse_modules((string) ($user['modules'] ?? ''));
 
@@ -25,9 +26,10 @@ lib_json([
     'username' => (string) $user['username'],
     'name' => (string) ($user['full_name'] !== '' ? $user['full_name'] : $user['username']),
     'role' => (string) ($user['role_slug'] ?? ''),
+    'is_admin' => $isAdmin,
     'modules' => $modules,
-    'can_library' => in_array('library', $modules, true) || ($user['role_slug'] ?? '') === 'super_admin',
-    'can_courses' => in_array('courses', $modules, true) || ($user['role_slug'] ?? '') === 'super_admin',
-    'can_blog' => in_array('blog', $modules, true) || ($user['role_slug'] ?? '') === 'super_admin',
-    'can_portal' => in_array('portal', $modules, true) || ($user['role_slug'] ?? '') === 'super_admin',
+    'can_library' => $isAdmin || in_array('library', $modules, true) || sabeel_user_has_module($user, 'library'),
+    'can_courses' => $isAdmin || sabeel_user_has_module($user, 'courses'),
+    'can_blog' => $isAdmin || sabeel_user_has_module($user, 'blog'),
+    'can_portal' => $isAdmin || sabeel_user_has_module($user, 'portal'),
 ]);

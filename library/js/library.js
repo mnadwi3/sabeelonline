@@ -675,17 +675,48 @@
         e.preventDefault();
         els.accessError.hidden = true;
         var code = (els.accessCode && els.accessCode.value) ? els.accessCode.value.trim() : '';
-        // Empty submit → unified staff / student login
         if (!code) {
-          window.location.href = (auth.staffLoginUrl && auth.staffLoginUrl('/library/')) || '/pages/login.php?redirect=/library/';
+          if (els.accessError) {
+            els.accessError.textContent = 'Please enter your Student ID.';
+            els.accessError.hidden = false;
+          }
           return;
         }
-        try {
-          if (auth.login(code)) {
-            enterDashboard();
+
+        var finishOk = function () { enterDashboard(); };
+        var finishFail = function (msg) {
+          if (els.accessError) {
+            els.accessError.textContent = msg || 'Invalid Student ID. Please try again.';
+            els.accessError.hidden = false;
           } else {
             showView('denied');
           }
+        };
+
+        // 1) Portal Student ID (same as Results)
+        if (auth.loginWithStudentId) {
+          auth.loginWithStudentId(code).then(function (result) {
+            if (result && result.ok) {
+              finishOk();
+              return;
+            }
+            // 2) Legacy shared access codes (optional fallback)
+            try {
+              if (auth.login(code)) {
+                finishOk();
+              } else {
+                finishFail(result && result.error);
+              }
+            } catch (err) {
+              finishFail(result && result.error);
+            }
+          });
+          return;
+        }
+
+        try {
+          if (auth.login(code)) finishOk();
+          else finishFail();
         } catch (err) {
           console.error(err);
           showView('denied');
@@ -827,11 +858,14 @@
       else showView('access');
     };
 
-    if (auth.fetchUnifiedSession) {
-      auth.fetchUnifiedSession().then(ready).catch(ready);
-    } else {
-      ready();
+    var chain = Promise.resolve();
+    if (auth.fetchStudentSession) {
+      chain = chain.then(function () { return auth.fetchStudentSession(); });
     }
+    if (auth.fetchUnifiedSession) {
+      chain = chain.then(function () { return auth.fetchUnifiedSession(); });
+    }
+    chain.then(ready).catch(ready);
   }
 
   if (document.readyState === 'loading') {

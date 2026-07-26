@@ -48,10 +48,11 @@ function lib_unified_admin_user(): ?array
     if (!$user) {
         return null;
     }
-    if (
-        sabeel_user_has_module($user, 'library')
-        || sabeel_user_has_module($user, 'courses')
-    ) {
+    // Site Admin opens Library + Courses + Hub
+    if (sabeel_is_site_admin($user)) {
+        return $user;
+    }
+    if (sabeel_user_has_module($user, 'library') || sabeel_user_has_module($user, 'courses')) {
         return $user;
     }
     return null;

@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
     $st->execute([$roll]);
     $student = $st->fetch();
     if (!$student) {
-        flash('error', 'Student not found for this Roll No.');
+        flash('error', 'Student not found for this Student ID.');
         redirect('admin/marks.php');
     }
     if ($semester === '' || $semYear === '') {
@@ -352,7 +352,7 @@ require __DIR__ . '/../includes/admin_header.php';
   </div>
 <?php endif; ?>
 <?php elseif ($roll !== ''): ?>
-  <div class="alert alert-error">Roll No not found.</div>
+  <div class="alert alert-error">Student ID not found.</div>
 <?php endif; ?>
 
 <?php require __DIR__ . '/../includes/admin_footer.php'; ?>

@@ -27,7 +27,7 @@
         cache: 'no-store',
       });
       const data = await res.json().catch(() => null);
-      if (data && data.ok && data.authenticated && (data.can_library || data.can_courses || data.role === 'super_admin')) {
+      if (data && data.ok && data.authenticated && (data.is_admin || data.can_library || data.can_courses || data.role === 'super_admin' || data.role === 'admin')) {
         localStorage.setItem(HUB_KEY, '1');
         return true;
       }

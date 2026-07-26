@@ -14,7 +14,7 @@ $stats = [
 
 $latest = $pdo->query(
     "SELECT r.id, r.roll_no, r.percentage, r.grade, r.result_status, r.is_published,
-            r.semester, s.s_name_e, c.course_name
+            r.semester, s.s_name_e, s.student_roll_no, c.course_name
      FROM tbl_results r
      LEFT JOIN tbl_students s ON s.admin_no = r.admin_no
      LEFT JOIN tbl_courses c ON c.course_id = r.course_id
@@ -43,15 +43,16 @@ require __DIR__ . '/../includes/admin_header.php';
   <div class="table-wrap">
     <table class="data">
       <thead>
-        <tr><th>Roll No</th><th>Name</th><th>Course</th><th>Semester</th><th>%</th><th>Grade</th><th>Result</th><th></th></tr>
+        <tr><th>Roll No</th><th>Student ID</th><th>Name</th><th>Course</th><th>Semester</th><th>%</th><th>Grade</th><th>Result</th><th></th></tr>
       </thead>
       <tbody>
         <?php if (!$latest): ?>
-          <tr><td colspan="8" class="muted">No results yet. Add a student, then enter marks.</td></tr>
+          <tr><td colspan="9" class="muted">No results yet. Add a student, then enter marks.</td></tr>
         <?php endif; ?>
         <?php foreach ($latest as $row): ?>
           <tr>
-            <td><?= e($row['roll_no']) ?></td>
+            <td><?= e($row['student_roll_no'] ?? '—') ?></td>
+            <td><strong><?= e($row['roll_no']) ?></strong></td>
             <td><?= e($row['s_name_e'] ?? '—') ?></td>
             <td><?= e($row['course_name'] ?? '—') ?></td>
             <td><?= e($row['semester'] ?? '—') ?></td>

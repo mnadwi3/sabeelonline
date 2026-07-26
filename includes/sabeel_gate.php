@@ -86,6 +86,14 @@ function sabeel_encode_modules(array $modules): string
     return implode(',', array_keys($clean));
 }
 
+/**
+ * Portal access check.
+ *
+ * Simple rule (what the site owner asked for):
+ *   Admin / Super Admin  → every admin area (Blog, Library, Portal, Courses, Hub)
+ *   Teacher              → Blog only (writers)
+ *   Student              → Library only (optional coursebook login)
+ */
 function sabeel_user_has_module(array $user, string $module): bool
 {
     $module = strtolower(trim($module));
@@ -93,11 +101,32 @@ function sabeel_user_has_module(array $user, string $module): bool
         return false;
     }
     $role = (string) ($user['role_slug'] ?? '');
-    if ($role === 'super_admin') {
+
+    // One Admin login opens every management page
+    if (in_array($role, ['admin', 'super_admin'], true)) {
         return true;
     }
+
+    if ($role === 'teacher' && $module === 'blog') {
+        return true;
+    }
+
+    if ($role === 'student' && $module === 'library') {
+        return true;
+    }
+
+    // Legacy checkbox column (ignored for admins; still honoured for odd cases)
     $mods = sabeel_parse_modules(isset($user['modules']) ? (string) $user['modules'] : '');
     return in_array($module, $mods, true);
+}
+
+/** True when this account is a site admin (manages all panels). */
+function sabeel_is_site_admin(?array $user): bool
+{
+    if (!$user) {
+        return false;
+    }
+    return in_array((string) ($user['role_slug'] ?? ''), ['admin', 'super_admin'], true);
 }
 
 function sabeel_login_url(string $redirectPath = ''): string

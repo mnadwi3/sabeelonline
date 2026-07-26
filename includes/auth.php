@@ -153,16 +153,9 @@ function requireLogin(): void
     $_SESSION['auth_username'] = (string) $user['username'];
     $_SESSION['auth_email'] = (string) $user['email'];
     $mods = sabeel_parse_modules((string) ($user['modules'] ?? ''));
-    if (($user['role_slug'] ?? '') === 'super_admin') {
+    // Admins always get every portal in session
+    if (in_array((string) ($user['role_slug'] ?? ''), ['admin', 'super_admin'], true)) {
         $mods = sabeel_module_keys();
-        // Persist full access if the column was added after install
-        if (trim((string) ($user['modules'] ?? '')) === '') {
-            try {
-                auth()->users()->setModules((int) $user['id'], $mods);
-            } catch (Throwable $e) {
-                // non-fatal
-            }
-        }
     }
     $_SESSION['auth_modules'] = $mods;
     $_SESSION['auth_blog_teacher_id'] = !empty($user['blog_teacher_id'])
@@ -185,21 +178,38 @@ function current_user_modules(): array
 
 function user_has_module(string $module): bool
 {
-    if (is_super_admin()) {
+    // Admins manage every page
+    if (is_admin()) {
         return true;
     }
-    return in_array(strtolower(trim($module)), current_user_modules(), true);
+    $user = [
+        'role_slug' => current_user_role() ?? '',
+        'modules' => implode(',', current_user_modules()),
+    ];
+    return sabeel_user_has_module($user, $module);
 }
 
 /**
- * Require login + access to a portal module (blog, library, portal, courses).
+ * Require a Site Admin (Admin / Super Admin) for management pages.
+ */
+function requireSiteAdmin(): void
+{
+    requireLogin();
+    if (!is_admin()) {
+        http_response_code(403);
+        exit('Access denied. Admin login required.');
+    }
+}
+
+/**
+ * Require login + access to a portal (admins always pass).
  */
 function requireModule(string $module): void
 {
     requireLogin();
     if (!user_has_module($module)) {
         http_response_code(403);
-        exit('Access denied. Your account is not enabled for this section. Ask a Super Admin to grant access.');
+        exit('Access denied. Admin login required for this page.');
     }
 }
 

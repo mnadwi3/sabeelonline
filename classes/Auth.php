@@ -113,7 +113,11 @@ final class Auth
         $mods = function_exists('sabeel_parse_modules')
             ? sabeel_parse_modules((string) ($user['modules'] ?? ''))
             : [];
-        if (($user['role_slug'] ?? '') === 'super_admin' && function_exists('sabeel_module_keys')) {
+        $roleSlug = (string) ($user['role_slug'] ?? '');
+        if (
+            in_array($roleSlug, ['admin', 'super_admin'], true)
+            && function_exists('sabeel_module_keys')
+        ) {
             $mods = sabeel_module_keys();
         }
         $_SESSION['auth_modules'] = $mods;

@@ -404,10 +404,10 @@ function render_marksheet(array $r, bool $showPrintBar = true): void
             <div class="ms-row"><span class="ms-label">Date of Birth</span><span class="ms-value"><?= e(format_date($r['dob'] ?? null)) ?></span></div>
             <div class="ms-row"><span class="ms-label">Address</span><span class="ms-value"><?= e($r['address_e'] ?? '—') ?></span></div>
           </div>
-          <?php if ($photo): ?>
-            <img class="ms-photo" src="<?= e($photo) ?>" alt="Photo">
-          <?php endif; ?>
         </div>
+        <?php if ($photo): ?>
+          <img class="ms-photo" src="<?= e($photo) ?>" alt="Photo">
+        <?php endif; ?>
 
         <table class="ms-table">
           <thead>

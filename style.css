@@ -381,7 +381,8 @@ main:not(:has(.hero)) {
   max-width: none;
   margin: 0;
   padding: 0 max(1rem, calc((100vw - min(100vw - 2.5rem, var(--max))) / 2));
-  padding-left: max(6.5rem, calc((100vw - min(100vw - 2.5rem, var(--max))) / 2 + 4.75rem));
+  /* Slightly left of true center so the pill sits closer to the logo */
+  padding-left: max(5.5rem, calc((100vw - min(100vw - 2.5rem, var(--max))) / 2 + 2.25rem));
   background: transparent;
   border: 0;
   box-shadow: none;
@@ -394,7 +395,7 @@ main:not(:has(.hero)) {
 
 .main-nav .nav-list {
   position: relative;
-  transform: none;
+  transform: translateX(-1.75rem);
   margin: 0;
   z-index: 5;
   pointer-events: auto;
@@ -1754,14 +1755,16 @@ body:not(:has(.hero)) .nav-sub,
   color: var(--text-muted);
   font-size: 1.02rem;
   line-height: 1.8;
-  text-align: left;
+  text-align: justify;
+  text-justify: inter-word;
   hyphens: auto;
   -webkit-hyphens: auto;
 }
 
 .about-intro p {
   margin-bottom: 1.15rem;
-  text-align: left;
+  text-align: justify;
+  text-justify: inter-word;
   max-width: none;
 }
 
@@ -2259,8 +2262,8 @@ body.admission-open { overflow: hidden; }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1.15fr 0.9fr;
-  gap: 2rem 2.25rem;
+  grid-template-columns: 1.15fr 1.35fr 1.2fr 0.85fr;
+  gap: 2rem 2.5rem;
   padding-bottom: 3rem;
   align-items: start;
 }
@@ -2294,7 +2297,14 @@ body.admission-open { overflow: hidden; }
   margin-bottom: 1rem;
 }
 
-.footer-links li { margin-bottom: 0.5rem; }
+.footer-quick-links .footer-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1.25rem;
+  row-gap: 0;
+}
+
+.footer-links li { margin-bottom: 0.45rem; }
 
 .footer-links a {
   display: inline-block;
@@ -2543,6 +2553,10 @@ body.admission-open { overflow: hidden; }
   .footer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.75rem 1.5rem;
+  }
+
+  .footer-quick-links .footer-links {
+    grid-template-columns: 1fr;
   }
 
   .footer-brand {
@@ -2922,13 +2936,15 @@ body.admission-open { overflow: hidden; }
     font-size: 0.94rem;
     line-height: 1.75;
     margin-bottom: 1.75rem;
-    text-align: left;
+    text-align: justify;
+    text-justify: inter-word;
     padding-inline: 0;
   }
 
   .about-intro p {
     margin-bottom: 1rem;
-    text-align: left;
+    text-align: justify;
+    text-justify: inter-word;
   }
 
   .about-intro h3 {

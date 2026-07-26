@@ -40,19 +40,17 @@ if (!isset($page_mode)) {
           </a>
         </div>
       </div>
-      <div>
+      <div class="footer-quick-links">
         <h3>Quick Links</h3>
         <ul class="footer-links">
           <li><a href="/#home">Home</a></li>
-          <li><a href="/#courses">Courses</a></li>
-          <li><a href="/#teachers">Our Team</a></li>
           <li><a href="/#about">About Us</a></li>
-          <li><a href="/#why-us">Why Choose Us</a></li>
+          <li><a href="/#teachers">Our Team</a></li>
           <li><a href="/#testimonials">Testimonials</a></li>
           <li><a href="index.php">Blog</a></li>
+          <li><a href="/#contact">Contact</a></li>
           <li><a href="../student-portal/public/">Download Results</a></li>
           <li><a href="../library/">Download Coursebooks</a></li>
-          <li><a href="/#contact">Contact Us</a></li>
         </ul>
       </div>
       <div>
@@ -72,6 +70,7 @@ if (!isset($page_mode)) {
           <li><a href="/#contact">Privacy Policy</a></li>
           <li><a href="/#contact">Terms of Service</a></li>
           <li><a href="https://wa.me/918979983149" target="_blank" rel="noopener noreferrer">WhatsApp +91-8979983149</a></li>
+          <li><a href="/admin-hub.html">Admin Hub</a></li>
         </ul>
       </div>
     </div>

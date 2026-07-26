@@ -74,7 +74,7 @@ $displayQuery = $query !== '' ? $query : (string) ($studentSession['student_id']
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Portal — <?= e(app_config('app_name')) ?></title>
-  <link rel="stylesheet" href="/style.css?v=20260726navMobile1">
+  <link rel="stylesheet" href="/style.css?v=20260726navGap1">
   <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>?v=20260726mssignfix3">
 </head>
 <body class="portal-page has-site-nav">

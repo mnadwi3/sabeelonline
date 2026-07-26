@@ -55,13 +55,8 @@ if (!isset($page_mode)) {
       </div>
       <div>
         <h3>Courses</h3>
-        <ul class="footer-links">
-          <li><a href="/#courses">Personal Tutoring</a></li>
-          <li><a href="/#courses">Basic Urdu Course</a></li>
-          <li><a href="/#courses">Short Term Alimiyyat</a></li>
-          <li><a href="/#courses">Advanced Arabic Diploma</a></li>
-          <li><a href="/#courses">Translation of The Quran</a></li>
-          <li><a href="/#courses">Elementary Course In Islamic Education</a></li>
+        <ul class="footer-links" id="footerCoursesList" aria-live="polite">
+          <li><span class="muted">Loading courses…</span></li>
         </ul>
       </div>
       <div>
@@ -91,6 +86,7 @@ if (!isset($page_mode)) {
 
   <!-- Main site JS (menu) + blog JS -->
   <script src="../script.js?v=20260726navDrop1" defer></script>
+  <script src="../js/website-courses.js?v=20260726footerCourses1" defer></script>
   <script src="assets/js/blog.js" defer></script>
 <?php endif; ?>
 </body>

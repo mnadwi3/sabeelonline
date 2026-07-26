@@ -1,12 +1,22 @@
 /**
- * Load homepage course cards from API / JSON catalogue.
+ * Load homepage course cards + footer course links from API / JSON catalogue.
  */
 (function () {
   'use strict';
 
   const WHATSAPP = '918979983149';
-  const API_URL = 'api/website-courses.php';
-  const FALLBACK_URL = 'data/website-courses.json';
+
+  function resolvePaths() {
+    const el = document.querySelector('script[src*="website-courses.js"]');
+    const src = el ? el.getAttribute('src') : 'js/website-courses.js';
+    const base = src.replace(/js\/website-courses\.js(?:\?.*)?$/i, '');
+    const rootRelative = base === '../' || base.startsWith('../');
+    return {
+      api: base + 'api/website-courses.php',
+      fallback: base + 'data/website-courses.json',
+      coursesHref: rootRelative ? '/#courses' : '#courses',
+    };
+  }
 
   function escapeHtml(value) {
     return String(value ?? '')
@@ -85,9 +95,21 @@
     }
   }
 
-  async function fetchCourses() {
+  function fillFooterCourses(courses, coursesHref) {
+    const list = document.getElementById('footerCoursesList');
+    if (!list) return;
+    const items = courses
+      .map((c) => String(c.name || '').trim())
+      .filter(Boolean)
+      .map((name) => '<li><a href="' + escapeHtml(coursesHref) + '">' + escapeHtml(name) + '</a></li>');
+    list.innerHTML = items.length
+      ? items.join('')
+      : '<li><span class="muted">Courses coming soon</span></li>';
+  }
+
+  async function fetchCourses(paths) {
     try {
-      const res = await fetch(API_URL, { cache: 'no-store' });
+      const res = await fetch(paths.api, { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         if (data && data.ok && Array.isArray(data.courses)) {
@@ -96,7 +118,7 @@
       }
     } catch (_) { /* fall through */ }
 
-    const res = await fetch(FALLBACK_URL, { cache: 'no-store' });
+    const res = await fetch(paths.fallback, { cache: 'no-store' });
     if (!res.ok) throw new Error('Could not load courses.');
     const data = await res.json();
     return Array.isArray(data.courses) ? data.courses : [];
@@ -104,10 +126,17 @@
 
   async function initWebsiteCourses() {
     const grid = document.getElementById('coursesGrid');
-    if (!grid) return;
+    const footerList = document.getElementById('footerCoursesList');
+    if (!grid && !footerList) return;
+
+    const paths = resolvePaths();
 
     try {
-      const courses = sortCourses(await fetchCourses());
+      const courses = sortCourses(await fetchCourses(paths));
+      fillFooterCourses(courses, paths.coursesHref);
+
+      if (!grid) return;
+
       if (!courses.length) {
         grid.innerHTML = '<p class="muted">Courses will appear here soon.</p>';
         return;
@@ -120,7 +149,12 @@
         grid.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
       }
     } catch (err) {
-      grid.innerHTML = '<p class="muted">Unable to load courses right now.</p>';
+      if (footerList) {
+        footerList.innerHTML = '<li><span class="muted">Unable to load courses</span></li>';
+      }
+      if (grid) {
+        grid.innerHTML = '<p class="muted">Unable to load courses right now.</p>';
+      }
       console.warn(err);
     }
   }
